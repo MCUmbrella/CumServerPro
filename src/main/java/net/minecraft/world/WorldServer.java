@@ -148,7 +148,21 @@ public class WorldServer extends World implements IThreadListener
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
         this.getWorldBorder().setSize(server.getMaxWorldSize());
+        this.worldScoreboard = getServer().getScoreboardManager() == null ? new ServerScoreboard(this.mcServer) : getServer().getScoreboardManager().getMainScoreboard().getHandle(); // CatServer - Use CraftBukit scoreboard
         net.minecraftforge.common.DimensionManager.setWorld(dimensionId, this, mcServer);
+        String s = VillageCollection.fileNameForProvider(this.provider);
+        VillageCollection villagecollection = (VillageCollection)this.perWorldStorage.getOrLoadData(VillageCollection.class, s);
+
+        if (villagecollection == null)
+        {
+            this.villageCollection = new VillageCollection(this);
+            this.perWorldStorage.setData(s, this.villageCollection);
+        }
+        else
+        {
+            this.villageCollection = villagecollection;
+            this.villageCollection.setWorldsForAll(this);
+        }
     }
 
     public WorldServer(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn)
@@ -173,23 +187,6 @@ public class WorldServer extends World implements IThreadListener
 
     public World init()
     {
-        this.mapStorage = new MapStorage(this.saveHandler);
-        String s = VillageCollection.fileNameForProvider(this.provider);
-        VillageCollection villagecollection = (VillageCollection)this.perWorldStorage.getOrLoadData(VillageCollection.class, s);
-
-        if (villagecollection == null)
-        {
-            this.villageCollection = new VillageCollection(this);
-            this.perWorldStorage.setData(s, this.villageCollection);
-        }
-        else
-        {
-            this.villageCollection = villagecollection;
-            this.villageCollection.setWorldsForAll(this);
-        }
-
-        if (getServer().getScoreboardManager() == null) {
-        this.worldScoreboard = new ServerScoreboard(this.mcServer);
         ScoreboardSaveData scoreboardsavedata = (ScoreboardSaveData)this.mapStorage.getOrLoadData(ScoreboardSaveData.class, "scoreboard");
 
         if (scoreboardsavedata == null)
@@ -200,9 +197,7 @@ public class WorldServer extends World implements IThreadListener
 
         scoreboardsavedata.setScoreboard(this.worldScoreboard);
         ((ServerScoreboard)this.worldScoreboard).addDirtyRunnable(new WorldSavedDataCallableSave(scoreboardsavedata));
-        } else {
-            this.worldScoreboard = getServer().getScoreboardManager().getMainScoreboard().getHandle();
-        }
+
         this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
         // this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
         // this.functionManager = new FunctionManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "functions"), this.mcServer);

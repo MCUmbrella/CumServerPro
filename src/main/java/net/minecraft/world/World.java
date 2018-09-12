@@ -208,6 +208,26 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.isRemote = client;
         this.worldBorder = providerIn.createWorldBorder();
         perWorldStorage = new MapStorage((ISaveHandler)null);
+        // CatServer start
+        if (DimensionManager.getWorld(0) != null) // if overworld has loaded, use its mapstorage
+        {
+            this.mapStorage = DimensionManager.getWorld(0).mapStorage;
+        }
+        else
+        {
+            this.mapStorage = new MapStorage(saveHandlerIn);
+        }
+
+        if (this.worldInfo.getDimension() == 0)
+        {
+            generator = this.getServer().getGenerator(this.worldInfo.getWorldName());
+            if (generator != null)
+            {
+                getWorld().generator = generator;
+                getWorld().getPopulators().addAll(generator.getDefaultPopulators(getWorld()));
+            }
+        }
+        // CatServer end
         // CraftBukkit start
         getWorldBorder().world = (WorldServer) this;
         // From PlayerList.setPlayerFileData

@@ -853,7 +853,7 @@ public abstract class PlayerList
             location = respawnEvent.getRespawnLocation();
             playerIn.reset();
         } else {
-            location.setWorld(mcServer.getWorldServer(dimension).getWorld());
+            location.setWorld(mcServer.getWorld(dimension).getWorld());
         }
 
         WorldServer worldserver = ((CraftWorld) location.getWorld()).getHandle();
@@ -866,7 +866,7 @@ public abstract class PlayerList
             entityplayermp.setPosition(entityplayermp.posX, entityplayermp.posY + 1.0D, entityplayermp.posZ);
         }
 
-        byte actualDimension = (byte) (worldserver.getWorld().getEnvironment().getId());
+        int actualDimension = worldserver.provider.getDimension();
         // CatServer - change dim for bukkit added dimensions
         if (DimensionManager.isBukkitDimension(actualDimension))
         {
