@@ -68,6 +68,11 @@ import net.minecraft.world.border.WorldBorder;
 import net.minecraft.world.chunk.storage.AnvilChunkLoader;
 import net.minecraft.world.storage.IPlayerFileData;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.network.ForgeMessage;
+import net.minecraftforge.common.network.ForgeNetworkHandler;
+import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
+import net.minecraftforge.fml.common.network.FMLOutboundHandler;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
@@ -175,6 +180,15 @@ public abstract class PlayerList
         WorldInfo worldinfo = worldserver.getWorldInfo();
         this.setPlayerGameTypeBasedOnOther(playerIn, (EntityPlayerMP)null, worldserver);
         playerIn.connection = nethandlerplayserver;
+        // CatServer start - send DimensionRegisterMessage to client before attempting to login to a Bukkit dimension
+        if (DimensionManager.isBukkitDimension(playerIn.dimension))
+        {
+            FMLEmbeddedChannel serverChannel = ForgeNetworkHandler.getServerChannel();
+            serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+            serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(playerIn);
+            serverChannel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(playerIn.dimension, DimensionManager.getProviderType(playerIn.dimension).name()));
+        }
+        // CatServer end
         nethandlerplayserver.sendPacket(new SPacketJoinGame(playerIn.getEntityId(), playerIn.interactionManager.getGameType(), worldinfo.isHardcoreModeEnabled(), worldserver.provider.getDimension(), worldserver.getDifficulty(), this.getMaxPlayers(), worldinfo.getTerrainType(), worldserver.getGameRules().getBoolean("reducedDebugInfo")));
         playerIn.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
         nethandlerplayserver.sendPacket(new SPacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(this.getServerInstance().getServerModName())));
@@ -850,11 +864,15 @@ public abstract class PlayerList
         }
 
         byte actualDimension = (byte) (worldserver.getWorld().getEnvironment().getId());
-        // Force the client to refresh their chunk cache
-        if (fromWorld.getEnvironment() == worldserver.getWorld().getEnvironment()) {
-            entityplayermp.connection.sendPacket(new SPacketRespawn((byte) (actualDimension >= 0 ? -1 : 0), worldserver.getDifficulty(), worldserver.getWorldInfo().getTerrainType(), playerIn.interactionManager.getGameType()));
+        // CatServer start - change dim for bukkit added dimensions
+        if (DimensionManager.isBukkitDimension(actualDimension))
+        {
+            FMLEmbeddedChannel serverChannel = ForgeNetworkHandler.getServerChannel();
+            serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGET).set(FMLOutboundHandler.OutboundTarget.PLAYER);
+            serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(entityplayermp);
+            serverChannel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(actualDimension, DimensionManager.getProviderType(actualDimension).name()));
         }
-
+        // CatServer end
         // entityplayermp.connection.sendPacket(new SPacketRespawn(entityplayermp.dimension, entityplayermp.world.getDifficulty(), entityplayermp.world.getWorldInfo().getTerrainType(), entityplayermp.interactionManager.getGameType()));
         entityplayermp.connection.sendPacket(new SPacketRespawn(actualDimension, worldserver.getDifficulty(), worldserver.getWorldInfo().getTerrainType(), entityplayermp.interactionManager.getGameType()));
         entityplayermp.setWorld(worldserver);

@@ -93,10 +93,15 @@ public class WorldServerMulti extends WorldServer
         this.delegate.getWorldBorder().addListener(this.borderListener);
     }
 
+    /* we handle all saving including perWorldStorage in WorldServer.saveLevel. This needs to be disabled since we follow
+    // bukkit's world saving methods by using a seperate save handler for each world. Each world folder needs to generate a corresponding 
+    // level.dat for plugins that require it such as MultiWorld.
+    /*
     protected void saveLevel() throws MinecraftException
     {
         this.perWorldStorage.saveAllData();
     }
+    */
 
     public World init()
     {
@@ -131,13 +136,8 @@ public class WorldServerMulti extends WorldServer
         this.delegate.getWorldBorder().removeListener(this.borderListener); // Unlink ourselves, to prevent world leak.
     }
 
-    /* we handle all saving including perWorldStorage in WorldServer.saveLevel. This needs to be disabled since we follow
-    // bukkit's world saving methods by using a seperate save handler for each world. Each world folder needs to generate a corresponding 
-    // level.dat for plugins that require it such as MultiWorld.
-    /*
     public void saveAdditionalData()
     {
         this.provider.onWorldSave();
     }
-    */
 }
