@@ -495,18 +495,21 @@ public abstract class PlayerList
 
     public String playerLoggedOut(EntityPlayerMP playerIn)
     {
+        String quitMessage = null;
         net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerLoggedOut(playerIn);
         WorldServer worldserver = playerIn.getServerWorld();
         playerIn.addStat(StatList.LEAVE_GAME);
 
         // CraftBukkit start - Quitting must be before we do final save of data, in case plugins need to modify it
         org.bukkit.craftbukkit.event.CraftEventFactory.handleInventoryCloseEvent(playerIn);
-
-        PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(cserver.getPlayer(playerIn), "\u00A7e" + playerIn.getName() + " left the game");
-        cserver.getPluginManager().callEvent(playerQuitEvent);
-        playerIn.getBukkitEntity().disconnect(playerQuitEvent.getQuitMessage());
-
-        playerIn.onUpdateEntity();// SPIGOT-924
+        if(playerIn.connection != null) { // CatServer - fix crash when player is Forge Handshake
+            PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(cserver.getPlayer(playerIn), "\u00A7e" + playerIn.getName() + " left the game");
+            cserver.getPluginManager().callEvent(playerQuitEvent);
+            playerIn.getBukkitEntity().disconnect(playerQuitEvent.getQuitMessage());
+    
+            playerIn.onUpdateEntity();// SPIGOT-924
+            quitMessage = playerQuitEvent.getQuitMessage();
+        }
         // CraftBukkit end
 
         this.writePlayerData(playerIn);
@@ -561,7 +564,7 @@ public abstract class PlayerList
 
         ChunkIOExecutor.adjustPoolSize(this.getCurrentPlayerCount());
 
-        return playerQuitEvent.getQuitMessage();
+        return quitMessage;
     }
 
     public String allowUserToConnect(SocketAddress address, GameProfile profile)
@@ -864,7 +867,7 @@ public abstract class PlayerList
         }
 
         byte actualDimension = (byte) (worldserver.getWorld().getEnvironment().getId());
-        // CatServer start - change dim for bukkit added dimensions
+        // CatServer - change dim for bukkit added dimensions
         if (DimensionManager.isBukkitDimension(actualDimension))
         {
             FMLEmbeddedChannel serverChannel = ForgeNetworkHandler.getServerChannel();
