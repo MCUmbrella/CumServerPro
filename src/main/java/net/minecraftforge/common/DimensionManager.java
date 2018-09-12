@@ -252,11 +252,42 @@ public class DimensionManager
         }
         MinecraftServer mcServer = overworld.getMinecraftServer();
         ISaveHandler savehandler = overworld.getSaveHandler();
-        //WorldSettings worldSettings = new WorldSettings(overworld.getWorldInfo());
+        WorldSettings worldSettings = new WorldSettings(overworld.getWorldInfo());
+        String worldType;
+        String name;
+        Environment env = Environment.getEnvironment(dim);
+        if (dim >= -1 && dim <= 1)
+        {
+            if ((dim == -1 && !mcServer.getAllowNether()) || (dim == 1 && !mcServer.server.getAllowEnd()))
+                return;
+            worldType = env.toString().toLowerCase();
+            name = "DIM" + dim;
+        } else {
+            WorldProvider provider = WorldProvider.getProviderForDimension(dim);
+            worldType = provider.getClass().getSimpleName().toLowerCase();
+            worldType = worldType.replace("worldprovider", "");
+            worldType = worldType.replace("provider", "");
 
-        WorldServer world = (dim == 0 ? overworld : (WorldServer)(new WorldServerMulti(mcServer, savehandler, dim, overworld, mcServer.profiler).init()));
+            if(Environment.getEnvironment(DimensionManager.getProviderType(dim).getId()) == null){
+                env = DimensionManager.registerBukkitDimension(DimensionManager.getProviderType(dim).getId(),worldType);
+            }
+
+            name = provider.getSaveFolder();
+        }
+
+        ChunkGenerator gen = mcServer.server.getGenerator(name);
+        if (mcServer instanceof DedicatedServer) {
+            worldSettings.setGeneratorOptions(((DedicatedServer) mcServer).getStringProperty("generator-settings", ""));
+        }
+        WorldServer world = (dim == 0 ? overworld : (WorldServer)(new WorldServerMulti(mcServer, new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true, mcServer.getDataFixer()), dim, overworld, mcServer.profiler).init()));
+        if (gen != null)
+        {
+            world.getWorld().getPopulators().addAll(gen.getDefaultPopulators(world.getWorld()));
+        }
+        mcServer.getPlayerList().setPlayerManager(mcServer.worldServerList.toArray(new WorldServer[mcServer.worldServerList.size()]));
         world.addEventListener(new ServerWorldEventHandler(mcServer, world));
         MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world));
+        mcServer.server.getPluginManager().callEvent(new org.bukkit.event.world.WorldLoadEvent(world.getWorld()));
         if (!mcServer.isSinglePlayer())
         {
             world.getWorldInfo().setGameType(mcServer.getGameType());

@@ -275,82 +275,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.convertMapIfNeeded(saveName);
         this.setUserMessage("menu.loadingLevel");
         this.worlds = new WorldServer[3];
-        /*
-        // ISaveHandler isavehandler = this.anvilConverterForAnvilFile.getSaveLoader(saveName, true);
-        this.setResourcePackFromWorld(this.getFolderName(), isavehandler);
-        // WorldInfo worldinfo = isavehandler.loadWorldInfo();
-        WorldSettings worldsettings;
-
-        if (worldinfo == null)
-        {
-            if (this.isDemo())
-            {
-                worldsettings = WorldServerDemo.DEMO_WORLD_SETTINGS;
-            }
-            else
-            {
-                worldsettings = new WorldSettings(seed, this.getGameType(), this.canStructuresSpawn(), this.isHardcore(), type);
-                worldsettings.setGeneratorOptions(generatorOptions);
-
-                if (this.enableBonusChest)
-                {
-                    worldsettings.enableBonusChest();
-                }
-            }
-
-            worldinfo = new WorldInfo(worldsettings, worldNameIn);
-        }
-        else
-        {
-            worldinfo.setWorldName(worldNameIn);
-            worldsettings = new WorldSettings(worldinfo);
-        }
-
-        if (false) { //Forge Dead code, reimplemented below
-        for (int i = 0; i < this.worlds.length; ++i)
-        {
-            int j = 0;
-
-            if (i == 1)
-            {
-                j = -1;
-            }
-
-            if (i == 2)
-            {
-                j = 1;
-            }
-
-            if (i == 0)
-            {
-                if (this.isDemo())
-                {
-                    this.worlds[i] = (WorldServer)(new WorldServerDemo(this, isavehandler, worldinfo, j, this.profiler)).init();
-                }
-                else
-                {
-                    this.worlds[i] = (WorldServer)(new WorldServer(this, isavehandler, worldinfo, j, this.profiler)).init();
-                }
-
-                this.worlds[i].initialize(worldsettings);
-            }
-            else
-            {
-                this.worlds[i] = (WorldServer)(new WorldServerMulti(this, isavehandler, j, this.worlds[0], this.profiler)).init();
-            }
-
-            this.worlds[i].addEventListener(new ServerWorldEventHandler(this, this.worlds[i]));
-
-            if (!this.isSinglePlayer())
-            {
-                this.worlds[i].getWorldInfo().setGameType(this.getGameType());
-            }
-        }
-        } //Forge: End dead code
-        */
-
-        // WorldServer overWorld = (WorldServer)(isDemo() ? new WorldServerDemo(this, isavehandler, worldinfo, 0, profiler).init() : new WorldServer(this, isavehandler, worldinfo, 0, profiler).init());
-        // overWorld.initialize(worldsettings);
 
         WorldSettings worldsettings = new WorldSettings(seed, this.getGameType(), this.canStructuresSpawn(), this.isHardcore(), type);
         worldsettings.setGeneratorOptions(generatorOptions);
@@ -389,7 +313,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             } else {
                 worldType = worldEnvironment.toString().toLowerCase();
             }
-            String name = (dim == 0) ? saveName : saveName + "_" + worldType;
+            String name = (dim == 0) ? saveName : "DIM" + dim;
             org.bukkit.generator.ChunkGenerator gen = this.server.getGenerator(name);
 
             if (dim == 0) {

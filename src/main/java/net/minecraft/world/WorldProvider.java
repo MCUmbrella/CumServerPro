@@ -16,6 +16,7 @@ import net.minecraft.world.gen.ChunkGeneratorFlat;
 import net.minecraft.world.gen.ChunkGeneratorOverworld;
 import net.minecraft.world.gen.FlatGeneratorInfo;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 
@@ -613,4 +614,9 @@ public abstract class WorldProvider
     {
         return true;
     }
+    // CatServer start
+    public static WorldProvider getProviderForDimension(int dimensionId){
+        return DimensionManager.createProviderFor(dimensionId);
+    }
+    // CatServer end
 }
