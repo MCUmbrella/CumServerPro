@@ -48,6 +48,7 @@ import net.minecraft.world.EnumSkyBlock;
 import net.minecraft.world.gen.structure.StructureStrongholdPieces.Stronghold.Door;
 import net.minecraftforge.classloading.FMLForgePlugin;
 import org.apache.commons.lang3.ArrayUtils;
+import org.bukkit.World;
 
 import javax.annotation.Nullable;
 
@@ -411,5 +412,12 @@ public class EnumHelper
         {
             setup();
         }
+    }
+
+    public static World.Environment addBukkitEnvironment(int id, String name) {
+        if(!isSetup){
+            setup();
+        }
+        return (World.Environment)addEnum(World.Environment.class,name,new Class[]{Integer.TYPE}, new Object[]{Integer.valueOf(id)});
     }
 }

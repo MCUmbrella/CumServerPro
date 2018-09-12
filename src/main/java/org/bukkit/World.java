@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+import org.bukkit.World.Environment;
 import org.bukkit.block.Biome;
 import org.bukkit.block.Block;
 import org.bukkit.entity.*;
@@ -1494,6 +1495,10 @@ public interface World extends PluginMessageRecipient, Metadatable {
 
         private Environment(int id) {
             this.id = id;
+        }
+
+        public static void registerEnvironment(Environment env) {
+            lookup.put(env.getId(),env);
         }
 
         /**

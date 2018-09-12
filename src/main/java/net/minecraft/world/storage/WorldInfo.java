@@ -906,4 +906,17 @@ public class WorldInfo
         }
     }
     // CraftBukkit end
+
+    /**
+     * Sets the Dimension.
+     */
+    public void setDimension(int dim)
+    {
+        this.dimension = dim;
+    }
+
+    public int getDimension()
+    {
+        return this.dimension;
+    }
 }

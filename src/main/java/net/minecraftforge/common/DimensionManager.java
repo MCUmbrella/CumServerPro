@@ -43,6 +43,7 @@ import com.google.common.collect.Multiset;
 
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
+import net.minecraft.server.dedicated.DedicatedServer;
 import net.minecraft.world.DimensionType;
 import net.minecraft.world.MinecraftException;
 import net.minecraft.world.World;
@@ -50,11 +51,19 @@ import net.minecraft.world.ServerWorldEventHandler;
 import net.minecraft.world.WorldProvider;
 import net.minecraft.world.WorldServer;
 import net.minecraft.world.WorldServerMulti;
+import net.minecraft.world.WorldSettings;
+import net.minecraft.world.chunk.storage.AnvilSaveHandler;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.world.WorldEvent;
 import net.minecraftforge.fml.common.FMLLog;
 
 import javax.annotation.Nullable;
+
+import org.bukkit.WorldCreator;
+import org.bukkit.World.Environment;
+import org.bukkit.generator.ChunkGenerator;
 
 public class DimensionManager
 {
@@ -78,6 +87,7 @@ public class DimensionManager
     private static final BitSet dimensionMap = new BitSet(Long.SIZE << 4);
     private static final ConcurrentMap<World, World> weakWorldMap = new MapMaker().weakKeys().weakValues().makeMap();
     private static final Multiset<Integer> leakedWorlds = HashMultiset.create();
+    private static ArrayList<Integer> bukkitDims = new ArrayList<Integer>(); // used to keep track of Bukkit dimensions
 
     /**
      * Returns a list of dimensions associated with this DimensionType.
@@ -471,4 +481,112 @@ public class DimensionManager
             return null;
         }
     }
+
+    // CatServer start - new method for handling creation of Bukkit dimensions. Currently supports MultiVerse
+    public static WorldServer initDimension(WorldCreator creator, WorldSettings worldSettings) {
+        WorldServer overworld = getWorld(0);
+        if (overworld == null) {
+            throw new RuntimeException("Cannot Hotload Dim: Overworld is not Loaded!");
+        }
+
+        MinecraftServer mcServer = overworld.getMinecraftServer();
+
+        String name;
+
+        DimensionType type = DimensionType.OVERWORLD;
+        try {
+            if (creator.environment() != null)
+                type = DimensionType.getById(creator.environment().getId());
+        }
+        catch (IllegalArgumentException e)
+        {
+            // do nothing
+        }
+
+        Environment env = creator.environment();
+        name = creator.name();
+        int dim = 0;
+        // Use saved dimension from level.dat if it exists. This guarantees that after a world is created, the same dimension will be used. Fixes issues with MultiVerse
+        AnvilSaveHandler saveHandler = new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true, mcServer.getDataFixer());
+
+        if (saveHandler.loadWorldInfo() != null)
+        {
+            int savedDim = saveHandler.loadWorldInfo().getDimension();
+            if (savedDim != 0 && savedDim != -1 && savedDim != 1)
+            {
+                dim = savedDim;
+            }
+        }
+        if (dim == 0)
+        {
+            dim = getNextFreeDimId();
+        }
+
+        if (!isDimensionRegistered(dim)) // handle reloads properly
+        {
+            registerDimension(dim, type);
+            addBukkitDimension(dim);
+        }
+        ChunkGenerator gen = creator.generator();
+        if (mcServer instanceof DedicatedServer) {
+            worldSettings.setGeneratorOptions(((DedicatedServer) mcServer).getStringProperty("generator-settings", ""));
+        }
+
+        WorldInfo worldinfo = saveHandler.loadWorldInfo();
+        if (worldinfo == null) {
+            worldinfo = new WorldInfo(worldSettings,name);
+        }
+
+        WorldServer world = new WorldServerMulti(mcServer, saveHandler, dim, overworld, mcServer.profiler, worldinfo, env, gen);
+        world.initialize(worldSettings);
+
+        if (gen != null)
+        {
+            world.getWorld().getPopulators().addAll(gen.getDefaultPopulators(world.getWorld()));
+        }
+        world.provider.setDimension(dim); // Fix for TerrainControl injecting their own WorldProvider
+        mcServer.getPlayerList().setPlayerManager(mcServer.worldServerList.toArray(new WorldServer[mcServer.worldServerList.size()]));
+
+        world.addEventListener(new ServerWorldEventHandler(mcServer, world));
+        MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world));
+        if (!mcServer.isSinglePlayer())
+        {
+            world.getWorldInfo().setGameType(mcServer.getGameType());
+        }
+
+        return world;
+    }
+
+    public static Environment registerBukkitDimension(int dim, String worldType) {
+        Environment env = Environment.getEnvironment(dim);
+        if(env == null){
+            worldType = worldType.replace("WorldProvider","");
+            env = EnumHelper.addBukkitEnvironment(dim,worldType.toUpperCase());
+            Environment.registerEnvironment(env);
+        }
+        return env;
+    }
+
+    public static void addBukkitDimension(int dim)
+    {
+        if (!bukkitDims.contains(dim))
+            bukkitDims.add(dim);
+    }
+
+    public static void removeBukkitDimension(int dim)
+    {
+        if (bukkitDims.contains(dim))
+            bukkitDims.remove(bukkitDims.indexOf(dim));
+    }
+
+    public static ArrayList<Integer> getBukkitDimensionIDs()
+    {
+        return bukkitDims;
+    }
+
+    public static boolean isBukkitDimension(int dim)
+    {
+        return bukkitDims.contains(dim);
+    }
+    // CatServer end
 }

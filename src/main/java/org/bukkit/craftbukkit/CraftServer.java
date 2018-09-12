@@ -66,6 +66,8 @@ import net.minecraft.world.storage.MapData;
 import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
+import net.minecraftforge.common.DimensionManager;
+
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
@@ -882,92 +884,25 @@ public final class CraftServer implements Server {
         ChunkGenerator generator = creator.generator();
         File folder = new File(getWorldContainer(), name);
         World world = getWorld(name);
-        WorldType type = WorldType.parseWorldType(creator.type().getName());
+        net.minecraft.world.WorldType type = net.minecraft.world.WorldType.parseWorldType(creator.type().getName());
         boolean generateStructures = creator.generateStructures();
-
-        if (world != null) {
-            return world;
-        }
 
         if ((folder.exists()) && (!folder.isDirectory())) {
             throw new IllegalArgumentException("File exists with the name '" + name + "' and isn't a folder");
         }
 
-        if (generator == null) {
-            generator = getGenerator(name);
+        if (world != null) {
+            return world;
         }
 
-        ISaveFormat converter = new AnvilSaveConverter(getWorldContainer(), getHandle().getServerInstance().getDataFixer());
-        if (converter.isOldMapFormat(name)) {
-            getLogger().info("Converting world '" + name + "'");
-            converter.convertMapFormat(name, new IProgressUpdate() {
-                private long b = System.currentTimeMillis();
-
-                @Override
-                public void displaySavingString(String s) {}
-
-                @Override
-                public void setLoadingProgress(int i) {
-                    if (System.currentTimeMillis() - this.b >= 1000L) {
-                        this.b = System.currentTimeMillis();
-                        MinecraftServer.LOGGER.info("Converting... " + i + "%");
-                    }
-                }
-
-                @Override
-                public void displayLoadingString(String s) {}
-
-                @Override
-                public void resetProgressAndMessage(String message) {}
-
-                @Override
-                public void setDoneWorking() {}
-            });
-        }
-
-        int dimension = CraftWorld.CUSTOM_DIMENSION_OFFSET + console.worldServerList.size();
-        boolean used = false;
-        do {
-            for (WorldServer server : console.worlds) {
-                used = server.dimension == dimension;
-                if (used) {
-                    dimension++;
-                    break;
-                }
-            }
-        } while(used);
         boolean hardcore = false;
+        WorldSettings worldSettings = new WorldSettings(creator.seed(), WorldSettings.getGameTypeById(getDefaultGameMode().getValue()), generateStructures, hardcore, type);
+        WorldServer worldserver = DimensionManager.initDimension(creator, worldSettings);
+        
+        pluginManager.callEvent(new WorldInitEvent(worldserver.getWorld()));
+        logger.info("Preparing start region for level " + (console.worldServerList.size() - 1) + " (Dimension: " + worldserver.provider.getDimension() + ", Seed: " + worldserver.getSeed() + ")"); // Cauldron - log dimension
 
-        ISaveHandler sdm = new AnvilSaveHandler(getWorldContainer(), name, true, getHandle().getServerInstance().getDataFixer());
-        WorldInfo worlddata = sdm.loadWorldInfo();
-        WorldSettings worldSettings = null;
-        if (worlddata == null) {
-            worldSettings = new WorldSettings(creator.seed(), GameType.getByID(getDefaultGameMode().getValue()), generateStructures, hardcore, type);
-            worldSettings.setGeneratorOptions(creator.generatorSettings());
-            worlddata = new WorldInfo(worldSettings, name);
-        }
-        worlddata.checkName(name); // CraftBukkit - Migration did not rewrite the level.dat; This forces 1.8 to take the last loaded world as respawn (in this case the end)
-        WorldServer internal = (WorldServer) new WorldServer(console, sdm, worlddata, dimension, console.profiler, creator.environment(), generator).init();
-
-        if (!(worlds.containsKey(name.toLowerCase(java.util.Locale.ENGLISH)))) {
-            return null;
-        }
-
-        if (worldSettings != null) {
-            internal.initialize(worldSettings);
-        }
-        internal.worldScoreboard = getScoreboardManager().getMainScoreboard().getHandle();
-
-        internal.entityTracker = new EntityTracker(internal);
-        internal.addEventListener(new ServerWorldEventHandler(console, internal));
-        internal.worldInfo.setDifficulty(EnumDifficulty.EASY);
-        internal.setAllowedSpawnTypes(true, true);
-        console.worldServerList.add(internal);
-
-        pluginManager.callEvent(new WorldInitEvent(internal.getWorld()));
-        System.out.println("Preparing start region for level " + (console.worldServerList.size() - 1) + " (Seed: " + internal.getSeed() + ")");
-
-        if (internal.getWorld().getKeepSpawnInMemory()) {
+        if (worldserver.getWorld().getKeepSpawnInMemory()) {
             short short1 = 196;
             long i = System.currentTimeMillis();
             for (int j = -short1; j <= short1; j += 16) {
@@ -982,17 +917,18 @@ public final class CraftServer implements Server {
                         int i1 = (short1 * 2 + 1) * (short1 * 2 + 1);
                         int j1 = (j + short1) * (short1 * 2 + 1) + k + 1;
 
-                        System.out.println("Preparing spawn area for " + name + ", " + (j1 * 100 / i1) + "%");
+                        logger.info("Preparing spawn area for " + worldserver.getWorld().getName() + ", " + (j1 * 100 / i1) + "%");
                         i = l;
                     }
 
-                    BlockPos chunkcoordinates = internal.getSpawnPoint();
-                    internal.getChunkProvider().provideChunk(chunkcoordinates.getX() + j >> 4, chunkcoordinates.getZ() + k >> 4);
+                    BlockPos pos = worldserver.getSpawnPoint();
+                    worldserver.getChunkProvider().loadChunk(pos.getX() + j >> 4, pos.getZ() + k >> 4);
                 }
             }
         }
-        pluginManager.callEvent(new WorldLoadEvent(internal.getWorld()));
-        return internal.getWorld();
+
+        pluginManager.callEvent(new WorldLoadEvent(worldserver.getWorld()));
+        return worldserver.getWorld();
     }
 
     @Override
