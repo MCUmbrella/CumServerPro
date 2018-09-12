@@ -1061,22 +1061,27 @@ public class WorldServer extends World implements IThreadListener
     protected IChunkProvider createChunkProvider()
     {
         IChunkLoader ichunkloader = this.saveHandler.getChunkLoader(this.provider);
-        // return new ChunkProviderServer(this, ichunkloader, this.provider.createChunkGenerator());
-        // CraftBukkit start
-        org.bukkit.craftbukkit.generator.InternalChunkGenerator gen;
-
-        if (this.generator != null) {
-            gen = new org.bukkit.craftbukkit.generator.CustomChunkGenerator(this, this.getSeed(), this.generator);
-        } else if (this.provider instanceof WorldProviderHell) {
-            gen = new org.bukkit.craftbukkit.generator.NetherChunkGenerator(this, this.getSeed());
-        } else if (this.provider instanceof WorldProviderEnd) {
-            gen = new org.bukkit.craftbukkit.generator.SkyLandsChunkGenerator(this, this.getSeed());
-        } else {
-            gen = new org.bukkit.craftbukkit.generator.NormalChunkGenerator(this, this.getSeed());
+        // CatServer - if provider is vanilla, proceed to create a bukkit compatible chunk generator
+        if (this.provider.getClass().toString().length() <= 3 || this.provider.getClass().toString().contains("net.minecraft")) {
+            // CraftBukkit start
+            org.bukkit.craftbukkit.generator.InternalChunkGenerator gen;
+    
+            if (this.generator != null) {
+                gen = new org.bukkit.craftbukkit.generator.CustomChunkGenerator(this, this.getSeed(), this.generator);
+            } else if (this.provider instanceof WorldProviderHell) {
+                gen = new org.bukkit.craftbukkit.generator.NetherChunkGenerator(this, this.getSeed());
+            } else if (this.provider instanceof WorldProviderEnd) {
+                gen = new org.bukkit.craftbukkit.generator.SkyLandsChunkGenerator(this, this.getSeed());
+            } else {
+                gen = new org.bukkit.craftbukkit.generator.NormalChunkGenerator(this, this.getSeed());
+            }
+    
+            this.chunkProvider = new ChunkProviderServer(this, ichunkloader, gen);
+            // CraftBukkit end
+        } else { // custom provider, load normally for forge compatibility
+            this.chunkProvider = new ChunkProviderServer(this, ichunkloader, this.provider.createChunkGenerator());
         }
-
-        return new ChunkProviderServer(this, ichunkloader, gen);
-        // CraftBukkit end
+        return chunkProvider;
     }
 
     public List<TileEntity> getTileEntities(int i, int j, int k, int l, int i1, int j1) {

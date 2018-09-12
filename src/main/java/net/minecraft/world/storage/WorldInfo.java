@@ -170,6 +170,7 @@ public class WorldInfo
         this.thunderTime = nbt.getInteger("thunderTime");
         this.thundering = nbt.getBoolean("thundering");
         this.hardcore = nbt.getBoolean("hardcore");
+        this.dimension = nbt.getInteger("dimension");
 
         if (nbt.hasKey("initialized", 99))
         {
@@ -385,6 +386,7 @@ public class WorldInfo
 
         nbt.setBoolean("DifficultyLocked", this.difficultyLocked);
         nbt.setTag("GameRules", this.gameRules.writeToNBT());
+        nbt.setInteger("dimension", this.dimension);
         NBTTagCompound nbttagcompound1 = new NBTTagCompound();
 
         for (Entry<Integer, NBTTagCompound> entry : this.dimensionData.entrySet())
