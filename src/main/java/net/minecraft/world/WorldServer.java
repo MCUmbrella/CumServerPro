@@ -150,6 +150,7 @@ public class WorldServer extends World implements IThreadListener
         this.getWorldBorder().setSize(server.getMaxWorldSize());
         this.worldScoreboard = getServer().getScoreboardManager() == null ? new ServerScoreboard(this.mcServer) : getServer().getScoreboardManager().getMainScoreboard().getHandle(); // CatServer - Use CraftBukit scoreboard
         net.minecraftforge.common.DimensionManager.setWorld(dimensionId, this, mcServer);
+        this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
         String s = VillageCollection.fileNameForProvider(this.provider);
         VillageCollection villagecollection = (VillageCollection)this.perWorldStorage.getOrLoadData(VillageCollection.class, s);
 
@@ -198,7 +199,6 @@ public class WorldServer extends World implements IThreadListener
         scoreboardsavedata.setScoreboard(this.worldScoreboard);
         ((ServerScoreboard)this.worldScoreboard).addDirtyRunnable(new WorldSavedDataCallableSave(scoreboardsavedata));
 
-        this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
         // this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
         // this.functionManager = new FunctionManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "functions"), this.mcServer);
         if (this.dimension != 0) { // SPIGOT-3899 multiple worlds of advancements not supported

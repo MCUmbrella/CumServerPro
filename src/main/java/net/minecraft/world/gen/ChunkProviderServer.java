@@ -286,7 +286,7 @@ public class ChunkProviderServer implements IChunkProvider
                 }
             }
 
-            if (this.id2ChunkMap.isEmpty()) net.minecraftforge.common.DimensionManager.unloadWorld(this.world.provider.getDimension());
+            //if (this.id2ChunkMap.isEmpty()) net.minecraftforge.common.DimensionManager.unloadWorld(this.world.provider.getDimension()); //CatServer - Disable forge unload world
 
             this.chunkLoader.chunkTick();
         }
