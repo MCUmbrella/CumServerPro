@@ -404,7 +404,7 @@ public class FMLCommonHandler
         {
             return;
         }
-        if (handlerSet.contains(handler))
+        if (handlerSet.contains(handler) || worldInfo.getDimension() != 0)
         {
             return;
         }
