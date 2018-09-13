@@ -218,6 +218,16 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             this.mapStorage = new MapStorage(saveHandlerIn);
         }
 
+        if(this.worldInfo != null) // Use saved dimension from level.dat. Fixes issues with MultiVerse
+        {
+            if (this.worldInfo.getDimension() != 0)
+                this.provider.setDimension(this.worldInfo.getDimension());
+            else
+            {
+                this.worldInfo.setDimension(this.provider.getDimension());
+            }
+        }
+
         if (this.worldInfo.getDimension() == 0)
         {
             generator = this.getServer().getGenerator(this.worldInfo.getWorldName());
