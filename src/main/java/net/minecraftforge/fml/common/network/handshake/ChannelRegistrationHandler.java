@@ -45,9 +45,19 @@ public class ChannelRegistrationHandler extends SimpleChannelInboundHandler<FMLP
             msg.payload().readBytes(data);
             String channels = new String(data, StandardCharsets.UTF_8);
             String[] split = channels.split("\0");
-            Set<String> channelSet = ImmutableSet.copyOf(split);
+            final Set<String> channelSet = ImmutableSet.copyOf(split);
             FMLCommonHandler.instance().fireNetRegistrationEvent(manager, channelSet, msg.channel(), side);
             msg.payload().release();
+            // handle REGISTER/UNREGISTER channel in Bukkit
+            final org.bukkit.craftbukkit.entity.CraftPlayer player = ((net.minecraft.network.NetHandlerPlayServer) ctx.attr(NetworkDispatcher.FML_DISPATCHER).get().getNetHandler()).getPlayer();
+            final boolean isAdd = msg.channel().equals("REGISTER");
+            FMLCommonHandler.instance().getMinecraftServerInstance().addScheduledTask(new Runnable() {
+                public void run() {
+                    for (String channel : channelSet) {
+                        if (isAdd) player.addChannel(channel); else player.removeChannel(channel);
+                    }
+                }
+            });
         }
         else
         {
