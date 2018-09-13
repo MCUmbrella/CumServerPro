@@ -556,19 +556,23 @@ public class Bootstrap
                     }
 
                     world.captureTreeGeneration = false;
-                    if (world.capturedBlockStates.size() > 0) {
+                    if (world.capturedBlockSnapshots.size() > 0) {
                         TreeType treeType = BlockSapling.treeType;
                         BlockSapling.treeType = null;
                         Location location = new Location(world.getWorld(), blockpos.getX(), blockpos.getY(), blockpos.getZ());
-                        List<BlockState> blocks = (List<org.bukkit.block.BlockState>) world.capturedBlockStates.clone();
-                        world.capturedBlockStates.clear();
+                        List<net.minecraftforge.common.util.BlockSnapshot> blocks = (List) world.capturedBlockSnapshots.clone();
+                        List<BlockState> blockstates = new java.util.ArrayList();
+                        for (net.minecraftforge.common.util.BlockSnapshot snapshot : blocks) {
+                            blockstates.add(new org.bukkit.craftbukkit.block.CraftBlockState(snapshot));
+                        }
+                        world.capturedBlockSnapshots.clear();
                         StructureGrowEvent structureEvent = null;
                         if (treeType != null) {
-                            structureEvent = new StructureGrowEvent(location, treeType, false, null, blocks);
+                            structureEvent = new StructureGrowEvent(location, treeType, false, null, blockstates);
                             org.bukkit.Bukkit.getPluginManager().callEvent(structureEvent);
                         }
                         if (structureEvent == null || !structureEvent.isCancelled()) {
-                            for (org.bukkit.block.BlockState blockstate : blocks) {
+                            for (org.bukkit.block.BlockState blockstate : blockstates) {
                                 blockstate.update(true);
                             }
                         }

@@ -141,6 +141,7 @@ import net.minecraft.world.gen.feature.WorldGenSwamp;
 import net.minecraft.world.gen.feature.WorldGenTaiga1;
 import net.minecraft.world.gen.feature.WorldGenTaiga2;
 import net.minecraft.world.gen.feature.WorldGenTrees;
+import net.minecraftforge.common.util.BlockSnapshot;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.apache.commons.lang3.Validate;
 import org.bukkit.BlockChangeDelegate;
@@ -590,28 +591,28 @@ public class CraftWorld implements World {
 
     public boolean generateTree(Location loc, TreeType type, BlockChangeDelegate delegate) {
         world.captureTreeGeneration = true;
-        world.captureBlockStates = true;
+        world.captureBlockSnapshots = true;
         boolean grownTree = generateTree(loc, type);
-        world.captureBlockStates = false;
+        world.captureBlockSnapshots = false;
         world.captureTreeGeneration = false;
         if (grownTree) { // Copy block data to delegate
-            for (BlockState blockstate : world.capturedBlockStates) {
-                int x = blockstate.getX();
-                int y = blockstate.getY();
-                int z = blockstate.getZ();
-                BlockPos position = new BlockPos(x, y, z);
+            for (BlockSnapshot blocksnapshot : this.world.capturedBlockSnapshots) {
+                BlockPos position = blocksnapshot.getPos();
+                int x = position.getX();
+                int y = position.getY();
+                int z = position.getZ();
                 net.minecraft.block.state.IBlockState oldBlock = world.getBlockState(position);
-                int typeId = blockstate.getTypeId();
-                int data = blockstate.getRawData();
-                int flag = ((CraftBlockState)blockstate).getFlag();
+                int typeId = net.minecraft.block.Block.getIdFromBlock(blocksnapshot.getReplacedBlock().getBlock());
+                int data = blocksnapshot.getMeta();
+                int flag = blocksnapshot.getFlag();;
                 delegate.setTypeIdAndData(x, y, z, typeId, data);
                 net.minecraft.block.state.IBlockState newBlock = world.getBlockState(position);
                 world.markAndNotifyBlock(position, null, oldBlock, newBlock, flag);
             }
-            world.capturedBlockStates.clear();
+            world.capturedBlockSnapshots.clear();
             return true;
         } else {
-            world.capturedBlockStates.clear();
+            world.capturedBlockSnapshots.clear();
             return false;
         }
     }

@@ -65,19 +65,23 @@ public class BlockSapling extends BlockBush implements IGrowable
                 worldIn.captureTreeGeneration = true;
                 this.grow(worldIn, pos, state, rand);
                 worldIn.captureTreeGeneration = false;
-                if (worldIn.capturedBlockStates.size() > 0) {
+                if (worldIn.capturedBlockSnapshots.size() > 0) {
                     TreeType treeType = BlockSapling.treeType;
                     BlockSapling.treeType = null;
                     Location location = new Location(worldIn.getWorld(), pos.getX(), pos.getY(), pos.getZ());
-                    List<BlockState> blocks = (List<BlockState>) worldIn.capturedBlockStates.clone();
-                    worldIn.capturedBlockStates.clear();
+                    List<net.minecraftforge.common.util.BlockSnapshot> blocks = (List) worldIn.capturedBlockSnapshots.clone();
+                    List<BlockState> blockstates = new java.util.ArrayList();
+                    for (net.minecraftforge.common.util.BlockSnapshot snapshot : blocks) {
+                        blockstates.add(new org.bukkit.craftbukkit.block.CraftBlockState(snapshot));
+                    }
+                    worldIn.capturedBlockSnapshots.clear();
                     StructureGrowEvent event = null;
                     if (treeType != null) {
-                        event = new StructureGrowEvent(location, treeType, false, null, blocks);
+                        event = new StructureGrowEvent(location, treeType, false, null, blockstates);
                         org.bukkit.Bukkit.getPluginManager().callEvent(event);
                     }
                     if (event == null || !event.isCancelled()) {
-                        for (BlockState blockstate : blocks) {
+                        for (BlockState blockstate : blockstates) {
                             blockstate.update(true);
                         }
                     }

@@ -154,23 +154,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public boolean keepSpawnInMemory = true;
     public ChunkGenerator generator;
 
-    // TODO: Should we use Forge capturing instead of this?
-    public boolean captureBlockStates = false;
     public boolean captureTreeGeneration = false;
-    public ArrayList<BlockState> capturedBlockStates= new ArrayList<BlockState>(){
-        @Override
-        public boolean add( BlockState blockState ) {
-            Iterator<BlockState> blockStateIterator = this.iterator();
-            while( blockStateIterator.hasNext() ) {
-                BlockState blockState1 = blockStateIterator.next();
-                if ( blockState1.getLocation().equals( blockState.getLocation() ) ) {
-                    return false;
-                }
-            }
 
-            return super.add( blockState );
-        }
-    };
     public List<EntityItem> captureDrops;
     public long ticksPerAnimalSpawns;
     public long ticksPerMonsterSpawns;
@@ -467,24 +452,23 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public boolean setBlockState(BlockPos pos, IBlockState newState, int flags)
     {
-        // CraftBukkit start - tree generation
+        // CatServer start - tree generation
         if (this.captureTreeGeneration) {
-            BlockState blockstate = null;
-            Iterator<BlockState> it = capturedBlockStates.iterator();
-            while (it.hasNext()) {
-                BlockState previous = it.next();
-                if (previous.getX() == pos.getX() && previous.getY() == pos.getY() && previous.getZ() == pos.getZ()) {
-                    blockstate = previous;
-                    it.remove();
+            net.minecraftforge.common.util.BlockSnapshot blocksnapshot = null;
+
+            for (net.minecraftforge.common.util.BlockSnapshot previous : this.capturedBlockSnapshots)
+            {
+                if (previous.getPos().equals(pos))
+                {
+                    blocksnapshot = previous;
                     break;
                 }
             }
-            if (blockstate == null) {
-                blockstate = org.bukkit.craftbukkit.block.CraftBlockState.getBlockState(this, pos.getX(), pos.getY(), pos.getZ(), flags);
+            if (blocksnapshot != null)
+            {
+                this.capturedBlockSnapshots.remove(blocksnapshot);
             }
-            blockstate.setTypeId(CraftMagicNumbers.getId(newState.getBlock()));
-            blockstate.setRawData((byte) newState.getBlock().getMetaFromState(newState));
-            this.capturedBlockStates.add(blockstate);
+            this.capturedBlockSnapshots.add(new net.minecraftforge.common.util.BlockSnapshot(this, pos, newState, flags));
             return true;
         }
         // CraftBukkit end
@@ -507,13 +491,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                 blockSnapshot = net.minecraftforge.common.util.BlockSnapshot.getBlockSnapshot(this, pos, flags);
                 this.capturedBlockSnapshots.add(blockSnapshot);
             }
-            // CraftBukkit start - capture blockstates
-            BlockState blockstate = null;
-            if (this.captureBlockStates) {
-                blockstate = org.bukkit.craftbukkit.block.CraftBlockState.getBlockState(this, pos.getX(), pos.getY(), pos.getZ(), flags);
-                this.capturedBlockStates.add(blockstate);
-            }
-            // CraftBukkit end
+
             IBlockState oldState = getBlockState(pos);
             int oldLight = oldState.getLightValue(this, pos);
             int oldOpacity = oldState.getLightOpacity(this, pos);
@@ -523,11 +501,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             if (iblockstate == null)
             {
                 if (blockSnapshot != null) this.capturedBlockSnapshots.remove(blockSnapshot);
-                // CraftBukkit start - remove blockstate if failed
-                if (this.captureBlockStates) {
-                    this.capturedBlockStates.remove(blockstate);
-                }
-                // CraftBukkit end
                 return false;
             }
             else
@@ -543,12 +516,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                 {
                     this.markAndNotifyBlock(pos, chunk, iblockstate, newState, flags);
                 }
-                // CraftBukkit start
-                if (!this.captureBlockStates) { // Don't notify clients or update physics while capturing blockstates
-                    // Modularize client and physic updates
-                    this.markAndNotifyBlock(pos, chunk, iblockstate, newState, flags);
-                }
-                // CraftBukkit end
 
                 return true;
             }
@@ -1104,13 +1071,13 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public IBlockState getBlockState(BlockPos pos)
     {
-        // CraftBukkit start - tree generation
-        if (captureTreeGeneration) {
-            Iterator<BlockState> it = capturedBlockStates.iterator();
-            while (it.hasNext()) {
-                BlockState previous = it.next();
-                if (previous.getX() == pos.getX() && previous.getY() == pos.getY() && previous.getZ() == pos.getZ()) {
-                    return CraftMagicNumbers.getBlock(previous.getTypeId()).getDefaultState();
+        // CatServer start - tree generation
+        if (captureTreeGeneration)
+        {
+            for (net.minecraftforge.common.util.BlockSnapshot blocksnapshot : this.capturedBlockSnapshots)
+            {
+                if (blocksnapshot.getPos().equals(pos)) { 
+                    return blocksnapshot.getReplacedBlock();
                 }
             }
         }
@@ -2649,7 +2616,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         return this.chunkProvider.makeString();
     }
 
-    public Map<BlockPos, TileEntity> capturedTileEntities = Maps.newHashMap();
     @Nullable
     public TileEntity getTileEntity(BlockPos pos)
     {
@@ -2659,9 +2625,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         }
         else
         {
-            if (capturedTileEntities.containsKey(pos)) {
-                return capturedTileEntities.get(pos);
-            }
             TileEntity tileentity2 = null;
 
             if (this.processingLoadedTiles)
@@ -2706,12 +2669,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         {
             if (tileEntityIn != null && !tileEntityIn.isInvalid())
             {
-                if (captureBlockStates) {
-                    tileEntityIn.setWorld(this);
-                    tileEntityIn.setPos(pos);
-                    capturedTileEntities.put(pos, tileEntityIn);
-                    return;
-                }
                 if (this.processingLoadedTiles)
                 {
                     tileEntityIn.setPos(pos);

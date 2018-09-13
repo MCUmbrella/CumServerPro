@@ -41,6 +41,8 @@ import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
 
+import org.bukkit.craftbukkit.event.CraftEventFactory;
+
 public class BlockEvent extends Event
 {
     private static final boolean DEBUG = Boolean.parseBoolean(System.getProperty("forge.debugBlockEvent", "false"));
@@ -182,6 +184,11 @@ public class BlockEvent extends Event
             this.placedBlock = blockSnapshot.getCurrentBlock();
             this.placedAgainst = placedAgainst;
             this.hand = hand;
+            org.bukkit.craftbukkit.block.CraftBlockState blockstate = org.bukkit.craftbukkit.block.CraftBlockState.getBlockState(super.world, super.pos.getX(), super.pos.getY(), super.pos.getZ());
+            org.bukkit.event.block.BlockPlaceEvent bukkitEvent = CraftEventFactory.callBlockPlaceEvent(super.world, player, hand , blockstate, super.pos.getX(), super.pos.getY(), super.pos.getZ());
+            if (bukkitEvent.isCancelled() || !bukkitEvent.canBuild()) {
+                this.setCanceled(true);
+            }
             if (DEBUG)
             {
                 System.out.printf("Created PlaceEvent - [PlacedBlock: %s ][PlacedAgainst: %s ][ItemStack: %s ][Player: %s ][Hand: %s]\n", getPlacedBlock(), placedAgainst, player.getHeldItem(hand), player, hand);
