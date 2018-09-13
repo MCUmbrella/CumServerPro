@@ -1572,6 +1572,14 @@ public abstract class EntityLivingBase extends Entity
     protected boolean damageEntity_CB(final DamageSource damagesource, float f) { // void -> boolean, add final
         if (!this.isEntityInvulnerable(damagesource)) {
             final boolean human = this instanceof EntityPlayer;
+            // CatServer start - apply forge damage and armor
+            f = net.minecraftforge.common.ForgeHooks.onLivingHurt(this, damagesource, f);
+            if (f < 0) return true;
+            if (human) {
+                f = net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(this, ((EntityPlayer)this).inventory.armorInventory, damagesource, f);
+                if (f <= 0) return false;
+            }
+            // CatServer end
             float originalDamage = f;
             Function<Double, Double> hardHat = new Function<Double, Double>() {
                 @Override
