@@ -1,4 +1,5 @@
 /build
+/buildSrc
 /projects
 /eclipse
 /.gradle
