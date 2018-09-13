@@ -57,6 +57,7 @@ import net.minecraft.world.storage.ISaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.event.world.WorldEvent;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.common.FMLLog;
 
 import javax.annotation.Nullable;
@@ -203,11 +204,17 @@ public class DimensionManager
         {
             worlds.put(id, world);
             weakWorldMap.put(world, world);
+            // handle all world adds here for Bukkit
+            if (!FMLCommonHandler.instance().getMinecraftServerInstance().worldServerList.contains(world))
+            {
+                FMLCommonHandler.instance().getMinecraftServerInstance().worldServerList.add(world);
+            }
             server.worldTickTimes.put(id, new long[100]);
             FMLLog.log.info("Loading dimension {} ({}) ({})", id, world.getWorldInfo().getWorldName(), world.getMinecraftServer());
         }
         else
         {
+            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerList.remove(getWorld(id)); // CatServer - remove world from our new world arraylist
             worlds.remove(id);
             server.worldTickTimes.remove(id);
             FMLLog.log.info("Unloading dimension {}", id);
