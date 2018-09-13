@@ -416,20 +416,7 @@ public class DimensionManager
                 FMLLog.log.debug("Aborting unload for dimension {} as status changed", id);
                 continue;
             }
-            try
-            {
-                w.saveAllChunks(true, null);
-            }
-            catch (MinecraftException e)
-            {
-                FMLLog.log.error("Caught an exception while saving all chunks:", e);
-            }
-            finally
-            {
-                MinecraftForge.EVENT_BUS.post(new WorldEvent.Unload(w));
-                w.flush();
-                setWorld(id, null, w.getMinecraftServer());
-            }
+            FMLCommonHandler.instance().getMinecraftServerInstance().server.unloadWorld(w.getWorld(), true); // CatServer
         }
     }
 

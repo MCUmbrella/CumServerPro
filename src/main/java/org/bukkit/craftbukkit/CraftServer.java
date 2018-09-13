@@ -67,6 +67,8 @@ import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.common.MinecraftForge;
+import net.minecraftforge.fml.common.FMLCommonHandler;
 
 import org.bukkit.BanList;
 import org.bukkit.Bukkit;
@@ -971,9 +973,9 @@ public final class CraftServer implements Server {
                 getLogger().log(Level.SEVERE, null, ex);
             }
         }
-
+        MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.WorldEvent.Unload(handle)); // fire unload event before removing world
         worlds.remove(world.getName().toLowerCase(java.util.Locale.ENGLISH));
-        console.worldServerList.remove(console.worldServerList.indexOf(handle));
+        DimensionManager.setWorld(handle.provider.getDimension(), null, FMLCommonHandler.instance().getMinecraftServerInstance()); // remove world from DimensionManager
         return true;
     }
 
