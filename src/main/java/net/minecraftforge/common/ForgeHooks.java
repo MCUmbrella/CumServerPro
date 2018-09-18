@@ -46,6 +46,8 @@ import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockMushroom;
+import net.minecraft.block.BlockSapling;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.client.Minecraft;
@@ -68,6 +70,7 @@ import net.minecraft.inventory.InventoryCrafting;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemAxe;
 import net.minecraft.item.ItemBucket;
+import net.minecraft.item.ItemDye;
 import net.minecraft.item.ItemEnchantedBook;
 import net.minecraft.item.ItemMonsterPlacer;
 import net.minecraft.item.ItemPickaxe;
@@ -115,6 +118,7 @@ import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraft.world.storage.loot.conditions.LootCondition;
 import net.minecraftforge.common.crafting.CraftingHelper;
 import net.minecraftforge.common.util.BlockSnapshot;
+import net.minecraftforge.common.util.FakePlayer;
 import net.minecraftforge.event.AnvilUpdateEvent;
 import net.minecraftforge.event.DifficultyChangeEvent;
 import net.minecraftforge.event.ForgeEventFactory;
@@ -158,6 +162,12 @@ import javax.annotation.Nullable;
 
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.io.IOUtils;
+import org.bukkit.Location;
+import org.bukkit.TreeType;
+import org.bukkit.block.BlockState;
+import org.bukkit.craftbukkit.block.CraftBlockState;
+import org.bukkit.entity.Player;
+import org.bukkit.event.world.StructureGrowEvent;
 
 public class ForgeHooks
 {
@@ -804,7 +814,7 @@ public class ForgeHooks
     public static int onBlockBreakEvent(World world, GameType gameType, EntityPlayerMP entityPlayer, BlockPos pos)
     {
         // Logic from tryHarvestBlock for pre-canceling the event
-        boolean preCancelEvent = false;
+        /*boolean preCancelEvent = false;
         ItemStack itemstack = entityPlayer.getHeldItemMainhand();
         if (gameType.isCreative() && !itemstack.isEmpty()
                 && !itemstack.getItem().canDestroyBlockInCreative(world, pos, itemstack, entityPlayer))
@@ -820,10 +830,10 @@ public class ForgeHooks
                 if (itemstack.isEmpty() || !itemstack.canDestroy(world.getBlockState(pos).getBlock()))
                     preCancelEvent = true;
             }
-        }
+        }*/
 
         // Tell client the block is gone immediately then process events
-        if (world.getTileEntity(pos) == null)
+        if (world.getTileEntity(pos) == null  && !(entityPlayer instanceof FakePlayer))
         {
             SPacketBlockChange packet = new SPacketBlockChange(world, pos);
             packet.blockState = Blocks.AIR.getDefaultState();
@@ -833,11 +843,11 @@ public class ForgeHooks
         // Post the block break event
         IBlockState state = world.getBlockState(pos);
         BlockEvent.BreakEvent event = new BlockEvent.BreakEvent(world, pos, state, entityPlayer);
-        event.setCanceled(preCancelEvent);
+        //event.setCanceled(preCancelEvent);
         MinecraftForge.EVENT_BUS.post(event);
 
         // Handle if the event is canceled
-        if (event.isCanceled())
+        if (event.isCanceled() && !(entityPlayer instanceof FakePlayer))
         {
             // Let the client know the block still exists
             entityPlayer.connection.sendPacket(new SPacketBlockChange(world, pos));
@@ -861,6 +871,7 @@ public class ForgeHooks
         // handle all placement events here
         int meta = itemstack.getItemDamage();
         int size = itemstack.getCount();
+        int data = itemstack.getMetadata();
         NBTTagCompound nbt = null;
         if (itemstack.getTagCompound() != null)
         {
@@ -870,10 +881,51 @@ public class ForgeHooks
         if (!(itemstack.getItem() instanceof ItemBucket)) // if not bucket
         {
             world.captureBlockSnapshots = true;
+            // CraftBukkit start
+            if(itemstack.getItem() instanceof ItemDye && itemstack.getMetadata() == 15){
+                Block block = world.getBlockState(pos).getBlock();
+                if(block == Blocks.SAPLING || block instanceof BlockMushroom){
+                    world.captureTreeGeneration = true;
+                }
+            }
+            // CraftBukkit end
         }
 
         EnumActionResult ret = itemstack.getItem().onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
         world.captureBlockSnapshots = false;
+
+        List<BlockState> blocks = new ArrayList();
+        for (net.minecraftforge.common.util.BlockSnapshot snapshot : (List<net.minecraftforge.common.util.BlockSnapshot>) world.capturedBlockSnapshots.clone()) {
+            blocks.add(new CraftBlockState(snapshot));
+        }
+
+        // CraftBukkit start
+        int newCount = itemstack.stackSize;
+        if (ret == EnumActionResult.SUCCESS && world.captureTreeGeneration && world.capturedBlockSnapshots.size() > 0) {
+            world.captureTreeGeneration = false;
+            Location location = new Location(world.getWorld(), pos.getX(), pos.getY(), pos.getZ());
+            TreeType treeType = BlockSapling.treeType;
+            BlockSapling.treeType = null;
+            world.capturedBlockSnapshots.clear();
+            StructureGrowEvent event = null;
+            if (treeType != null) {
+                boolean isBonemeal = itemstack.getItem() == Items.DYE && data == 15;
+                event = new StructureGrowEvent(location, treeType, isBonemeal, (Player) player.getBukkitEntity(), blocks);
+                org.bukkit.Bukkit.getPluginManager().callEvent(event);
+            }
+            if (event == null || !event.isCancelled()) {
+                // Change the stack to its new contents if it hasn't been tampered with.
+                if (itemstack.stackSize == size && itemstack.getMetadata() == data) {
+                    itemstack.stackSize = newCount;
+                }
+                for (BlockState blockstate : blocks) {
+                    blockstate.update(true);
+                }
+            }
+            return ret;
+        }
+        world.captureTreeGeneration = false;
+        // CraftBukkit end
 
         if (ret == EnumActionResult.SUCCESS)
         {
