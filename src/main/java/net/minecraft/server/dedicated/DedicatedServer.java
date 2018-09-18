@@ -345,7 +345,7 @@ public class DedicatedServer extends MinecraftServer implements IServer
                     this.settings.saveProperties();
                 }
 
-                if (this.getMaxTickTime() > 0L)
+                if (this.getMaxTickTime() > 0L && false) // CatServer - disable WatchDog
                 {
                     Thread thread1 = new Thread(new ServerHangWatchdog(this));
                     thread1.setName("Server Watchdog");
