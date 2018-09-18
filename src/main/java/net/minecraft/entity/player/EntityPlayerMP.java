@@ -592,7 +592,13 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
         ITextComponent chatmessage = this.getCombatTracker().getDeathMessage();
 
         String deathmessage = chatmessage.getFormattedText();
-        org.bukkit.event.entity.PlayerDeathEvent deathEvent = CraftEventFactory.callPlayerDeathEvent(this, loot, deathmessage, keepInventory);
+        // CatServer start - handle drop items in Bukkit
+        captureDrops = true;
+        org.bukkit.event.entity.PlayerDeathEvent deathEvent = CraftEventFactory.callPlayerDeathEvent(this, loot,
+                this.getCombatTracker().getDeathMessage().getFormattedText(),
+                this.world.getGameRules().getBoolean("keepInventory"));
+        captureDrops = false;
+        // CatServer end
         String deathMessage = deathEvent.getDeathMessage();
 
         if (deathMessage != null && deathMessage.length() > 0 && flag) { // TODO: allow plugins to override?
@@ -624,12 +630,6 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
 
         if (!this.world.getGameRules().getBoolean("keepInventory") && !this.isSpectator())
         {
-            captureDrops = true;
-            capturedDrops.clear();
-            this.destroyVanishingCursedItems();
-            this.inventory.dropAllItems();
-
-            captureDrops = false;
             net.minecraftforge.event.entity.player.PlayerDropsEvent event = new net.minecraftforge.event.entity.player.PlayerDropsEvent(this, cause, capturedDrops, recentlyHit > 0);
             if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(event))
             {

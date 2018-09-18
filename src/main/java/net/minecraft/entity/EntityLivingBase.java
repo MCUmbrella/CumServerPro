@@ -177,7 +177,6 @@ public abstract class EntityLivingBase extends Entity
     public int expToDrop;
     public int maxAirTicks = 300;
     public boolean forceDrops;
-    public ArrayList<org.bukkit.inventory.ItemStack> drops = new ArrayList<>();
     public org.bukkit.craftbukkit.attribute.CraftAttributeMap craftAttributes;
     public boolean collides = true;
     public boolean canPickUpLoot;
@@ -1327,16 +1326,28 @@ public abstract class EntityLivingBase extends Entity
                 {
                     boolean flag = this.recentlyHit > 0;
                     this.dropLoot(flag, i, cause);
-                    CraftEventFactory.callEntityDeathEvent(this, this.drops);
-                    this.drops = new ArrayList<>();
-                } else {
-                    CraftEventFactory.callEntityDeathEvent(this);
                 }
 
                 captureDrops = false;
 
                 if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, cause, capturedDrops, i, recentlyHit > 0))
                 {
+                    // CatServer start - capture drops for plugins then fire event
+                    if (this.capturedDrops.size() > 0)
+                    {
+                        java.util.List<org.bukkit.inventory.ItemStack> loot = new java.util.ArrayList<org.bukkit.inventory.ItemStack>();
+                        for (EntityItem item : capturedDrops)
+                        {
+                            loot.add(CraftItemStack.asCraftMirror(item.getItem()));
+                        }
+                        CraftEventFactory.callEntityDeathEvent(this, loot);
+                    }
+                    else
+                    {
+                        CraftEventFactory.callEntityDeathEvent(this);
+                    }
+                    // CatServer end
+
                     for (EntityItem item : capturedDrops)
                     {
                         world.spawnEntity(item);

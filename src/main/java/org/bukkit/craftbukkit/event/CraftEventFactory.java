@@ -424,17 +424,21 @@ public class CraftEventFactory {
     public static EntityDeathEvent callEntityDeathEvent(EntityLivingBase victim, List<org.bukkit.inventory.ItemStack> drops) {
         CraftLivingEntity entity = (CraftLivingEntity) victim.getBukkitEntity();
         EntityDeathEvent event = new EntityDeathEvent(entity, drops, victim.getExpReward());
-        CraftWorld world = (CraftWorld) entity.getWorld();
+        //CraftWorld world = (CraftWorld) entity.getWorld();
         Bukkit.getServer().getPluginManager().callEvent(event);
 
         victim.expToDrop = event.getDroppedExp();
-
-        for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {
-            if (stack == null || stack.getType() == Material.AIR || stack.getAmount() == 0) continue;
-
-            world.dropItemNaturally(entity.getLocation(), stack);
+        // CatServer start - handle any drop changes from plugins
+        victim.capturedDrops.clear();
+        for (org.bukkit.inventory.ItemStack stack : event.getDrops())
+        {
+            net.minecraft.entity.item.EntityItem entityitem = new net.minecraft.entity.item.EntityItem(victim.world, entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ(), CraftItemStack.asNMSCopy(stack));
+            if (entityitem != null)
+            {
+                victim.capturedDrops.add((EntityItem)entityitem);
+            }
         }
-
+        // CatServer end
         return event;
     }
 
@@ -442,7 +446,7 @@ public class CraftEventFactory {
         CraftPlayer entity = victim.getBukkitEntity();
         PlayerDeathEvent event = new PlayerDeathEvent(entity, drops, victim.getExpReward(), 0, deathMessage);
         event.setKeepInventory(keepInventory);
-        org.bukkit.World world = entity.getWorld();
+        //org.bukkit.World world = entity.getWorld();
         Bukkit.getServer().getPluginManager().callEvent(event);
 
         victim.keepLevel = event.getKeepLevel();
@@ -454,13 +458,25 @@ public class CraftEventFactory {
         if (event.getKeepInventory()) {
             return event;
         }
-
-        for (org.bukkit.inventory.ItemStack stack : event.getDrops()) {
-            if (stack == null || stack.getType() == Material.AIR) continue;
-
-            world.dropItemNaturally(entity.getLocation(), stack);
+        victim.capturedDrops.clear(); // CatServer - we must clear pre-capture to avoid duplicates
+        for (final org.bukkit.inventory.ItemStack stack : event.getDrops()) {
+            if (stack != null) {
+                if (stack.getType() == Material.AIR) {
+                    continue;
+                }
+                // CatServer start - add support for Forge's PlayerDropsEvent
+                //world.dropItemNaturally(entity.getLocation(), stack); // handle world drop in EntityPlayerMP
+                if (victim.captureDrops)
+                {
+                    net.minecraft.entity.item.EntityItem entityitem = new net.minecraft.entity.item.EntityItem(victim.world, entity.getLocation().getX(), entity.getLocation().getY(), entity.getLocation().getZ(), CraftItemStack.asNMSCopy(stack));
+                    if (entityitem != null)
+                    {
+                        victim.capturedDrops.add((EntityItem)entityitem);
+                    }
+                }
+                // CatServer end
+            }
         }
-
         return event;
     }
 

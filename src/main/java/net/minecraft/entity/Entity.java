@@ -262,15 +262,17 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         this.dataManager.register(SILENT, Boolean.valueOf(false));
         this.dataManager.register(NO_GRAVITY, Boolean.valueOf(false));
         this.entityInit();
+        if(!(this instanceof EntityPlayer)) { // CatServer - move to EntityPlayer
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityEvent.EntityConstructing(this));
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
+        }
     }
 
     /** Forge: Used to store custom data for each entity. */
     private NBTTagCompound customEntityData;
     public boolean captureDrops = false;
     public java.util.ArrayList<EntityItem> capturedDrops = new java.util.ArrayList<EntityItem>();
-    private net.minecraftforge.common.capabilities.CapabilityDispatcher capabilities;
+    public net.minecraftforge.common.capabilities.CapabilityDispatcher capabilities; // CatServer - private -> public
 
     public int getEntityId()
     {
@@ -2193,12 +2195,6 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         }
         else
         {
-            // CraftBukkit start - Capture drops for death event
-            if (this instanceof EntityLiving && !((EntityLiving) this).forceDrops) {
-                ((EntityLiving) this).drops.add(org.bukkit.craftbukkit.inventory.CraftItemStack.asBukkitCopy(stack));
-                return null;
-            }
-            // CraftBukkit end
             EntityItem entityitem = new EntityItem(this.world, this.posX, this.posY + (double)offsetY, this.posZ, stack);
             entityitem.setDefaultPickupDelay();
             if (captureDrops)

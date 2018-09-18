@@ -173,6 +173,9 @@ public abstract class EntityPlayer extends EntityLivingBase
         BlockPos blockpos = worldIn.getSpawnPoint();
         this.setLocationAndAngles((double)blockpos.getX() + 0.5D, (double)(blockpos.getY() + 1), (double)blockpos.getZ() + 0.5D, 0.0F, 0.0F);
         this.unused180 = 180.0F;
+
+        net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityEvent.EntityConstructing(this));
+        super.capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
     }
 
     protected void applyEntityAttributes()
