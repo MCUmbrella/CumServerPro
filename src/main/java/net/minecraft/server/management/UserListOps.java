@@ -43,6 +43,7 @@ public class UserListOps extends UserList<GameProfile, UserListOpsEntry>
 
     protected String getObjectKey(GameProfile obj)
     {
+        if (obj == null || obj.getId() == null) return "invalid"; // CatServer - handle GameProfiles with no ID
         return obj.getId().toString();
     }
 
