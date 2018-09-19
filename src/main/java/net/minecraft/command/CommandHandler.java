@@ -181,7 +181,7 @@ public abstract class CommandHandler implements ICommandManager
         List<String> list = command.getAliases();
         if (list != null) customCommand.setAliases(list);
         commandMap.register(command.getName(), customCommand);
-        LogManager.getLogger().info("Registered command " + command.getName() + " with permission node " + permissionNode);
+
         if (list != null) {
             for (String s : list) {
                 ICommand icommand = (ICommand)this.commandMap.get(s);
