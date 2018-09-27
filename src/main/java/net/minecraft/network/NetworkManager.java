@@ -412,7 +412,7 @@ public class NetworkManager extends SimpleChannelInboundHandler < Packet<? >>
             }
             else
             {
-                this.channel.pipeline().addBefore("decoder", "decompress", new NettyCompressionDecoder(threshold));
+                this.channel.pipeline().addAfter("splitter", "decompress", new NettyCompressionDecoder(threshold)); // CatServer
             }
 
             if (this.channel.pipeline().get("compress") instanceof NettyCompressionEncoder)
