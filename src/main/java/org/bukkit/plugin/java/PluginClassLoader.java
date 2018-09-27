@@ -118,66 +118,29 @@ final class PluginClassLoader extends URLClassLoader {
         if (name.startsWith("org.bukkit.")) {
             throw new ClassNotFoundException(name);
         }
+
         Class<?> result = classes.get(name);
-
-        if (result == null) {
-            if (checkGlobal) {
-                result = loader.getClassByName(name);
-            }
-
+        synchronized (name.intern()) {
             if (result == null) {
-                String path = name.replace('.', '/').concat(".class");
-                JarEntry entry = jar.getJarEntry(path);
-
-                if (entry != null) {
-                    byte[] classBytes;
-
-                    try (InputStream is = jar.getInputStream(entry)) {
-                        classBytes = ByteStreams.toByteArray(is);
-                    } catch (IOException ex) {
-                        throw new ClassNotFoundException(name, ex);
-                    }
-
-                    int dot = name.lastIndexOf('.');
-                    if (dot != -1) {
-                        String pkgName = name.substring(0, dot);
-                        if (getPackage(pkgName) == null) {
-                            try {
-                                if (manifest != null) {
-                                    definePackage(pkgName, manifest, url);
-                                } else {
-                                    definePackage(pkgName, null, null, null, null, null, null, null);
-                                }
-                            } catch (IllegalArgumentException ex) {
-                                if (getPackage(pkgName) == null) {
-                                    throw new IllegalStateException("Cannot find package " + pkgName);
-                                }
-                            }
-                        }
-                    }
-
-                    CodeSigner[] signers = entry.getCodeSigners();
-                    CodeSource source = new CodeSource(url, signers);
-
-                    result = defineClass(name, classBytes, 0, classBytes.length, source);
+                if (checkGlobal) {
+                    result = loader.getClassByName(name);
                 }
-
+    
                 if (result == null) {
                     if (remapper == null) {
                         result = super.findClass(name);
                     } else {
                         result = remappedFindClass(name);
                     }
+    
+                    if (result != null) {
+                        loader.setClass(name, result);
+                    }
                 }
-
-                if (result != null) {
-                    loader.setClass(name, result);
-                }
+    
+                classes.put(name, result);
             }
-
-            classes.put(name, result);
         }
-
         return result;
     }
 
@@ -244,15 +207,9 @@ final class PluginClassLoader extends URLClassLoader {
                 if (stream != null) {
                     byte[] bytecode = null;
 
-                    // Reflection remap and inheritance extract
-                    if (remapper != null) {
-                        // add to inheritance map
-                        bytecode = remapper.remapClassFile(stream, RuntimeRepo.getInstance());
-                        if (bytecode == null) stream = url.openStream();
-                    }
-
                     // Remap the classes
-                    byte[] remappedBytecode = Transformer.transformSS(remapper, bytecode);
+                    bytecode = remapper.remapClassFile(stream, RuntimeRepo.getInstance());
+                    byte[] remappedBytecode = Transformer.transform(bytecode);
 
                     // Define (create) the class using the modified byte code
                     // The top-child class loader is used for this to prevent access violations
