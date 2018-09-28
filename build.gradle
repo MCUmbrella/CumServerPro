@@ -91,7 +91,7 @@ dependencies {
     compile 'net.md-5:SpecialSource:1.7.4'
     compile 'org.scala-lang.modules:scala-parser-combinators_2.11:1.0.1'
     compile 'org.xerial:sqlite-jdbc:3.21.0.1'
-    compile 'mysql-connector-java:mysql:5.1.45'
+    compile 'mysql:mysql-connector-java:5.1.45'
 }
 
 jar {
