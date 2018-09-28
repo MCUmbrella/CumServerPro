@@ -369,6 +369,17 @@ public class CraftBlock implements Block {
             return new CraftBed(this);
         default:
             TileEntity tileEntity = chunk.getCraftWorld().getTileEntityAt(x, y, z);
+            // CatServer start
+            if (tileEntity != null && tileEntity instanceof IInventory) {
+                // In order to allow plugins to properly grab the container location, we must pass a class that extends CraftBlockState and implements InventoryHolder.
+                // Note: This will be returned when TileEntity.getOwner() is called
+                return new CraftCustomContainer(this);
+            }
+            // pass default state
+            return new CraftBlockState(this);
+            // CatServer end
+
+            /* CatServer - TODO: should we use CraftBlockEntityState? (Error while using BuildCraft)
             if (tileEntity != null) {
                 // block with unhandled TileEntity:
                 return new CraftBlockEntityState<TileEntity>(this, (Class<TileEntity>) tileEntity.getClass());
@@ -376,6 +387,7 @@ public class CraftBlock implements Block {
                 // Block without TileEntity:
                 return new CraftBlockState(this);
             }
+            */
         }
     }
 
