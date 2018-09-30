@@ -57,7 +57,7 @@ public abstract class EntityArrow extends Entity implements IProjectile
     public int zTile;
     private Block inTile;
     private int inData;
-    protected boolean inGround;
+    public boolean inGround; // Spigot
     protected int timeInGround;
     public PickupStatus pickupStatus;
     public int arrowShake;

@@ -60,7 +60,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     public final int z;
     private boolean isGapLightingUpdated;
     private final Map<BlockPos, TileEntity> tileEntities;
-    private final ClassInheritanceMultiMap<Entity>[] entityLists;
+    public final ClassInheritanceMultiMap<Entity>[] entityLists;  // Spigot
     private boolean isTerrainPopulated;
     private boolean isLightPopulated;
     private boolean ticked;

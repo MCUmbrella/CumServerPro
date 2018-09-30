@@ -131,7 +131,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     private static int nextEntityID;
     private int entityId;
     public boolean preventEntitySpawning;
-    private final List<Entity> riddenByEntities;
+    public final List<Entity> riddenByEntities;  // Spigot
     protected int rideCooldown;
     private Entity ridingEntity;
     public boolean forceSpawn;

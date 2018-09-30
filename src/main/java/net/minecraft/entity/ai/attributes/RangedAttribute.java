@@ -6,7 +6,7 @@ import net.minecraft.util.math.MathHelper;
 public class RangedAttribute extends BaseAttribute
 {
     private final double minimumValue;
-    private final double maximumValue;
+    public double maximumValue;  // Spigot
     private String description;
 
     public RangedAttribute(@Nullable IAttribute parentIn, String unlocalizedNameIn, double defaultValue, double minimumValueIn, double maximumValueIn)
@@ -42,6 +42,8 @@ public class RangedAttribute extends BaseAttribute
 
     public double clampValue(double value)
     {
+        if (value != value) return getDefaultValue(); // CraftBukkit
+
         value = MathHelper.clamp(value, this.minimumValue, this.maximumValue);
         return value;
     }

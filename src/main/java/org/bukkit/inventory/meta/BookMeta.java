@@ -4,6 +4,8 @@ import java.util.List;
 
 import org.bukkit.Material;
 
+import net.md_5.bungee.api.chat.BaseComponent;
+
 /**
  * Represents a book ({@link Material#BOOK_AND_QUILL} or {@link
  * Material#WRITTEN_BOOK}) that can have a title, an author, and pages.
@@ -172,5 +174,74 @@ public interface BookMeta extends ItemMeta {
      */
     int getPageCount();
 
-    BookMeta clone();
+    BookMeta clone();    // Spigot start
+    public class Spigot extends ItemMeta.Spigot {
+
+        /**
+         * Gets the specified page in the book. The given page must exist.
+         *
+         * @param page the page number to get
+         * @return the page from the book
+         */
+        public BaseComponent[] getPage(int page) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        /**
+         * Sets the specified page in the book. Pages of the book must be
+         * contiguous.
+         * <p>
+         * The data can be up to 256 characters in length, additional characters
+         * are truncated.
+         *
+         * @param page the page number to set
+         * @param data the data to set for that page
+         */
+        public void setPage(int page, BaseComponent... data) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        /**
+         * Gets all the pages in the book.
+         *
+         * @return list of all the pages in the book
+         */
+        public List<BaseComponent[]> getPages() {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        /**
+         * Clears the existing book pages, and sets the book to use the provided
+         * pages. Maximum 50 pages with 256 characters per page.
+         *
+         * @param pages A list of pages to set the book to use
+         */
+        public void setPages(List<BaseComponent[]> pages) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        /**
+         * Clears the existing book pages, and sets the book to use the provided
+         * pages. Maximum 50 pages with 256 characters per page.
+         *
+         * @param pages A list of component arrays, each being a page
+         */
+        public void setPages(BaseComponent[]... pages) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+
+        /**
+         * Adds new pages to the end of the book. Up to a maximum of 50 pages
+         * with 256 characters per page.
+         *
+         * @param pages A list of component arrays, each being a page
+         */
+        public void addPage(BaseComponent[]... pages) {
+            throw new UnsupportedOperationException("Not supported yet.");
+        }
+    }
+
+    @Override
+    Spigot spigot();
+    // Spigot end
 }
