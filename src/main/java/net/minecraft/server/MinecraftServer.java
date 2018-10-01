@@ -502,8 +502,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 try
                 {
                     worldserver.saveAllChunks(true, (IProgressUpdate)null);
-                    worldserver.flush();
-                    net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.WorldEvent.Unload(worldserver)); // Moved from stopServer
                 }
                 catch (MinecraftException minecraftexception)
                 {
@@ -555,8 +553,8 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
 
             this.saveAllWorlds(false);
 
-            /* CraftBukkit start - Handled in saveChunks
-            for (WorldServer worldserver1 : this.worlds)
+            // CraftBukkit start - Handled in saveChunks
+            for (WorldServer worldserver1 : this.worldServerList)
             {
                 if (worldserver1 != null)
                 {
@@ -564,7 +562,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                     worldserver1.flush();
                 }
             }
-            // CraftBukkit end */
+            // CraftBukkit end
 
             WorldServer[] tmp = worlds;
             for (WorldServer world : tmp)
