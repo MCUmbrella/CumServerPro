@@ -992,6 +992,23 @@ public class ForgeHooks
                     world.markAndNotifyBlock(snap.getPos(), null, oldBlock, newBlock, updateFlag);
                 }
                 player.addStat(StatList.getObjectUseStats(itemstack.getItem()));
+
+                if (itemstack.item == Items.SKULL) { // Special case skulls to allow wither spawns to be cancelled
+                    BlockPos bp = pos;
+                    if (!world.getBlockState(pos).getMaterial().isReplaceable()) {
+                        if (!world.getBlockState(pos).getMaterial().isSolid()) {
+                            bp = null;
+                        } else {
+                            bp = bp.offset(side);
+                        }
+                    }
+                    if (bp != null) {
+                        TileEntity te = world.getTileEntity(bp);
+                        if (te instanceof net.minecraft.tileentity.TileEntitySkull) {
+                            Blocks.SKULL.checkWitherSpawn(world, bp, (net.minecraft.tileentity.TileEntitySkull) te);
+                        }
+                    }
+                }
             }
         }
         world.capturedBlockSnapshots.clear();
