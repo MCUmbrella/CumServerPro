@@ -993,6 +993,15 @@ public class ForgeHooks
                 }
                 player.addStat(StatList.getObjectUseStats(itemstack.getItem()));
 
+                // Special case juke boxes as they update their tile entity. Copied from ItemRecord.
+                // PAIL: checkme on updates.
+                if (itemstack.item instanceof net.minecraft.item.ItemRecord) {
+                    ((net.minecraft.block.BlockJukebox) Blocks.JUKEBOX).insertRecord(world, pos, world.getBlockState(pos), itemstack);
+                    world.playEvent((EntityPlayer) null, 1010, pos, Item.getIdFromItem(itemstack.item));
+                    itemstack.shrink(1);
+                    player.addStat(StatList.RECORD_PLAYED);
+                }
+
                 if (itemstack.item == Items.SKULL) { // Special case skulls to allow wither spawns to be cancelled
                     BlockPos bp = pos;
                     if (!world.getBlockState(pos).getMaterial().isReplaceable()) {
