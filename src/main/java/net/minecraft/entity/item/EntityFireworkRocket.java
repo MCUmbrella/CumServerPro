@@ -39,6 +39,14 @@ public class EntityFireworkRocket extends Entity
         this.setSize(0.25F, 0.25F);
     }
 
+    // Spigot Start
+    @Override
+    public void inactiveTick() {
+        this.fireworkAge += 1;
+        super.inactiveTick();
+    }
+    // Spigot End
+
     protected void entityInit()
     {
         this.dataManager.register(FIREWORK_ITEM, ItemStack.EMPTY);

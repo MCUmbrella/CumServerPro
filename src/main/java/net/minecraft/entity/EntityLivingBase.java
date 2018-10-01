@@ -181,6 +181,14 @@ public abstract class EntityLivingBase extends Entity
     public boolean collides = true;
     public boolean canPickUpLoot;
 
+    // Spigot start
+    public void inactiveTick()
+    {
+        super.inactiveTick();
+        ++this.idleTime; // Above all the floats
+    }
+    // Spigot end
+
     public void onKillCommand()
     {
         this.attackEntityFrom(DamageSource.OUT_OF_WORLD, Float.MAX_VALUE);

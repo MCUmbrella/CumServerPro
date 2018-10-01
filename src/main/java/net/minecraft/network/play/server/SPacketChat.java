@@ -45,7 +45,6 @@ public class SPacketChat implements Packet<INetHandlerPlayClient>
             buf.writeTextComponent(this.chatComponent);
         }
         // Spigot end
-        buf.writeTextComponent(this.chatComponent);
         buf.writeByte(this.type.getId());
     }
 

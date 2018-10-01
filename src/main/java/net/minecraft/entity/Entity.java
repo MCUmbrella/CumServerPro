@@ -106,6 +106,7 @@ import org.bukkit.event.vehicle.VehicleBlockCollisionEvent;
 import org.bukkit.event.vehicle.VehicleEnterEvent;
 import org.bukkit.event.vehicle.VehicleExitEvent;
 import org.bukkit.plugin.PluginManager;
+import org.spigotmc.CustomTimingsHandler;
 
 public abstract class Entity implements ICommandSender, net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound>
 {
@@ -229,6 +230,13 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     }
     // CraftBukkit end
 
+    // Spigot start
+    public final byte activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
+    public final boolean defaultActivationState;
+    public long activatedTick = Integer.MIN_VALUE;
+    public void inactiveTick() { }
+    // Spigot end
+
     public Entity(World worldIn)
     {
         this.entityId = nextEntityID++;
@@ -252,7 +260,12 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         if (worldIn != null)
         {
             this.dimension = worldIn.provider.getDimension();
+            // Spigot start
+            this.defaultActivationState = org.spigotmc.ActivationRange.initializeEntityActivationState(this, world.spigotConfig);
+        } else {
+            this.defaultActivationState = false;
         }
+        // Spigot end
 
         this.dataManager = new EntityDataManager(this);
         this.dataManager.register(FLAGS, Byte.valueOf((byte)0));

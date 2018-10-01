@@ -120,6 +120,14 @@ public class Main {
                 acceptsAll(asList("demo"), "Demo mode");
 
                 acceptsAll(asList("mixin"), "This argument is needed for proper Mixin Framework work in the test env");
+
+                // Spigot Start
+                acceptsAll(asList("S", "spigot-settings"), "File for spigot settings")
+                        .withRequiredArg()
+                        .ofType(File.class)
+                        .defaultsTo(new File("spigot.yml"))
+                        .describedAs("Yml file");
+                // Spigot End
             }
         };
 

@@ -99,6 +99,7 @@ import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.Main;
+import org.spigotmc.SlackActivityAccountant;
 
 public abstract class MinecraftServer implements ICommandSender, Runnable, IThreadListener, ISnooperInfo
 {
@@ -172,6 +173,13 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     public java.util.Queue<Runnable> processQueue = new java.util.concurrent.ConcurrentLinkedQueue<Runnable>();
     public int autosavePeriod;
     // CraftBukkit end
+    // Spigot start
+    public static final int TPS = 20;
+    public static final int TICK_TIME = 1000000000 / TPS;
+    private static final int SAMPLE_INTERVAL = 100;
+    public final double[] recentTps = new double[ 3 ];
+    public final SlackActivityAccountant slackActivityAccountant = new SlackActivityAccountant();
+    // Spigot end
 
     public MinecraftServer(OptionSet options, Proxy proxyIn, DataFixer dataFixerIn, YggdrasilAuthenticationService authServiceIn, MinecraftSessionService sessionServiceIn, GameProfileRepository profileRepoIn, PlayerProfileCache profileCacheIn)
     {
@@ -583,6 +591,13 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.serverRunning = false;
     }
 
+    // Spigot Start
+    private static double calcTps(double avg, double exp, double tps)
+    {
+        return ( avg * exp ) + ( tps * ( 1 - exp ) );
+    }
+    // Spigot End
+
     public void run()
     {
         try
@@ -596,46 +611,35 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 this.statusResponse.setVersion(new ServerStatusResponse.Version("1.12.2", 340));
                 this.applyServerIconToResponse(this.statusResponse);
 
+                // Spigot start
+                Arrays.fill( recentTps, 20 );
+                long lastTick = System.nanoTime(), catchupTime = 0, curTime, wait, tickSection = lastTick;
                 while (this.serverRunning)
                 {
-                    long k = getCurrentTimeMillis();
-                    long j = k - this.currentTime;
-
-                    if (j > 2000L && this.currentTime - this.timeOfLastWarning >= 15000L)
-                    {
-                        if (server.getWarnOnOverload()) // CraftBukkit
-                            LOGGER.warn("Can't keep up! Did the system time change, or is the server overloaded? Running {}ms behind, skipping {} tick(s)", Long.valueOf(j), Long.valueOf(j / 50L));
-                        j = 2000L;
-                        this.timeOfLastWarning = this.currentTime;
+                    curTime = System.nanoTime();
+                    wait = TICK_TIME - (curTime - lastTick) - catchupTime;
+                    if (wait > 0) {
+                        Thread.sleep(wait / 1000000);
+                        catchupTime = 0;
+                        continue;
+                    } else {
+                        catchupTime = Math.min(1000000000, Math.abs(wait));
                     }
 
-                    if (j < 0L)
+                    if ( MinecraftServer.currentTick++ % SAMPLE_INTERVAL == 0 )
                     {
-                        LOGGER.warn("Time ran backwards! Did the system time change?");
-                        j = 0L;
+                        double currentTps = 1E9 / ( curTime - tickSection ) * SAMPLE_INTERVAL;
+                        recentTps[0] = calcTps( recentTps[0], 0.92, currentTps ); // 1/exp(5sec/1min)
+                        recentTps[1] = calcTps( recentTps[1], 0.9835, currentTps ); // 1/exp(5sec/5min)
+                        recentTps[2] = calcTps( recentTps[2], 0.9945, currentTps ); // 1/exp(5sec/15min)
+                        tickSection = curTime;
                     }
+                    lastTick = curTime;
 
-                    i += j;
-                    this.currentTime = k;
-
-                    if (this.worldServerList.get(0).areAllPlayersAsleep())
-                    {
-                        this.tick();
-                        i = 0L;
-                    }
-                    else
-                    {
-                        while (i > 50L)
-                        {
-                            MinecraftServer.currentTick = (int) (System.currentTimeMillis() / 50); // CraftBukkit
-                            i -= 50L;
-                            this.tick();
-                        }
-                    }
-
-                    Thread.sleep(Math.max(1L, 50L - i));
+                    this.tick();
                     this.serverIsRunning = true;
                 }
+                // Spigot end
                 net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStopping();
                 net.minecraftforge.fml.common.FMLCommonHandler.instance().expectServerStopped(); // has to come before finalTick to avoid race conditions
             }
@@ -1627,71 +1631,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         Bootstrap.register();
         try
         {
-            /* CraftBukkit start - Replace everything
-            boolean flag = true;
-            String s = null;
-            String s1 = ".";
-            String s2 = null;
-            boolean flag1 = false;
-            boolean flag2 = false;
-            int l = -1;
-
-            for (int i1 = 0; i1 < p_main_0_.length; ++i1)
-            {
-                String s3 = p_main_0_[i1];
-                String s4 = i1 == p_main_0_.length - 1 ? null : p_main_0_[i1 + 1];
-                boolean flag3 = false;
-
-                if (!"nogui".equals(s3) && !"--nogui".equals(s3))
-                {
-                    if ("--port".equals(s3) && s4 != null)
-                    {
-                        flag3 = true;
-
-                        try
-                        {
-                            l = Integer.parseInt(s4);
-                        }
-                        catch (NumberFormatException var13)
-                        {
-                            ;
-                        }
-                    }
-                    else if ("--singleplayer".equals(s3) && s4 != null)
-                    {
-                        flag3 = true;
-                        s = s4;
-                    }
-                    else if ("--universe".equals(s3) && s4 != null)
-                    {
-                        flag3 = true;
-                        s1 = s4;
-                    }
-                    else if ("--world".equals(s3) && s4 != null)
-                    {
-                        flag3 = true;
-                        s2 = s4;
-                    }
-                    else if ("--demo".equals(s3))
-                    {
-                        flag1 = true;
-                    }
-                    else if ("--bonusChest".equals(s3))
-                    {
-                        flag2 = true;
-                    }
-                }
-                else
-                {
-                    flag = false;
-                }
-
-                if (flag3)
-                {
-                    ++i1;
-                }
-            }
-            */ // CraftBukkit end
             String s1 = ".";
             YggdrasilAuthenticationService yggdrasilauthenticationservice = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
             MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice.createMinecraftSessionService();
@@ -1699,46 +1638,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             PlayerProfileCache playerprofilecache = new PlayerProfileCache(gameprofilerepository, new File(s1, USER_CACHE_FILE.getName()));
             final DedicatedServer dedicatedserver = new DedicatedServer(options, DataFixesManager.createFixer(), yggdrasilauthenticationservice, minecraftsessionservice, gameprofilerepository, playerprofilecache);
 
-            /* CraftBukkit start
-            if (s != null)
-            {
-                dedicatedserver.setServerOwner(s);
-            }
-
-            if (s2 != null)
-            {
-                dedicatedserver.setFolderName(s2);
-            }
-
-            if (l >= 0)
-            {
-                dedicatedserver.setServerPort(l);
-            }
-
-            if (flag1)
-            {
-                dedicatedserver.setDemo(true);
-            }
-
-            if (flag2)
-            {
-                dedicatedserver.canCreateBonusChest(true);
-            }
-
-            if (flag && !GraphicsEnvironment.isHeadless())
-            {
-                dedicatedserver.setGuiEnabled();
-            }
-
-            dedicatedserver.startServerThread();
-            Runtime.getRuntime().addShutdownHook(new Thread("Server Shutdown Thread")
-            {
-                public void run()
-                {
-                    dedicatedserver.stopServer();
-                }
-            });
-            */
             if (options.has("port")) {
                 int port = (Integer) options.valueOf("port");
                 if (port > 0) {

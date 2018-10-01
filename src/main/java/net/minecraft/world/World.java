@@ -161,6 +161,10 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public long ticksPerMonsterSpawns;
     public boolean populating;
     private int tickPosition;
+    public final org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
+
+    public static boolean haveWeSilencedAPhysicsCrash;
+    public static String blockLocation;
 
     public CraftWorld getWorld() {
         return this.world;
@@ -175,6 +179,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     }
 
     protected World(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client, ChunkGenerator gen, org.bukkit.World.Environment env) {
+        this.spigotConfig = new org.spigotmc.SpigotWorldConfig( info.getWorldName() ); // Spigot
         this.generator = gen;
         this.world = new CraftWorld((WorldServer) this, gen, env);
         this.ticksPerAnimalSpawns = this.getServer().getTicksPerAnimalSpawns(); // CraftBukkit
@@ -257,6 +262,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     protected World(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client)
     {
+        this.spigotConfig = new org.spigotmc.SpigotWorldConfig( info.getWorldName() ); // Spigot
         this.world = DimensionManager.getWorld(0) != null ? DimensionManager.getWorld(0).getWorld() : null;
         this.eventListeners = Lists.newArrayList(this.pathListener);
         this.calendar = Calendar.getInstance();
@@ -754,6 +760,11 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                 try
                 {
                     iblockstate.getBlock().observedNeighborChange(iblockstate, this, pos, p_190529_2_, p_190529_3_);
+                }
+                catch (StackOverflowError stackoverflowerror) { // Spigot Start
+                    haveWeSilencedAPhysicsCrash = true;
+                    blockLocation = pos.getX() + ", " + pos.getY() + ", " + pos.getZ();
+                    // Spigot End
                 }
                 catch (Throwable throwable)
                 {
@@ -1962,6 +1973,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.tickPlayers();
         this.profiler.endStartSection("regular");
 
+        org.spigotmc.ActivationRange.activateEntities(this); // Spigot
         // CraftBukkit start - Use field for loop variable
         for (this.tickPosition = 0; this.tickPosition < this.loadedEntityList.size(); ++this.tickPosition) {
             Entity entity2 = (Entity) this.loadedEntityList.get(this.tickPosition);
@@ -2209,6 +2221,14 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                 return;
             }
         }
+
+        // Spigot start
+        if (forceUpdate && !org.spigotmc.ActivationRange.checkIfActive(entityIn)) {
+            entityIn.ticksExisted++;
+            entityIn.inactiveTick();
+            return;
+        }
+       // Spigot end
 
         entityIn.lastTickPosX = entityIn.posX;
         entityIn.lastTickPosY = entityIn.posY;

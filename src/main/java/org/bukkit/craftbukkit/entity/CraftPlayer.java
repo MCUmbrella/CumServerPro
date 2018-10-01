@@ -1579,7 +1579,8 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         @Override
         public InetSocketAddress getRawAddress()
         {
-            return (InetSocketAddress) getHandle().connection.netManager.getRawAddress();
+            return null; // CatServer - TODO: Spigot patch
+            //return (InetSocketAddress) getHandle().connection.netManager.getRawAddress();
         }
 
         @Override

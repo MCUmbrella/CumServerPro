@@ -192,6 +192,22 @@ public class EntityVillager extends EntityAgeable implements INpc, IMerchant
         this.getEntityAttribute(SharedMonsterAttributes.MOVEMENT_SPEED).setBaseValue(0.5D);
     }
 
+    // Spigot Start
+    @Override
+    public void inactiveTick() {
+        // SPIGOT-3874
+        if (world.spigotConfig.tickInactiveVillagers) {
+            // SPIGOT-3894
+            net.minecraft.world.chunk.Chunk startingChunk = this.world.getChunkIfLoaded(MathHelper.floor(this.posX) >> 4, MathHelper.floor(this.posZ) >> 4);
+            if (!(startingChunk != null && startingChunk.areNeighborsLoaded(1))) {
+                return;
+            }
+            this.updateAITasks(); // SPIGOT-3846
+        }
+        super.inactiveTick();
+    }
+    // Spigot End
+
     protected void updateAITasks()
     {
         if (--this.randomTickDivider <= 0)
