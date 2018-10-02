@@ -951,9 +951,11 @@ public abstract class PlayerList
                     exit = exit.add(0.5F, 0.1F, 0.5F); // SPIGOT-3879
                 }
             } else {
-                // NORMAL <-> NETHER or NORMAL -> THE_END
                 exit = this.calculateTarget(enter, exitWorld);
-                useTravelAgent = true;
+                if (cause != cause.MOD) // don't use travel agent for custom dimensions
+                {
+                    useTravelAgent = true;
+                }
             }
         }
 
@@ -965,7 +967,7 @@ public abstract class PlayerList
             return;
         }
 
-        exit = event.useTravelAgent() ? event.getPortalTravelAgent().findOrCreate(event.getTo()) : event.getTo();
+        exit = event.useTravelAgent() && cause != cause.MOD ? event.getPortalTravelAgent().findOrCreate(event.getTo()) : event.getTo();
         if (exit == null) {
             return;
         }
