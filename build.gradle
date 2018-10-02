@@ -65,7 +65,7 @@ dependencies {
     compile 'net.java.jutils:jutils:1.0.0'
     compile 'com.google.code.gson:gson:2.8.0'
     compile 'com.mojang:authlib:1.5.25'
-    compile 'com.mojang:realms:1.10.19'
+    compile 'com.mojang:realms:1.10.21'
     compile 'org.apache.commons:commons-compress:1.8.1'
     compile 'org.apache.httpcomponents:httpclient:4.3.3'
     compile 'commons-logging:commons-logging:1.1.3'

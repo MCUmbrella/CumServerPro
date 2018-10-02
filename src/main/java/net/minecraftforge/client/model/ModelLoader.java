@@ -1075,6 +1075,8 @@ public final class ModelLoader extends ModelBakery
                 FMLLog.log.fatal("Suppressed additional {} model loading errors for domain {}", e.getValue() - verboseMissingInfoCount, e.getKey());
             }
         }
+        loadingExceptions.clear();
+        missingVariants.clear();
         isLoading = false;
     }
 

@@ -212,7 +212,8 @@ public class Template
             {
                 BlockPos blockpos = transformedBlockPos(placementIn, template$blockinfo.pos).add(pos);
                 BlockInfo template$blockinfo1 = templateProcessor != null ? templateProcessor.processBlock(worldIn, blockpos, template$blockinfo) : template$blockinfo;
-
+                // Forge: skip processing blocks outside BB to prevent cascading worldgen issues
+                if (structureboundingbox != null && !structureboundingbox.isVecInside(blockpos)) continue;
                 if (template$blockinfo1 != null)
                 {
                     Block block1 = template$blockinfo1.blockState.getBlock();

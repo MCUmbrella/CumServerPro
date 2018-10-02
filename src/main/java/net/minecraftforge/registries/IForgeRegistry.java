@@ -94,6 +94,15 @@ public interface IForgeRegistry<V extends IForgeRegistryEntry<V>> extends Iterab
         void onCreate(IForgeRegistryInternal<V> owner, RegistryManager stage);
     }
 
+
+    /**
+     * Callback fired when the registry contents are validated.
+     */
+    interface ValidateCallback<V extends IForgeRegistryEntry<V>>
+    {
+        void onValidate(IForgeRegistryInternal<V> owner, RegistryManager stage, int id, ResourceLocation key, V obj);
+    }
+
     /**
      * Factory for creating dummy entries, allowing worlds to be loaded and keep the missing block references.
      */
