@@ -1139,32 +1139,14 @@ public abstract class PlayerList
         double d0 = enter.getX();
         double d1 = enter.getZ();
         double d2 = 8.0D;
-        /*
-        double d0 = entity.locX;
-        double d1 = entity.locZ;
-        double d2 = 8.0D;
-        float f = entity.yaw;
-        */
 
         worldserver.profiler.startSection("moving");
         if (worldserver1.dimension == -1) {
             d0 = MathHelper.clamp(d0 / d2, worldserver1.getWorldBorder().minX()+ 16.0D, worldserver1.getWorldBorder().maxX() - 16.0D);
             d1 = MathHelper.clamp(d1 / d2, worldserver1.getWorldBorder().minZ() + 16.0D, worldserver1.getWorldBorder().maxZ() - 16.0D);
-            /*
-            entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-            if (entity.isAlive()) {
-                worldserver.entityJoinedWorld(entity, false);
-            }
-            */
         } else if (worldserver1.dimension == 0) {
             d0 = MathHelper.clamp(d0 * d2, worldserver1.getWorldBorder().minX() + 16.0D, worldserver1.getWorldBorder().maxX() - 16.0D);
             d1 = MathHelper.clamp(d1 * d2, worldserver1.getWorldBorder().minZ() + 16.0D, worldserver1.getWorldBorder().maxZ() - 16.0D);
-            /*
-            entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-            if (entity.isAlive()) {
-                worldserver.entityJoinedWorld(entity, false);
-            }
-            */
         } else {
             BlockPos blockposition;
 
@@ -1176,15 +1158,14 @@ public abstract class PlayerList
                 blockposition = worldserver1.getSpawnCoordinate();
             }
 
-            d0 = (double) blockposition.getX();
-            y = (double) blockposition.getY();
-            d1 = (double) blockposition.getZ();
-            /*
-            entity.setPositionRotation(d0, entity.locY, d1, 90.0F, 0.0F);
-            if (entity.isAlive()) {
-                worldserver.entityJoinedWorld(entity, false);
+            // CatServer start - check null
+            if (blockposition != null)
+            {
+                d0 = (double) blockposition.getX();
+                y = (double) blockposition.getY();
+                d1 = (double) blockposition.getZ();
             }
-            */
+            // CatServer end
         }
 
         worldserver.profiler.endSection();
@@ -1192,19 +1173,9 @@ public abstract class PlayerList
             worldserver.profiler.startSection("placing");
             d0 = (double) MathHelper.clamp((int) d0, -29999872, 29999872);
             d1 = (double) MathHelper.clamp((int) d1, -29999872, 29999872);
-            /*
-            if (entity.isAlive()) {
-                entity.setPositionRotation(d0, entity.locY, d1, entity.yaw, entity.pitch);
-                worldserver1.getTravelAgent().a(entity, f);
-                worldserver1.addEntity(entity);
-                worldserver1.entityJoinedWorld(entity, false);
-            }
-            */
-
             worldserver.profiler.endSection();
         }
 
-        // entity.spawnIn(worldserver1);
         return new Location(worldserver1.getWorld(), d0, y, d1, yaw, pitch);
     }
 
