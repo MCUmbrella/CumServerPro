@@ -874,11 +874,6 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
             tileEntityIn.validate();
             this.tileEntities.put(pos, tileEntityIn);
-        } else {
-            System.out.println("Attempted to place a tile entity (" + tileEntityIn + ") at " + tileEntityIn.getPos().getX() + "," + tileEntityIn.getPos().getY() + "," + tileEntityIn.getPos().getZ()
-                    + " (" + org.bukkit.craftbukkit.util.CraftMagicNumbers.getMaterial(getBlockState(pos).getBlock()) + ") where there was no entity tile!");
-            System.out.println("Chunk coordinates: " + (this.x * 16) + "," + (this.z * 16));
-            new Exception().printStackTrace();
         }
     }
 
