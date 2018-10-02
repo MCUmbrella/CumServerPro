@@ -134,6 +134,11 @@ public class DimensionManager
         {
             dimensionMap.set(id);
         }
+        // CatServer - register Environment to Bukkit
+        if (id != -1 && id != 0 && id != 1) // ignore vanilla
+        {
+            registerBukkitDimension(id, type.getName());
+        }
     }
 
     /**

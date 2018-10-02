@@ -318,6 +318,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 worldType = provider.getClass().getSimpleName().toLowerCase();
                 worldType = worldType.replace("worldprovider", "");
                 worldType = worldType.replace("provider", "");
+                worldEnvironment = org.bukkit.World.Environment.getEnvironment(DimensionManager.getProviderType(dim).getId());
             } else {
                 worldType = worldEnvironment.toString().toLowerCase();
             }

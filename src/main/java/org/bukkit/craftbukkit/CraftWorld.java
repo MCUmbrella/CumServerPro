@@ -695,17 +695,7 @@ public class CraftWorld implements World {
     public void setEnvironment(Environment env) {
         if (environment != env) {
             environment = env;
-            switch (env) {
-                case NORMAL:
-                    world.provider = new WorldProviderSurface();
-                    break;
-                case NETHER:
-                    world.provider = new WorldProviderHell();
-                    break;
-                case THE_END:
-                    world.provider = new WorldProviderEnd();
-                    break;
-            }
+            world.provider = net.minecraft.world.WorldProvider.getProviderForDimension(environment.getId());
         }
     }
 
