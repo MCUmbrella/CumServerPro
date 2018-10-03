@@ -20704,6 +20704,8 @@ MD: net/minecraft/server/MinecraftServer/getPlayerList ()Lnet/minecraft/server/P
 MD: net/minecraft/server/MinecraftServer/getPlayers ()[Ljava/lang/String; net/minecraft/server/MinecraftServer/func_71213_z ()[Ljava/lang/String;
 MD: net/minecraft/server/MinecraftServer/getResourcePack ()Ljava/lang/String; net/minecraft/server/MinecraftServer/func_147133_T ()Ljava/lang/String;
 MD: net/minecraft/server/MinecraftServer/getResourcePackHash ()Ljava/lang/String; net/minecraft/server/MinecraftServer/func_175581_ab ()Ljava/lang/String;
+MD: net/minecraft/server/MinecraftServer/getServer ()Lnet/minecraft/server/MinecraftServer; net/minecraft/server/MinecraftServer/getServerInst ()Lnet/minecraft/server/MinecraftServer;
+MD: net/minecraft/server/MinecraftServer/getServerConnection ()Lnet/minecraft/server/ServerConnection; net/minecraft/server/MinecraftServer/func_147137_ag ()Lnet/minecraft/network/NetworkSystem;
 MD: net/minecraft/server/MinecraftServer/getServerIp ()Ljava/lang/String; net/minecraft/server/MinecraftServer/func_71211_k ()Ljava/lang/String;
 MD: net/minecraft/server/MinecraftServer/getServerModName ()Ljava/lang/String; net/minecraft/server/MinecraftServer/getServerModName ()Ljava/lang/String;
 MD: net/minecraft/server/MinecraftServer/getServerPing ()Lnet/minecraft/server/ServerPing; net/minecraft/server/MinecraftServer/func_147134_at ()Lnet/minecraft/network/ServerStatusResponse;
