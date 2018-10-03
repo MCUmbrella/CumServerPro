@@ -156,7 +156,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     private final GameProfileRepository profileRepo;
     private final PlayerProfileCache profileCache;
     private long nanoTimeSinceStatusRefresh;
-    public final Queue < FutureTask<? >> futureTaskQueue = Queues. < FutureTask<? >> newArrayDeque();
+    public final Queue < FutureTask<? >> futureTaskQueue = new java.util.concurrent.ConcurrentLinkedQueue<FutureTask<?>>(); // Spigot
     private Thread serverThread;
     private long currentTime = getCurrentTimeMillis();
     @SideOnly(Side.CLIENT)
@@ -832,13 +832,13 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.server.getScheduler().mainThreadHeartbeat(this.tickCounter); // CraftBukkit
         this.profiler.startSection("jobs");
 
-        synchronized (this.futureTaskQueue)
-        {
-            while (!this.futureTaskQueue.isEmpty())
-            {
-                Util.runTask(this.futureTaskQueue.poll(), LOGGER);
-            }
-        }
+        // Spigot start
+        FutureTask<?> entry;
+        int count = this.futureTaskQueue.size();
+        while (count-- > 0 && (entry = this.futureTaskQueue.poll()) != null) {
+            Util.runTask(entry, MinecraftServer.LOGGER);
+         }
+        // Spigot end
 
         this.profiler.endStartSection("levels");
         // CraftBukkit start
@@ -1525,11 +1525,10 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         {
             ListenableFutureTask<V> listenablefuturetask = ListenableFutureTask.<V>create(callable);
 
-            synchronized (this.futureTaskQueue)
-            {
-                this.futureTaskQueue.add(listenablefuturetask);
-                return listenablefuturetask;
-            }
+            // Spigot start
+            this.futureTaskQueue.add(listenablefuturetask);
+            return listenablefuturetask;
+            // Spigot end
         }
         else
         {
