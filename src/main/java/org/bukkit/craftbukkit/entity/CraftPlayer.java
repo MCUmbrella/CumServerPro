@@ -422,10 +422,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Override
     public void playEffect(Location loc, Effect effect, int data) {
         if (getHandle().connection == null) return;
-
-        int packetData = effect.getId();
-        SPacketEffect packet = new SPacketEffect(packetData, new BlockPos(loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()), data, false);
-        getHandle().connection.sendPacket(packet);
+        spigot().playEffect(loc, effect, data, 0, 0, 0, 0, 1, 1, 64); // Spigot
     }
 
     @Override
