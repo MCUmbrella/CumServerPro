@@ -21,7 +21,7 @@ public class CraftShapedRecipe extends ShapedRecipe implements CraftRecipe {
     }
 
     public CraftShapedRecipe(ItemStack result, ShapedRecipes recipe) {
-        this(CraftNamespacedKey.fromMinecraft(recipe.key), result);
+        this(recipe.key != null ? CraftNamespacedKey.fromMinecraft(recipe.key) : NamespacedKey.randomKey(), result); // CatServer - if key is null, use random key
         this.recipe = recipe;
     }
 
