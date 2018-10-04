@@ -2660,6 +2660,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
     public void onStruckByLightning(EntityLightningBolt lightningBolt)
     {
+        if (lightningBolt == null) lightningBolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true); // CatServer - if null, create EntityLightningBolt for Bukkit
         final org.bukkit.entity.Entity thisBukkitEntity = this.getBukkitEntity();
         final org.bukkit.entity.Entity stormBukkitEntity = lightningBolt.getBukkitEntity();
         final PluginManager pluginManager = Bukkit.getPluginManager();
