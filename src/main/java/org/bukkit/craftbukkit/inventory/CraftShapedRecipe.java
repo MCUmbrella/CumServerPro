@@ -55,7 +55,10 @@ public class CraftShapedRecipe extends ShapedRecipe implements CraftRecipe {
             }
         }
         // TODO: Check if it's correct way to register recipes
-        ForgeRegistries.RECIPES.register(new ShapedRecipes("", width, shape.length, data, CraftItemStack.asNMSCopy(this.getResult())));
-        // CraftingManager.register(CraftNamespacedKey.toMinecraft(this.getKey()), new ShapedRecipes("", width, shape.length, data, CraftItemStack.asNMSCopy(this.getResult())));
+        // CatServer - register to Forge
+        ShapedRecipes recipe = new ShapedRecipes("", width, shape.length, data, CraftItemStack.asNMSCopy(this.getResult()));
+        recipe.setKey(CraftNamespacedKey.toMinecraft(this.getKey()));
+        recipe.setRegistryName(recipe.key);
+        ForgeRegistries.RECIPES.register(recipe);
     }
 }
