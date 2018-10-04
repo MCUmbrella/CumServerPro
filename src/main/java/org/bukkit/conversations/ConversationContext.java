@@ -44,6 +44,14 @@ public class ConversationContext {
     public Conversable getForWhom() {
         return forWhom;
     }
+    
+    /**
+     * Gets the entire sessionData map.
+     * @return The full sessionData map.
+     */
+    public Map<Object, Object> getAllSessionData() {
+        return sessionData;
+    }
 
     /**
      * Gets session data shared between all {@link Prompt} invocations. Use
