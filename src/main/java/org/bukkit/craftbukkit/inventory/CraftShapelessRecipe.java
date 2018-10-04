@@ -21,7 +21,7 @@ public class CraftShapelessRecipe extends ShapelessRecipe implements CraftRecipe
     }
 
     public CraftShapelessRecipe(ItemStack result, ShapelessRecipes recipe) {
-        this(CraftNamespacedKey.fromMinecraft(recipe.key), result);
+        this(recipe.key != null ? CraftNamespacedKey.fromMinecraft(recipe.key) : NamespacedKey.randomKey(), result);
         this.recipe = recipe;
     }
 
