@@ -425,9 +425,12 @@ public class ShapedRecipes extends net.minecraftforge.registries.IForgeRegistryE
         }
         char c = 'a';
         for (Ingredient list : this.recipeItems) {
-            if (list != null && list.matchingStacks.length > 0) {
-                net.minecraft.item.ItemStack stack = list.matchingStacks[0];
-                recipe.setIngredient(c, org.bukkit.craftbukkit.util.CraftMagicNumbers.getMaterial(stack.getItem()), (list.matchingStacks.length) > 1 ? 32767 : stack.getMetadata());
+            if (list != null) { // CatServer - get recipe from OreDictionary
+                ItemStack[] matchingStacks = list.getMatchingStacks();
+                if (matchingStacks.length > 0) {
+                    net.minecraft.item.ItemStack stack = matchingStacks[0];
+                    recipe.setIngredient(c, org.bukkit.craftbukkit.util.CraftMagicNumbers.getMaterial(stack.getItem()), (matchingStacks.length) > 1 ? 32767 : stack.getMetadata());
+                }
             }
             c++;
         }
