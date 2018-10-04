@@ -203,7 +203,7 @@ public class CraftHumanEntity extends CraftLivingEntity implements HumanEntity {
     }
 
     public InventoryView getOpenInventory() {
-        return getHandle().inventoryContainer.getBukkitView();
+        return getHandle().openContainer.getBukkitView();
     }
 
     public InventoryView openInventory(Inventory inventory) {
