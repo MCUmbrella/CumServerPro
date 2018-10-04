@@ -2132,10 +2132,10 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
                 if (bworld == null) {
                     EntityPlayer entityPlayer = (EntityPlayer) this;
-                    bworld = ((org.bukkit.craftbukkit.CraftServer) server).getServer().getWorld(entityPlayer.dimension).getWorld();
+                    bworld = ((org.bukkit.craftbukkit.CraftServer) server).getServer().getWorldServer(entityPlayer.dimension).getWorld();
                 }
 
-                setWorld(bworld == null? null : ((CraftWorld) bworld).getHandle());
+                setWorld(bworld == null ? null : ((CraftWorld) bworld).getHandle());
             }
         }
         catch (Throwable throwable)
