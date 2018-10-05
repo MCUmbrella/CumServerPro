@@ -3,6 +3,9 @@ package net.minecraft.entity;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
+
+import luohuayu.CatServer.entity.CatEntityRegistry;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -107,6 +110,7 @@ public class EntityList
     public static final ResourceLocation LIGHTNING_BOLT = new ResourceLocation("lightning_bolt");
     private static final ResourceLocation PLAYER = new ResourceLocation("player");
     private static final Logger LOGGER = LogManager.getLogger();
+    public static final RegistryNamespaced<ResourceLocation, Class<? extends Entity>> REGISTRY = new CatEntityRegistry<ResourceLocation, Class<? extends Entity>>(); // CatServer - compatible with bukkit plugin
     public static final Map<ResourceLocation, EntityEggInfo> ENTITY_EGGS = Maps.<ResourceLocation, EntityEggInfo>newLinkedHashMap();
     private static final Set<ResourceLocation> EXTRA_NAMES = Sets.newHashSet();
 
