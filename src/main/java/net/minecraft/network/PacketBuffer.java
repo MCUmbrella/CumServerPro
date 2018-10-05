@@ -325,7 +325,7 @@ public class PacketBuffer extends ByteBuf
 
     public PacketBuffer writeItemStack(ItemStack stack)
     {
-        if (stack.isEmpty())
+        if (stack.isEmpty() || stack.getItem() == null) // CraftBukkit - NPE fix itemstack.getItem()
         {
             this.writeShort(-1);
         }
