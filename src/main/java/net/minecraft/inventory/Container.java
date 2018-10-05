@@ -939,7 +939,8 @@ public abstract class Container
                 itemstack = irecipe.getCraftingResult(p_192389_3_);
             }
 
-            itemstack = org.bukkit.craftbukkit.event.CraftEventFactory.callPreCraftEvent(p_192389_3_, itemstack, getBukkitView(), false);
+            if (p_192389_3_.resultInventory != null) // mods bypass
+                itemstack = org.bukkit.craftbukkit.event.CraftEventFactory.callPreCraftEvent(p_192389_3_, itemstack, getBukkitView(), false); // CraftBukkit
 
             p_192389_4_.setInventorySlotContents(0, itemstack);
             entityplayermp.connection.sendPacket(new SPacketSetSlot(this.windowId, 0, itemstack));
