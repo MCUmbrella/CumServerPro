@@ -54,12 +54,12 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     private final int[] precipitationHeightMap;
     private final boolean[] updateSkylightColumns;
     private boolean loaded;
-    private final World world;
-    private final int[] heightMap;
+    public final World world; // CatServer - private -> public
+    public final int[] heightMap; // CatServer - private -> public
     public final int x;
     public final int z;
     private boolean isGapLightingUpdated;
-    private final Map<BlockPos, TileEntity> tileEntities;
+    public final Map<BlockPos, TileEntity> tileEntities; // CatServer - private -> public
     public final ClassInheritanceMultiMap<Entity>[] entityLists;  // Spigot
     private boolean isTerrainPopulated;
     private boolean isLightPopulated;
