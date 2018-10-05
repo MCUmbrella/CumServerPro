@@ -3,10 +3,13 @@ package org.bukkit.craftbukkit.inventory;
 import java.util.List;
 
 import net.minecraft.item.crafting.CraftingManager;
+import net.minecraft.item.crafting.IRecipe;
 import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapelessRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
+
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.inventory.ItemStack;
@@ -47,6 +50,8 @@ public class CraftShapelessRecipe extends ShapelessRecipe implements CraftRecipe
         ShapelessRecipes recipe = new ShapelessRecipes("", CraftItemStack.asNMSCopy(this.getResult()), data);
         recipe.setKey(CraftNamespacedKey.toMinecraft(this.getKey()));
         recipe.setRegistryName(recipe.key);
+        ((ForgeRegistry <IRecipe>) ForgeRegistries.RECIPES).unfreeze();
         ForgeRegistries.RECIPES.register(recipe);
+        ((ForgeRegistry <IRecipe>) ForgeRegistries.RECIPES).freeze();
     }
 }
