@@ -243,8 +243,6 @@ public class DedicatedServer extends MinecraftServer implements IServer
             }
 
             // this.setPlayerList(new DedicatedPlayerList(this));  // Spigot - moved up
-            server.loadPlugins();
-            server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
 
             if (!this.isServerInOnlineMode())
             {

@@ -42,6 +42,7 @@ import javax.imageio.ImageIO;
 
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
+import luohuayu.CatServer.BukkitInjector;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.command.CommandBase;
@@ -93,6 +94,7 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
 import org.apache.commons.lang3.Validate;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -328,6 +330,15 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             if (dim == 0) {
                 ISaveHandler  idatamanager = new AnvilSaveHandler(server.getWorldContainer(), worldNameIn, true, this.dataFixer);
                 WorldInfo worlddata = idatamanager.loadWorldInfo();
+                // CatServer start
+                if (!BukkitInjector.initializedBukkit) { // CatServer - inject bukkit materials before plugins load
+                    BukkitInjector.injectBlockBukkitMaterials();
+                    BukkitInjector.injectItemBukkitMaterials();
+                    BukkitInjector.initializedBukkit = true;
+                }
+                server.loadPlugins();
+                server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
+                // CatServer end
                 if (worlddata == null) {
                     worlddata = new WorldInfo(worldsettings, worldNameIn);
                 }
