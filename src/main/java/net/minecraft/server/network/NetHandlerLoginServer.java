@@ -117,7 +117,25 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable
     // Spigot start
     public void initUUID()
     {
-        UUID uuid = UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + this.loginGameProfile.getName() ).getBytes( StandardCharsets.UTF_8 ) );
+        UUID uuid;
+        if ( networkManager.spoofedUUID != null )
+        {
+            uuid = networkManager.spoofedUUID;
+        } else
+        {
+            uuid = UUID.nameUUIDFromBytes( ( "OfflinePlayer:" + this.loginGameProfile.getName() ).getBytes( StandardCharsets.UTF_8 ) );
+        }
+
+        this.loginGameProfile = new GameProfile( uuid, this.loginGameProfile.getName() );
+
+        if (networkManager.spoofedProfile != null)
+        {
+            for ( com.mojang.authlib.properties.Property property : networkManager.spoofedProfile )
+            {
+                this.loginGameProfile.getProperties().put( property.getName(), property );
+            }
+        }
+
         this.loginGameProfile = new GameProfile( uuid, this.loginGameProfile.getName() );
     }
     // Spigot end

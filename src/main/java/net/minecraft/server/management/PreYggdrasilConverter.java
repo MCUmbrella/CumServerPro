@@ -50,7 +50,7 @@ public class PreYggdrasilConverter
             }
         }), String.class);
 
-        if (server.isServerInOnlineMode())
+        if (server.isServerInOnlineMode() || org.spigotmc.SpigotConfig.bungee) // Spigot: bungee = online mode, for now.
         {
             server.getGameProfileRepository().findProfilesByNames(astring, Agent.MINECRAFT, callback);
         }

@@ -634,7 +634,9 @@ public abstract class PlayerList
 
         EntityPlayerMP entity = new EntityPlayerMP(mcServer, mcServer.getWorldServer(0), profile, new PlayerInteractionManager(mcServer.getWorldServer(0)));
         Player player = entity.getBukkitEntity();
-        PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, ((java.net.InetSocketAddress) socketaddress).getAddress());
+        //Spigot Start
+        PlayerLoginEvent event = new PlayerLoginEvent(player, hostname, ((java.net.InetSocketAddress) socketaddress).getAddress(), ((java.net.InetSocketAddress) loginServer.networkManager.getRawAddress()).getAddress());
+        //Spigot End
         if (getBannedPlayers().isBanned(profile) && !getBannedPlayers().getEntry(profile).hasBanExpired())
         {
             UserListBansEntry userlistbansentry = (UserListBansEntry)this.bannedPlayers.getEntry(profile);

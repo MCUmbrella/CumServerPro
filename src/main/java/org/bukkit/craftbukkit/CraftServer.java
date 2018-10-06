@@ -403,8 +403,8 @@ public final class CraftServer implements Server {
         Map<String, ICommand> commands = console.getCommandManager().getCommands();
         for (ICommand cmd : commands.values()) {
             // Spigot start
-            VanillaCommandWrapper wrapper = new VanillaCommandWrapper((CommandBase)cmd, I18n.translateToLocal(cmd.getUsage(null)));
-            if (org.spigotmc.SpigotConfig.replaceCommands.contains( wrapper.getName() ) ) {
+            VanillaCommandWrapper wrapper = new VanillaCommandWrapper((CommandBase) cmd, I18n.translateToLocal(cmd.getUsage(null)));
+            if (org.spigotmc.SpigotConfig.replaceCommands.contains(wrapper.getName())) {
                 if (first) {
                     commandMap.register("minecraft", wrapper);
                 }
@@ -626,7 +626,13 @@ public final class CraftServer implements Server {
 
     @Override
     public long getConnectionThrottle() {
-        return this.configuration.getInt("settings.connection-throttle");
+        // Spigot Start - Automatically set connection throttle for bungee configurations
+        if (org.spigotmc.SpigotConfig.bungee) {
+            return -1;
+        } else {
+            return this.configuration.getInt("settings.connection-throttle");
+        }
+        // Spigot End
     }
 
     @Override
@@ -666,7 +672,7 @@ public final class CraftServer implements Server {
     // NOTE: Should only be called from DedicatedServer.ah()
     public boolean dispatchServerCommand(CommandSender sender, PendingCommand serverCommand) {
         if (sender instanceof Conversable) {
-            Conversable conversable = (Conversable)sender;
+            Conversable conversable = (Conversable) sender;
 
             if (conversable.isConversing()) {
                 conversable.acceptConversationInput(serverCommand.command);
@@ -783,7 +789,8 @@ public final class CraftServer implements Server {
         while (pollCount < 50 && getScheduler().getActiveWorkers().size() > 0) {
             try {
                 Thread.sleep(50);
-            } catch (InterruptedException e) {}
+            } catch (InterruptedException e) {
+            }
             pollCount++;
         }
 
@@ -795,10 +802,10 @@ public final class CraftServer implements Server {
                 author = plugin.getDescription().getAuthors().get(0);
             }
             getLogger().log(Level.SEVERE, String.format(
-                "Nag author: '%s' of '%s' about the following: %s",
-                author,
-                plugin.getDescription().getName(),
-                "This plugin is not properly shutting down its async tasks when it is being reloaded.  This may cause conflicts with the newly loaded version of the plugin"
+                    "Nag author: '%s' of '%s' about the following: %s",
+                    author,
+                    plugin.getDescription().getName(),
+                    "This plugin is not properly shutting down its async tasks when it is being reloaded.  This may cause conflicts with the newly loaded version of the plugin"
             ));
         }
         loadPlugins();
@@ -823,7 +830,7 @@ public final class CraftServer implements Server {
         }
     }
 
-    @SuppressWarnings({ "unchecked", "finally" })
+    @SuppressWarnings({"unchecked", "finally"})
     private void loadCustomPermissions() {
         File file = new File(configuration.getString("settings.permissions-file"));
         FileInputStream stream;
@@ -851,7 +858,8 @@ public final class CraftServer implements Server {
         } finally {
             try {
                 stream.close();
-            } catch (IOException ex) {}
+            } catch (IOException ex) {
+            }
         }
 
         if (perms == null) {
@@ -913,7 +921,7 @@ public final class CraftServer implements Server {
         boolean hardcore = false;
         WorldSettings worldSettings = new WorldSettings(creator.seed(), WorldSettings.getGameTypeById(getDefaultGameMode().getValue()), generateStructures, hardcore, type);
         WorldServer worldserver = DimensionManager.initDimension(creator, worldSettings);
-        
+
         pluginManager.callEvent(new WorldInitEvent(worldserver.getWorld()));
         logger.info("Preparing start region for level " + (console.worldServerList.size() - 1) + " (Dimension: " + worldserver.provider.getDimension() + ", Seed: " + worldserver.getSeed() + ")"); // Cauldron - log dimension
 
@@ -1330,7 +1338,7 @@ public final class CraftServer implements Server {
 
         for (UserListEntry entry : playerList.getBannedPlayers().getValuesCB()) {
             result.add(getOfflinePlayer((GameProfile) entry.getValue()));
-        }        
+        }
 
         return result;
     }
@@ -1339,12 +1347,12 @@ public final class CraftServer implements Server {
     public BanList getBanList(BanList.Type type) {
         Validate.notNull(type, "Type cannot be null");
 
-        switch(type){
-        case IP:
-            return new CraftIpBanList(playerList.getBannedIPs());
-        case NAME:
-        default:
-            return new CraftProfileBanList(playerList.getBannedPlayers());
+        switch (type) {
+            case IP:
+                return new CraftIpBanList(playerList.getBannedIPs());
+            case NAME:
+            default:
+                return new CraftProfileBanList(playerList.getBannedPlayers());
         }
     }
 
@@ -1712,12 +1720,10 @@ public final class CraftServer implements Server {
         return CraftMagicNumbers.INSTANCE;
     }
 
-    private final Spigot spigot = new Spigot()
-    {
+    private final Spigot spigot = new Spigot() {
 
         @Override
-        public YamlConfiguration getConfig()
-        {
+        public YamlConfiguration getConfig() {
             return org.spigotmc.SpigotConfig.config;
         }
 
@@ -1741,8 +1747,7 @@ public final class CraftServer implements Server {
         }
     };
 
-    public Spigot spigot()
-    {
+    public Spigot spigot() {
         return spigot;
     }
 }
