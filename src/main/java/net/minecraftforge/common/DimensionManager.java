@@ -567,7 +567,7 @@ public class DimensionManager
             worldinfo = new WorldInfo(worldSettings,name);
         }
 
-        WorldServer world = new WorldServerMulti(mcServer, saveHandler, dim, overworld, mcServer.profiler, worldinfo, env, gen);
+        WorldServer world = (WorldServer) new WorldServerMulti(mcServer, saveHandler, dim, overworld, mcServer.profiler, worldinfo, env, gen).init();
         world.initialize(worldSettings);
 
         if (gen != null)

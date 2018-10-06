@@ -144,26 +144,11 @@ public class WorldServer extends World implements IThreadListener
         this.provider.setDimension(providerDim);
         this.chunkProvider = this.createChunkProvider();
         perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler((WorldServer)this, saveHandlerIn));
-        this.worldTeleporter = new org.bukkit.craftbukkit.CraftTravelAgent(this);
+        this.worldTeleporter = new org.bukkit.craftbukkit.CraftTravelAgent(this); // CraftBukkit
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
         this.getWorldBorder().setSize(server.getMaxWorldSize());
-        this.worldScoreboard = getServer().getScoreboardManager() == null ? new ServerScoreboard(this.mcServer) : getServer().getScoreboardManager().getMainScoreboard().getHandle(); // CatServer - Use CraftBukit scoreboard
         net.minecraftforge.common.DimensionManager.setWorld(dimensionId, this, mcServer);
-        this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
-        String s = VillageCollection.fileNameForProvider(this.provider);
-        VillageCollection villagecollection = (VillageCollection)this.perWorldStorage.getOrLoadData(VillageCollection.class, s);
-
-        if (villagecollection == null)
-        {
-            this.villageCollection = new VillageCollection(this);
-            this.perWorldStorage.setData(s, this.villageCollection);
-        }
-        else
-        {
-            this.villageCollection = villagecollection;
-            this.villageCollection.setWorldsForAll(this);
-        }
     }
 
     public WorldServer(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler profilerIn)
@@ -188,6 +173,22 @@ public class WorldServer extends World implements IThreadListener
 
     public World init()
     {
+        this.mapStorage = new MapStorage(this.saveHandler);
+        String s = VillageCollection.fileNameForProvider(this.provider);
+        VillageCollection villagecollection = (VillageCollection)this.perWorldStorage.getOrLoadData(VillageCollection.class, s);
+
+        if (villagecollection == null)
+        {
+            this.villageCollection = new VillageCollection(this);
+            this.perWorldStorage.setData(s, this.villageCollection);
+        }
+        else
+        {
+            this.villageCollection = villagecollection;
+            this.villageCollection.setWorldsForAll(this);
+        }
+
+        this.worldScoreboard = getServer().getScoreboardManager() == null ? new ServerScoreboard(this.mcServer) : getServer().getScoreboardManager().getMainScoreboard().getHandle(); // CatServer - use CraftBukit scoreboard
         ScoreboardSaveData scoreboardsavedata = (ScoreboardSaveData)this.mapStorage.getOrLoadData(ScoreboardSaveData.class, "scoreboard");
 
         if (scoreboardsavedata == null)
@@ -198,18 +199,9 @@ public class WorldServer extends World implements IThreadListener
 
         scoreboardsavedata.setScoreboard(this.worldScoreboard);
         ((ServerScoreboard)this.worldScoreboard).addDirtyRunnable(new WorldSavedDataCallableSave(scoreboardsavedata));
-
-        // this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
-        // this.functionManager = new FunctionManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "functions"), this.mcServer);
-        if (this.dimension != 0) { // SPIGOT-3899 multiple worlds of advancements not supported
-            this.advancementManager = this.mcServer.getAdvancementManager();
-        }
-        if (this.advancementManager == null) {
-            this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
-        }
-        if (this.functionManager == null) {
-            this.functionManager = new FunctionManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "functions"), this.mcServer);
-        }
+        this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
+        this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
+        this.functionManager = new FunctionManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "functions"), this.mcServer);
         this.getWorldBorder().setCenter(this.worldInfo.getBorderCenterX(), this.worldInfo.getBorderCenterZ());
         this.getWorldBorder().setDamageAmount(this.worldInfo.getBorderDamagePerBlock());
         this.getWorldBorder().setDamageBuffer(this.worldInfo.getBorderSafeZone());
@@ -226,10 +218,6 @@ public class WorldServer extends World implements IThreadListener
         }
 
         this.initCapabilities();
-
-        if (generator != null) {
-            getWorld().getPopulators().addAll(generator.getDefaultPopulators(getWorld()));
-        }
         return this;
     }
 
