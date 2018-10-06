@@ -34,6 +34,14 @@ public class StatisticsManagerServer extends StatisticsManager
     {
         this.mcServer = serverIn;
         this.statsFile = statsFileIn;
+        // Spigot start
+        for (String name : org.spigotmc.SpigotConfig.forcedStats.keySet())
+        {
+            TupleIntJsonSerializable wrapper = new TupleIntJsonSerializable();
+            wrapper.setIntegerValue(org.spigotmc.SpigotConfig.forcedStats.get(name));
+            statsData.put(StatList.getOneShotStat(name), wrapper);
+        }
+        // Spigot end
     }
 
     public void readStatFile()
@@ -58,6 +66,7 @@ public class StatisticsManagerServer extends StatisticsManager
 
     public void saveStatFile()
     {
+        if (org.spigotmc.SpigotConfig.disableStatSaving) return; // Spigot
         try
         {
             FileUtils.writeStringToFile(this.statsFile, dumpJson(this.statsData));

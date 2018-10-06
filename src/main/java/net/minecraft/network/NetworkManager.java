@@ -78,6 +78,7 @@ public class NetworkManager extends SimpleChannelInboundHandler < Packet<? >>
     private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
     private Channel channel;
     private SocketAddress socketAddress;
+    public boolean preparing = true; // Spigot
     private INetHandler packetListener;
     private ITextComponent terminationReason;
     private boolean isEncrypted;
@@ -98,6 +99,7 @@ public class NetworkManager extends SimpleChannelInboundHandler < Packet<? >>
         super.channelActive(p_channelActive_1_);
         this.channel = p_channelActive_1_.channel();
         this.socketAddress = this.channel.remoteAddress();
+        this.preparing = false; // Spigot
 
         try
         {
@@ -298,6 +300,7 @@ public class NetworkManager extends SimpleChannelInboundHandler < Packet<? >>
 
     public void closeChannel(ITextComponent message)
     {
+        this.preparing = false; // Spigot
         if (this.channel.isOpen())
         {
             // We can't wait as this may be called from an event loop.

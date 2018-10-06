@@ -167,6 +167,7 @@ public class PlayerAdvancements
 
     public void save()
     {
+        if (org.spigotmc.SpigotConfig.disableAdvancementSaving) return;
         Map<ResourceLocation, AdvancementProgress> map = Maps.<ResourceLocation, AdvancementProgress>newHashMap();
 
         for (Entry<Advancement, AdvancementProgress> entry : this.progress.entrySet())

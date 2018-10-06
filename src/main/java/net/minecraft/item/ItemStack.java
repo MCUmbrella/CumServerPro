@@ -1382,4 +1382,16 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
     {
         return this.isEmpty() || this.getItem().doesSneakBypassUse(this, world, pos, player);
     }
+
+    // Spigot start
+    public static boolean fastMatches(ItemStack itemstack, ItemStack itemstack1) {
+        if (itemstack == null && itemstack1 == null) {
+            return true;
+        }
+        if (itemstack != null && itemstack1 != null) {
+            return itemstack.stackSize == itemstack1.stackSize && itemstack.item == itemstack1.item && itemstack.itemDamage == itemstack1.itemDamage;
+        }
+        return false;
+    }
+    // Spigot end
 }

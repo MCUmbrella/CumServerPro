@@ -150,7 +150,7 @@ public class ServerCommandManager extends CommandHandler implements ICommandList
             }
         }
 
-        if (sender != minecraftserver && minecraftserver.worlds[0].getGameRules().getBoolean("logAdminCommands"))
+        if (sender != minecraftserver && minecraftserver.worlds[0].getGameRules().getBoolean("logAdminCommands") && !org.spigotmc.SpigotConfig.silentCommandBlocks) // Spigot
         {
             minecraftserver.sendMessage(itextcomponent);
         }

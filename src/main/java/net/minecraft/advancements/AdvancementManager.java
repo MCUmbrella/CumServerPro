@@ -173,6 +173,11 @@ public class AdvancementManager
                         Path path2 = path.relativize(path1);
                         String s = FilenameUtils.removeExtension(path2.toString()).replaceAll("\\\\", "/");
                         ResourceLocation resourcelocation = new ResourceLocation("minecraft", s);
+                        // Spigot start
+                        if (org.spigotmc.SpigotConfig.disabledAdvancements != null && (org.spigotmc.SpigotConfig.disabledAdvancements.contains("*") || org.spigotmc.SpigotConfig.disabledAdvancements.contains(resourcelocation.toString()))) {
+                            continue;
+                        }
+                        // Spigot end
 
                         if (!map.containsKey(resourcelocation))
                         {

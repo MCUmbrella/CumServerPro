@@ -123,7 +123,13 @@ public class NetHandlerStatusServer implements INetHandlerStatusServer
             }
 
             ServerStatusResponse.Players playerSample = new ServerStatusResponse.Players(event.getMaxPlayers(), profiles.size());
-            playerSample.setPlayers(profiles.toArray(new GameProfile[profiles.size()]));
+            // Spigot Start
+            if (!profiles.isEmpty())
+            {
+                java.util.Collections.shuffle(profiles); // This sucks, its inefficient but we have no simple way of doing it differently
+                profiles = profiles.subList(0, Math.min( profiles.size(), org.spigotmc.SpigotConfig.playerSample)); // Cap the sample to n (or less) displayed players, ie: Vanilla behaviour
+            }
+            // Spigot End
 
             ServerStatusResponse ping = new ServerStatusResponse();
             ping.setFavicon(event.icon.value);

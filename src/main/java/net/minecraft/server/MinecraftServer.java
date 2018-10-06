@@ -589,6 +589,13 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         }
 
         CommandBase.setCommandListener(null); // Forge: fix MC-128561
+
+        // Spigot start
+        if (org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) {
+            LOGGER.info("Saving usercache.json");
+            this.profileCache.save();
+        }
+        // Spigot end
     }
 
     public boolean isServerRunning()

@@ -473,7 +473,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 }
                 speed *= 2f; // TODO: Get the speed of the vehicle instead of the player
 
-                if (d10 - d9 > Math.max(100.0D, Math.pow((double) (10.0F * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(entity.getName()))) {
+                if (d10 - d9 > Math.max(100.0D, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(entity.getName()))) { // Spigot
                     // CraftBukkit end
                     LOGGER.warn("{} (vehicle of {}) moved too quickly! {},{},{}", entity.getName(), this.player.getName(), Double.valueOf(d6), Double.valueOf(d7), Double.valueOf(d8));
                     this.netManager.sendPacket(new SPacketMoveVehicle(entity));
@@ -498,7 +498,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 d10 = d6 * d6 + d7 * d7 + d8 * d8;
                 boolean flag1 = false;
 
-                if (d10 > 0.0625D)
+                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) // Spigot
                 {
                     flag1 = true;
                     LOGGER.warn("{} moved wrongly!", (Object)entity.getName());
@@ -731,7 +731,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                             {
                                 float f2 = this.player.isElytraFlying() ? 300.0F : 100.0F;
 
-                                if (d11 - d10 > Math.max(f2, Math.pow((double) (10.0F * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(this.player.getName())))
+                                if (d11 - d10 > Math.max(f2, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(this.player.getName()))) // Spigot
                                 {
                                     LOGGER.warn("{} moved too quickly! {},{},{}", this.player.getName(), Double.valueOf(d7), Double.valueOf(d8), Double.valueOf(d9));
                                     this.setPlayerLocation(this.player.posX, this.player.posY, this.player.posZ, this.player.rotationYaw, this.player.rotationPitch);
@@ -764,7 +764,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                             d11 = d7 * d7 + d8 * d8 + d9 * d9;
                             boolean flag = false;
 
-                            if (!this.player.isInvulnerableDimensionChange() && d11 > 0.0625D && !this.player.isPlayerSleeping() && !this.player.interactionManager.isCreative() && this.player.interactionManager.getGameType() != GameType.SPECTATOR)
+                            if (!this.player.isInvulnerableDimensionChange() && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isPlayerSleeping() && !this.player.interactionManager.isCreative() && this.player.interactionManager.getGameType() != GameType.SPECTATOR)  // Spigot
                             {
                                 flag = true;
                                 LOGGER.warn("{} moved wrongly!", (Object)this.player.getName());
@@ -1456,9 +1456,20 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 this.serverController.getPlayerList().sendMessage(itextcomponent, false);
             }
 
+            // Spigot start - spam exclusions
+            boolean counted = true;
+            for (String exclude : org.spigotmc.SpigotConfig.spamExclusions)
+            {
+                if (exclude != null && s.startsWith(exclude))
+                {
+                    counted = false;
+                    break;
+                }
+            }
+            // Spigot end
             // CraftBukkit start - replaced with thread safe throttle
             // this.chatThrottle += 20;
-            if (chatSpamField.addAndGet(this, 20) > 200 && !this.serverController.getPlayerList().canSendCommands(this.player.getGameProfile())) {
+            if (counted && chatSpamField.addAndGet(this, 20) > 200 && !this.serverController.getPlayerList().canSendCommands(this.player.getGameProfile())) {
                 if (!isSync) {
                     Waitable waitable = new Waitable() {
                         @Override
@@ -1561,6 +1572,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
     {
         // CraftBukkit start - whole method
         // this.serverController.getCommandManager().executeCommand(this.player, command);
+        if (org.spigotmc.SpigotConfig.logCommands) // Spigot
         this.LOGGER.info(this.player.getName() + " issued server command: " + command);
 
         CraftPlayer player = this.getPlayer();
@@ -2242,7 +2254,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             boolean flag1 = packetIn.getSlotId() >= 1 && packetIn.getSlotId() <= 45;
             // boolean flag2 = itemstack.isEmpty() || itemstack.getMetadata() >= 0 && itemstack.getCount() <= 64 && !itemstack.isEmpty();
             // CraftBukkit - Add invalidItems check
-            boolean flag2 = itemstack.isEmpty() || itemstack.getMetadata() >= 0 && itemstack.getCount() <= 64 && !itemstack.isEmpty() && !invalidItems.contains(Item.getIdFromItem(itemstack.getItem()));
+            boolean flag2 = (itemstack.isEmpty() || itemstack.getMetadata() >= 0 && itemstack.getCount() <= 64 && !itemstack.isEmpty() && !invalidItems.contains(Item.getIdFromItem(itemstack.getItem())) || !org.spigotmc.SpigotConfig.filterCreativeItems); // Spigot
             if (flag || (flag1 && !ItemStack.areItemStacksEqual(this.player.inventoryContainer.getSlot(packetIn.getSlotId()).getStack(), packetIn.getStack()))) { // Insist on valid slot
                 // CraftBukkit start - Call click event
                 InventoryView inventory = this.player.inventoryContainer.getBukkitView();

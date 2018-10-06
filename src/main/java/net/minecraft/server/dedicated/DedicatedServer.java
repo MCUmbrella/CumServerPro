@@ -54,6 +54,7 @@ import org.bukkit.craftbukkit.LoggerOutputStream;
 import org.bukkit.craftbukkit.util.Waitable;
 import org.bukkit.event.server.RemoteServerCommandEvent;
 import org.bukkit.event.server.ServerCommandEvent;
+import org.spigotmc.SpigotConfig;
 
 @SideOnly(Side.SERVER)
 public class DedicatedServer extends MinecraftServer implements IServer
@@ -229,19 +230,19 @@ public class DedicatedServer extends MinecraftServer implements IServer
             LOGGER.info("Generating keypair");
             this.setKeyPair(CryptManager.generateKeyPair());
             LOGGER.info("Starting Minecraft server on {}:{}", this.getServerHostname().isEmpty() ? "*" : this.getServerHostname(), Integer.valueOf(this.getServerPort()));
-
-            try
-            {
-                this.getNetworkSystem().addLanEndpoint(inetaddress, this.getServerPort());
+            if(!SpigotConfig.lateBind) {
+                try
+                {
+                    this.getNetworkSystem().addLanEndpoint(inetaddress, this.getServerPort());
+                }
+                catch (IOException ioexception)
+                {
+                    LOGGER.warn("**** FAILED TO BIND TO PORT!");
+                    LOGGER.warn("The exception was: {}", (Object)ioexception.toString());
+                    LOGGER.warn("Perhaps a server is already running on that port?");
+                    return false;
+                }
             }
-            catch (IOException ioexception)
-            {
-                LOGGER.warn("**** FAILED TO BIND TO PORT!");
-                LOGGER.warn("The exception was: {}", (Object)ioexception.toString());
-                LOGGER.warn("Perhaps a server is already running on that port?");
-                return false;
-            }
-
             // this.setPlayerList(new DedicatedPlayerList(this));  // Spigot - moved up
 
             if (!this.isServerInOnlineMode())
@@ -347,6 +348,17 @@ public class DedicatedServer extends MinecraftServer implements IServer
                     this.settings.getIntProperty("spawn-protection", this.server.getBukkitSpawnRadius());
                     this.server.removeBukkitSpawnRadius();
                     this.settings.saveProperties();
+                }
+
+                if (SpigotConfig.lateBind) {
+                    try {
+                        this.getNetworkSystem().addLanEndpoint(inetaddress, this.getServerPort());
+                    } catch (IOException ioexception) {
+                        LOGGER.warn("**** FAILED TO BIND TO PORT!");
+                        LOGGER.warn("The exception was: {}", (Object)ioexception.toString());
+                        LOGGER.warn("Perhaps a server is already running on that port?");
+                        return false;
+                    }
                 }
 
                 if (this.getMaxTickTime() > 0L && false) // CatServer - disable WatchDog

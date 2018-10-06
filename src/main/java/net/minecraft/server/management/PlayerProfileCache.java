@@ -143,7 +143,7 @@ public class PlayerProfileCache
         this.usernameToProfileEntryMap.put(gameProfile.getName().toLowerCase(Locale.ROOT), playerprofilecache$profileentry);
         this.uuidToProfileEntryMap.put(uuid, playerprofilecache$profileentry);
         this.gameProfiles.addFirst(gameProfile);
-        this.save();
+        if(!org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) this.save(); // Spigot - skip saving if disabled
     }
 
     @Nullable
@@ -177,7 +177,7 @@ public class PlayerProfileCache
             }
         }
 
-        this.save();
+        if(!org.spigotmc.SpigotConfig.saveUserCacheOnStopOnly) this.save(); // Spigot - skip saving if disabled
         return playerprofilecache$profileentry == null ? null : playerprofilecache$profileentry.getGameProfile();
     }
 
@@ -247,7 +247,7 @@ public class PlayerProfileCache
 
     public void save()
     {
-        String s = this.gson.toJson(this.getEntriesWithLimit(1000));
+        String s = this.gson.toJson(this.getEntriesWithLimit(org.spigotmc.SpigotConfig.userCacheCap)); // Spigot
         BufferedWriter bufferedwriter = null;
 
         try
