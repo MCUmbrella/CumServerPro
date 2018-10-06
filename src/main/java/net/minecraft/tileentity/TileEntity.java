@@ -543,7 +543,7 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
         if (state instanceof InventoryHolder)
         {
             return (InventoryHolder) state;
-        } else if (state instanceof IInventory) { // CatServer
+        } else if (this instanceof IInventory) { // CatServer
             return (InventoryHolder) new CraftCustomContainer(state.getBlock());
         }
         return null;
