@@ -65,7 +65,7 @@ public class EntityItem extends Entity
     {
         this(worldIn, x, y, z);
         this.setItem(stack);
-        this.lifespan = (stack.getItem() == null ? 6000 : stack.getItem().getEntityLifespan(stack, worldIn));
+        this.lifespan = (stack.getItem() == null ? world.spigotConfig.itemDespawnRate : stack.getItem().getEntityLifespan(stack, worldIn)); // Spigot
     }
 
     protected boolean canTriggerWalking()
@@ -231,7 +231,10 @@ public class EntityItem extends Entity
 
     private void searchForOtherItemsNearby()
     {
-        for (EntityItem entityitem : this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(0.5D, 0.0D, 0.5D)))
+        // Spigot start
+        double radius = world.spigotConfig.itemMerge;
+        for (EntityItem entityitem : this.world.getEntitiesWithinAABB(EntityItem.class, this.getEntityBoundingBox().grow(radius, radius, radius)))
+        // Spigot end
         {
             this.combineItems(entityitem);
         }
@@ -286,12 +289,14 @@ public class EntityItem extends Entity
                     }
                     else
                     {
-                        if (org.bukkit.craftbukkit.event.CraftEventFactory.callItemMergeEvent(this, other).isCancelled()) return false;
-                        itemstack1.grow(itemstack.getCount());
-                        other.pickupDelay = Math.max(other.pickupDelay, this.pickupDelay);
-                        other.age = Math.min(other.age, this.age);
-                        other.setItem(itemstack1);
-                        this.setDead();
+                        // Spigot start
+                        if (org.bukkit.craftbukkit.event.CraftEventFactory.callItemMergeEvent(other, this).isCancelled()) return false;
+                        itemstack.grow(itemstack1.getCount());
+                        this.pickupDelay = Math.max(other.pickupDelay, this.pickupDelay);
+                        this.age = Math.min(other.age, this.age);
+                        this.setItem(itemstack);
+                        other.setDead();
+                        // Spigot end
                         return true;
                     }
                 }

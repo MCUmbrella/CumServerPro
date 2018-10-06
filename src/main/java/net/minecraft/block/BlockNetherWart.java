@@ -49,7 +49,7 @@ public class BlockNetherWart extends BlockBush
     {
         int i = ((Integer)state.getValue(AGE)).intValue();
 
-        if (i < 3 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt(10) == 0))
+        if (i < 3 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt(Math.max(1, (int) (100.0F / worldIn.spigotConfig.wartModifier) * 10)) == 0))
         {
             IBlockState newState = state.withProperty(AGE, Integer.valueOf(i + 1));
 //            worldIn.setBlockState(pos, newState, 2);

@@ -60,7 +60,7 @@ public class BlockSapling extends BlockBush implements IGrowable
             super.updateTick(worldIn, pos, state, rand);
 
             if (!worldIn.isAreaLoaded(pos, 1)) return; // Forge: prevent loading unloaded chunks when checking neighbor's light
-            if (worldIn.getLightFromNeighbors(pos.up()) >= 9 && rand.nextInt(7) == 0)
+            if (worldIn.getLightFromNeighbors(pos.up()) >= 9 && rand.nextInt(Math.max(2, (int) (((100.0F / worldIn.spigotConfig.saplingModifier) * 7) + 0.5F))) == 0)
             {
                 worldIn.captureTreeGeneration = true;
                 this.grow(worldIn, pos, state, rand);

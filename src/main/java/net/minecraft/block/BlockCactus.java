@@ -55,7 +55,7 @@ public class BlockCactus extends Block implements net.minecraftforge.common.IPla
 
                 if(net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, blockpos, state, true))
                 {
-                if (j == 15)
+                if (j >= (byte) range(3,((100.0F/ worldIn.spigotConfig.cactusModifier)*15) + 0.5F, 15)) //Spigot
                 {
                     // worldIn.setBlockState(blockpos, this.getDefaultState());
                     IBlockState iblockstate = state.withProperty(AGE, Integer.valueOf(0));

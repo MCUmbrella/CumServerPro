@@ -49,7 +49,7 @@ public class BlockCocoa extends BlockHorizontal implements IGrowable
         {
             int i = ((Integer)state.getValue(AGE)).intValue();
 
-            if (i < 2 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt(5) == 0))
+            if (i < 2 && net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt(Math.max(1, (int) (100.0F / worldIn.spigotConfig.cocoaModifier) * 5)) == 0)) // Spigot
             {
                 IBlockState data = state.withProperty(AGE, i + 1);
                 CraftEventFactory.handleBlockGrowEvent(worldIn, pos.getX(), pos.getY(), pos.getZ(), this, getMetaFromState(data));

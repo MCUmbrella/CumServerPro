@@ -234,6 +234,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public final byte activationType = org.spigotmc.ActivationRange.initializeEntityActivationType(this);
     public final boolean defaultActivationState;
     public long activatedTick = Integer.MIN_VALUE;
+    public boolean fromMobSpawner;
     public void inactiveTick() { }
     // Spigot end
 

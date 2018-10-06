@@ -814,6 +814,12 @@ public abstract class EntityLiving extends EntityLivingBase
         this.world.profiler.startSection("checkDespawn");
         this.despawnEntity();
         this.world.profiler.endSection();
+        // Spigot Start
+        if (this.fromMobSpawner)
+        {
+            return;
+        }
+        // Spigot End
         this.world.profiler.startSection("sensing");
         this.senses.clearSensingCache();
         this.world.profiler.endSection();

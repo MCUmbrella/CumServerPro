@@ -30,7 +30,7 @@ public class BlockMushroom extends BlockBush implements IGrowable
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
     {
         final int sourceX = pos.getX(), sourceY = pos.getY(), sourceZ = pos.getZ();
-        if (rand.nextInt(25) == 0)
+        if (rand.nextInt(Math.max(1, (int) (100.0F / worldIn.spigotConfig.mushroomModifier) * 25)) == 0) // Spigot
         {
             int i = 5;
             int j = 4;

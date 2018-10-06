@@ -19,6 +19,8 @@ import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ICrashReportDetail;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLiving;
+import net.minecraft.entity.EnumCreatureType;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
@@ -72,6 +74,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     private int queuedLightChecks;
     private final ConcurrentLinkedQueue<BlockPos> tileEntityPosQueue;
     public boolean unloadQueued;
+    public gnu.trove.map.hash.TObjectIntHashMap<Class> entityCount = new gnu.trove.map.hash.TObjectIntHashMap<Class>(); // Spigot
 
     // CraftBukkit start - Neighbor loaded cache for chunk lighting and entity ticking
     private int neighbors = 0x1 << 12;
@@ -781,6 +784,22 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         entityIn.chunkCoordY = k;
         entityIn.chunkCoordZ = this.z;
         this.entityLists[k].add(entityIn);
+        // Spigot start - increment creature type count
+        // Keep this synced up with World.a(Class)
+        if (entityIn instanceof EntityLiving) {
+            EntityLiving entityinsentient = (EntityLiving) entityIn;
+            if (entityinsentient.canDespawn() && entityinsentient.isNoDespawnRequired()) {
+                return;
+            }
+        }
+        for ( EnumCreatureType creatureType : EnumCreatureType.values() )
+        {
+            if ( creatureType.getCreatureClass().isAssignableFrom( entityIn.getClass() ) )
+            {
+                this.entityCount.adjustOrPutValue( creatureType.getCreatureClass(), 1, 1 );
+            }
+        }
+        // Spigot end
     }
 
     public void removeEntity(Entity entityIn)
@@ -801,6 +820,22 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         }
 
         this.entityLists[index].remove(entityIn);
+        // Spigot start - decrement creature type count
+        // Keep this synced up with World.a(Class)
+        if (entityIn instanceof EntityLiving) {
+            EntityLiving entityinsentient = (EntityLiving) entityIn;
+            if (entityinsentient.canDespawn() && entityinsentient.isNoDespawnRequired()) {
+                return;
+            }
+        }
+        for ( EnumCreatureType creatureType : EnumCreatureType.values() )
+        {
+            if ( creatureType.getCreatureClass().isAssignableFrom( entityIn.getClass() ) )
+            {
+                this.entityCount.adjustValue( creatureType.getCreatureClass(), -1 );
+            }
+        }
+        // Spigot end
     }
 
     public boolean canSeeSky(BlockPos pos)

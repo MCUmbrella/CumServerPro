@@ -63,7 +63,7 @@ public class MapGenScatteredFeature extends MapGenStructure
 
         int k = chunkX / this.maxDistanceBetweenScatteredFeatures;
         int l = chunkZ / this.maxDistanceBetweenScatteredFeatures;
-        Random random = this.world.setRandomSeed(k, l, 14357617);
+        Random random = this.world.setRandomSeed(k, l, this.world.spigotConfig.largeFeatureSeed); // Spigot
         k = k * this.maxDistanceBetweenScatteredFeatures;
         l = l * this.maxDistanceBetweenScatteredFeatures;
         k = k + random.nextInt(this.maxDistanceBetweenScatteredFeatures - 8);

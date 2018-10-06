@@ -72,7 +72,7 @@ public class BlockStem extends BlockBush implements IGrowable
         {
             float f = BlockCrops.getGrowthChance(this, worldIn, pos);
 
-            if(net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt((int)(25.0F / f) + 1) == 0))
+            if(net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt((int) ((100.0F / (this == Blocks.PUMPKIN_STEM ? worldIn.spigotConfig.pumpkinModifier : worldIn.spigotConfig.melonModifier)) * (25.0F / f)) + 1) == 0)) // Spigot
             {
                 int i = ((Integer)state.getValue(AGE)).intValue();
 

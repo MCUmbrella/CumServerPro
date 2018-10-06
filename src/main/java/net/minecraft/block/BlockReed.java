@@ -57,7 +57,7 @@ public class BlockReed extends Block implements net.minecraftforge.common.IPlant
 
                     if(net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, true))
                     {
-                    if (j == 15)
+                    if (j >= (byte) range(3, ((100.0F / worldIn.spigotConfig.caneModifier) * 15) + 0.5F, 15)) // Spigot
                     {
 //                        worldIn.setBlockState(pos.up(), this.getDefaultState());
                         BlockPos upPos = pos.up();

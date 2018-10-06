@@ -330,7 +330,7 @@ public class EntitySlime extends EntityLiving implements IMob
                     return super.getCanSpawnHere();
                 }
 
-                if (this.rand.nextInt(10) == 0 && chunk.getRandomWithSeed(987234911L).nextInt(10) == 0 && this.posY < 40.0D)
+                if (this.rand.nextInt(10) == 0 && chunk.getRandomWithSeed(world.spigotConfig.slimeSeed).nextInt(10) == 0 && this.posY < 40.0D)
                 {
                     return super.getCanSpawnHere();
                 }

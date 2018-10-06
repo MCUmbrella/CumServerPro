@@ -64,7 +64,7 @@ public class MapGenVillage extends MapGenStructure
 
         int k = chunkX / this.distance;
         int l = chunkZ / this.distance;
-        Random random = this.world.setRandomSeed(k, l, 10387312);
+        Random random = this.world.setRandomSeed(k, l, this.world.spigotConfig.villageSeed); // Spigot
         k = k * this.distance;
         l = l * this.distance;
         k = k + random.nextInt(this.distance - 8);

@@ -59,7 +59,7 @@ public class EntityTracker
     public EntityTracker(WorldServer theWorldIn)
     {
         this.world = theWorldIn;
-        this.maxTrackingDistanceThreshold = theWorldIn.getMinecraftServer().getPlayerList().getEntityViewDistance();
+        this.maxTrackingDistanceThreshold = net.minecraft.server.management.PlayerChunkMap.getFurthestViewableBlock(theWorldIn.spigotConfig.viewDistance); // Spigot
     }
 
     public static long getPositionLong(double value)
@@ -217,6 +217,7 @@ public class EntityTracker
 
     public void track(Entity entityIn, int trackingRange, final int updateFrequency, boolean sendVelocityUpdates)
     {
+        trackingRange = org.spigotmc.TrackingRange.getEntityTrackingRange(entityIn, trackingRange); // Spigot
         try
         {
             if (this.trackedEntityHashTable.containsItem(entityIn.getEntityId()))

@@ -31,6 +31,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.EntityGhast;
 import net.minecraft.entity.monster.EntityGolem;
 import net.minecraft.entity.monster.EntityMob;
@@ -1398,6 +1399,23 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         } else if (entity.getBukkitEntity() instanceof org.bukkit.entity.Vehicle){
             event = CraftEventFactory.callVehicleCreateEvent(entity);
         }
+        // Spigot start
+        else if (entity instanceof EntityXPOrb) {
+            EntityXPOrb xp = (EntityXPOrb) entity;
+            double radius = spigotConfig.expMerge;
+            if (radius > 0) {
+                List<Entity> entities = this.getEntitiesWithinAABBExcludingEntity(entity, entity.getCollisionBoundingBox().grow(radius, radius, radius));
+                for (Entity e : entities) {
+                    if (e instanceof EntityXPOrb) {
+                        EntityXPOrb loopItem = (EntityXPOrb) e;
+                        if (!loopItem.isDead) {
+                            xp.xpValue += loopItem.xpValue;
+                            loopItem.setDead();
+                        }
+                    }
+                }
+            }
+        } // Spigot end
 
         if (event != null && (event.isCancelled() || entity.isDead)) {
             entity.isDead = true;

@@ -80,7 +80,7 @@ public class BlockCrops extends BlockBush implements IGrowable
             {
                 float f = getGrowthChance(this, worldIn, pos);
 
-                if(net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt((int)(25.0F / f) + 1) == 0))
+                if(net.minecraftforge.common.ForgeHooks.onCropsGrowPre(worldIn, pos, state, rand.nextInt((int) ((100.0F / worldIn.spigotConfig.wheatModifier) * (25.0F / f)) + 1) == 0)) // Spigot
                 {
                     IBlockState data = this.withAge(i + 1);
                     CraftEventFactory.handleBlockGrowEvent(worldIn, pos.getX(), pos.getY(), pos.getZ(), this, getMetaFromState(data));
