@@ -121,7 +121,7 @@ public abstract class EntityHanging extends Entity
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
 
-        if (this.tickCounter1++ == 100 && !this.world.isRemote)
+        if (this.tickCounter1++ == this.world.spigotConfig.hangingTickFrequency && !this.world.isRemote) // Spigot
         {
             this.tickCounter1 = 0;
 

@@ -268,21 +268,24 @@ public class EntityWither extends EntityMob implements IRangedAttackMob
                 if (!event.isCancelled()) {
                     this.world.newExplosion(this, this.posX, this.posY + (double) this.getEyeHeight(), this.posZ, event.getRadius(), event.getFire(), net.minecraftforge.event.ForgeEventFactory.getMobGriefingEvent(this.world, this));
                 }
-                // this.world.playBroadcastSound(1023, new BlockPos(this), 0);
-                int viewDistance = ((WorldServer) this.world).getServer().getViewDistance() * 16;
-                for (EntityPlayerMP player : (List<EntityPlayerMP>) MinecraftServer.getServerInst().getPlayerList().getPlayers()) {
+
+                // CraftBukkit start - Use relative location for far away sounds
+                int viewDistance = this.world.getServer().getViewDistance() * 16;
+                for (EntityPlayerMP player : world.getMinecraftServer().getServer().getPlayerList().playerEntityList) {
                     double deltaX = this.posX - player.posX;
                     double deltaZ = this.posZ - player.posZ;
                     double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+                    if (world.spigotConfig.witherSpawnSoundRadius > 0 && distanceSquared > world.spigotConfig.witherSpawnSoundRadius * world.spigotConfig.witherSpawnSoundRadius) continue; // Spigot
                     if (distanceSquared > viewDistance * viewDistance) {
                         double deltaLength = Math.sqrt(distanceSquared);
                         double relativeX = player.posX + (deltaX / deltaLength) * viewDistance;
                         double relativeZ = player.posZ + (deltaZ / deltaLength) * viewDistance;
-                        player.connection.sendPacket(new SPacketEffect(1023, new BlockPos((int) relativeX, (int) this.posY, (int) relativeZ), 0, true));
+                        player.connection.sendPacket(new SPacketEffect(1013, new BlockPos((int) relativeX, (int) this.posY, (int) relativeZ), 0, true));
                     } else {
-                        player.connection.sendPacket(new SPacketEffect(1023, new BlockPos((int) this.posX, (int) this.posY, (int) this.posZ), 0, true));
+                        player.connection.sendPacket(new SPacketEffect(1013, new BlockPos((int) this.posX, (int) this.posY, (int) this.posZ), 0, true));
                     }
                 }
+                // CraftBukkit end
             }
 
             this.setInvulTime(j1);

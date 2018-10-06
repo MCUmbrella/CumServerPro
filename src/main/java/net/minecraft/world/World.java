@@ -166,6 +166,9 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public static boolean haveWeSilencedAPhysicsCrash;
     public static String blockLocation;
+    private org.spigotmc.TickLimiter entityLimiter;
+    private org.spigotmc.TickLimiter tileLimiter;
+    private int tileTickPosition;
 
     public CraftWorld getWorld() {
         return this.world;
@@ -259,6 +262,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         });
         this.getServer().addWorld(this.world);
         // CraftBukkit end
+        this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
+        this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
     }
 
     protected World(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client)
@@ -279,6 +284,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.worldBorder = providerIn.createWorldBorder();
         perWorldStorage = DimensionManager.getWorld(0) != null ? DimensionManager.getWorld(0).mapStorage : new MapStorage(null);
         this.mapStorage = DimensionManager.getWorld(0) != null ? DimensionManager.getWorld(0).mapStorage : new MapStorage(null);
+        this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
+        this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
     }
 
     public World init()
@@ -1993,7 +2000,12 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
         org.spigotmc.ActivationRange.activateEntities(this); // Spigot
         // CraftBukkit start - Use field for loop variable
-        for (this.tickPosition = 0; this.tickPosition < this.loadedEntityList.size(); ++this.tickPosition) {
+        int entitiesThisCycle = 0;
+        if (tickPosition < 0) tickPosition = 0;
+        for (entityLimiter.initTick();
+                entitiesThisCycle < loadedEntityList.size() && (entitiesThisCycle % 10 != 0 || entityLimiter.shouldContinue());
+                tickPosition++, entitiesThisCycle++) {
+            tickPosition = (tickPosition < loadedEntityList.size()) ? tickPosition : 0;
             Entity entity2 = (Entity) this.loadedEntityList.get(this.tickPosition);
             // CraftBukkit end
             Entity entity3 = entity2.getRidingEntity();
@@ -2072,12 +2084,20 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             this.tileEntitiesToBeRemoved.clear();
         }
 
-        Iterator<TileEntity> iterator = this.tickableTileEntities.iterator();
-
-        while (iterator.hasNext())
-        {
-            TileEntity tileentity = iterator.next();
-
+        int tilesThisCycle = 0;
+        for (tileLimiter.initTick();
+             tilesThisCycle < this.tickableTileEntities.size() && (tilesThisCycle % 10 != 0 || tileLimiter.shouldContinue());
+             tileTickPosition++, tilesThisCycle++) {
+            tileTickPosition = (tileTickPosition < tickableTileEntities.size()) ? tileTickPosition : 0;
+            TileEntity tileentity = (TileEntity) this.tickableTileEntities.get(tileTickPosition);
+            // Spigot start
+            if (tileentity == null) {
+                getServer().getLogger().severe("Spigot has detected a null entity and has removed it, preventing a crash");
+                tilesThisCycle--;
+                this.tickableTileEntities.remove(tileTickPosition--);
+                continue;
+            }
+            // Spigot end
             if (!tileentity.isInvalid() && tileentity.hasWorld())
             {
                 BlockPos blockpos = tileentity.getPos();
@@ -2114,7 +2134,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
             if (tileentity.isInvalid())
             {
-                iterator.remove();
+                tilesThisCycle--;
+                this.tickableTileEntities.remove(tileTickPosition--);
                 this.loadedTileEntityList.remove(tileentity);
 
                 if (this.isBlockLoaded(tileentity.getPos()))

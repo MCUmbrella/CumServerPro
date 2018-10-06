@@ -63,6 +63,7 @@ public class EntityTNTPrimed extends Entity
 
     public void onUpdate()
     {
+        if (world.spigotConfig.currentPrimedTnt++ > world.spigotConfig.maxTntTicksPerTick) { return; } // Spigot
         this.prevPosX = this.posX;
         this.prevPosY = this.posY;
         this.prevPosZ = this.posZ;
