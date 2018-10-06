@@ -176,7 +176,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
 
                 if (flag)
                 {
-                    this.setTransferCooldown(8);
+                    this.setTransferCooldown(world.spigotConfig.hopperTransfer); // Spigot
                     this.markDirty();
                     return true;
                 }
@@ -245,36 +245,11 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
                     if (!this.getStackInSlot(i).isEmpty())
                     {
                         ItemStack itemstack = this.getStackInSlot(i).copy();
-                        // ItemStack itemstack1 = putStackInInventoryAllSlots(this, iinventory, this.decrStackSize(i, 1), enumfacing);
-                        // CraftBukkit start - Call event when pushing items into other inventories
-                        CraftItemStack oitemstack = CraftItemStack.asCraftMirror(this.decrStackSize(i, 1));
-
-                        Inventory destinationInventory;
-                        // Have to special case large chests as they work oddly
-                        if (iinventory instanceof InventoryLargeChest) {
-                            destinationInventory = new org.bukkit.craftbukkit.inventory.CraftInventoryDoubleChest((InventoryLargeChest) iinventory);
-                        } else {
-                            destinationInventory = iinventory.getOwner() != null ? iinventory.getOwner().getInventory() : null; // CatServer
-                        }
-
-                        InventoryMoveItemEvent event = new InventoryMoveItemEvent(this.getOwner().getInventory(), oitemstack.clone(), destinationInventory, true);
-                        if (destinationInventory != null) this.getWorld().getServer().getPluginManager().callEvent(event); //CatServer
-                        if (event.isCancelled()) {
-                            this.setInventorySlotContents(i, itemstack);
-                            this.setTransferCooldown(8); // Delay hopper checks
-                            return false;
-                        }
-                        ItemStack itemstack1 = putStackInInventoryAllSlots(this, iinventory, CraftItemStack.asNMSCopy(event.getItem()), enumfacing);
+                        ItemStack itemstack1 = putStackInInventoryAllSlots(this, iinventory, this.decrStackSize(i, 1), enumfacing);
 
                         if (itemstack1.isEmpty())
                         {
-                            // iinventory.markDirty();
-                            if (event.getItem().equals(oitemstack)) {
-                                iinventory.markDirty();
-                            } else {
-                                this.setInventorySlotContents(i, itemstack);
-                            }
-                            // CraftBukkit end
+                            iinventory.markDirty();
                             return true;
                         }
 
@@ -417,7 +392,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
             ItemStack itemstack1 = itemstack.copy();
             // ItemStack itemstack2 = putStackInInventoryAllSlots(inventoryIn, hopper, inventoryIn.decrStackSize(index, 1), (EnumFacing)null);
             // CraftBukkit start - Call event on collection of items from inventories into the hopper
-            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(inventoryIn.decrStackSize(index, 1));
+            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(inventoryIn.decrStackSize(index, hopper.getWorld().spigotConfig.hopperAmount)); // Spigot
 
             Inventory sourceInventory;
             // Have to special case large chests as they work oddly
@@ -434,13 +409,14 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
                 inventoryIn.setInventorySlotContents(index, itemstack1);
 
                 if (hopper instanceof TileEntityHopper) {
-                    ((TileEntityHopper) hopper).setTransferCooldown(8); // Delay hopper checks
+                    ((TileEntityHopper) hopper).setTransferCooldown(hopper.getWorld().spigotConfig.hopperTransfer); // Spigot
                 } else if (hopper instanceof EntityMinecartHopper) {
-                    ((EntityMinecartHopper) hopper).setTransferTicker(4); // Delay hopper minecart checks
+                    ((EntityMinecartHopper) hopper).setTransferTicker(hopper.getWorld().spigotConfig.hopperTransfer / 2); // Spigot
                 }
 
                 return false;
             }
+            int origCount = event.getItem().getAmount(); // Spigot
             ItemStack itemstack2 = putStackInInventoryAllSlots(inventoryIn, hopper, CraftItemStack.asNMSCopy(event.getItem()), null);
 
             if (itemstack2.isEmpty())
@@ -454,7 +430,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
                 // CraftBukkit end
                 return true;
             }
-
+            itemstack1.stackSize -= origCount - itemstack2.stackSize; // Spigot
             inventoryIn.setInventorySlotContents(index, itemstack1);
         }
 
@@ -585,7 +561,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
                             }
                         }
 
-                        tileentityhopper1.setTransferCooldown(8 - k);
+                        tileentityhopper1.setTransferCooldown(tileentityhopper1.world.spigotConfig.hopperTransfer - k); // Spigot
                     }
                 }
 
@@ -619,6 +595,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
         int j = MathHelper.floor(y);
         int k = MathHelper.floor(z);
         BlockPos blockpos = new BlockPos(i, j, k);
+        if (!worldIn.isBlockLoaded(blockpos)) return null; // Spigot
         net.minecraft.block.state.IBlockState state = worldIn.getBlockState(blockpos);
         Block block = state.getBlock();
 

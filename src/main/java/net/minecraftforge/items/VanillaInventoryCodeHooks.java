@@ -33,6 +33,9 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import org.apache.commons.lang3.tuple.ImmutablePair;
 import org.apache.commons.lang3.tuple.Pair;
+import org.bukkit.craftbukkit.inventory.CraftItemStack;
+import org.bukkit.event.inventory.InventoryMoveItemEvent;
+import org.bukkit.inventory.Inventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -140,14 +143,33 @@ public class VanillaInventoryCodeHooks
                     if (!hopper.getStackInSlot(i).isEmpty())
                     {
                         ItemStack originalSlotContents = hopper.getStackInSlot(i).copy();
-                        ItemStack insertStack = hopper.decrStackSize(i, 1);
-                        ItemStack remainder = putStackInInventoryAllSlots(hopper, destination, itemHandler, insertStack);
+                        // CatServer start - Call event when pushing items into other inventories
+                        CraftItemStack remainder = CraftItemStack.asCraftMirror(hopper.decrStackSize(i, hopper.world.spigotConfig.hopperAmount)); // Spigot
 
-                        if (remainder.isEmpty())
-                        {
+                        TileEntity te = (TileEntity) destination;
+                        Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : null;
+
+                        InventoryMoveItemEvent event = new InventoryMoveItemEvent(hopper.getOwner().getInventory(), remainder.clone(), destinationInventory, true);
+                        if (destinationInventory != null) hopper.getWorld().getServer().getPluginManager().callEvent(event); //CatServer
+                        if (event.isCancelled()) {
+                            hopper.setInventorySlotContents(i, originalSlotContents);
+                            hopper.setTransferCooldown(hopper.world.spigotConfig.hopperTransfer); // Spigot
                             return true;
                         }
+                        int origCount = event.getItem().getAmount(); // Spigot
+                        ItemStack itemstack1 = putStackInInventoryAllSlots(hopper, destination, itemHandler, CraftItemStack.asNMSCopy(event.getItem()));
 
+                        if (itemstack1.isEmpty())
+                        {
+                            if (event.getItem().equals(remainder)) {
+                                te.markDirty();
+                            } else {
+                                hopper.setInventorySlotContents(i, originalSlotContents);
+                            }
+                            // CatServer end
+                            return true;
+                        }
+                        originalSlotContents.stackSize -= origCount - itemstack1.stackSize; // Spigot
                         hopper.setInventorySlotContents(i, originalSlotContents);
                     }
                 }
