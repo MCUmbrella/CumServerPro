@@ -1411,7 +1411,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             EntityXPOrb xp = (EntityXPOrb) entity;
             double radius = spigotConfig.expMerge;
             if (radius > 0) {
-                List<Entity> entities = this.getEntitiesWithinAABBExcludingEntity(entity, entity.getCollisionBoundingBox().grow(radius, radius, radius));
+                List<Entity> entities = this.getEntitiesWithinAABBExcludingEntity(entity, entity.getEntityBoundingBox().grow(radius, radius, radius));
                 for (Entity e : entities) {
                     if (e instanceof EntityXPOrb) {
                         EntityXPOrb loopItem = (EntityXPOrb) e;
