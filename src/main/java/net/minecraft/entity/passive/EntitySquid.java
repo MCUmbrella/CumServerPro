@@ -191,7 +191,7 @@ public class EntitySquid extends EntityWaterMob
 
     public boolean getCanSpawnHere()
     {
-        return this.posY > 45.0D && this.posY < (double)this.world.getSeaLevel() && super.getCanSpawnHere();
+        return this.posY > this.world.spigotConfig.squidSpawnRangeMin && this.posY < (double)this.world.getSeaLevel() && super.getCanSpawnHere();
     }
 
     @SideOnly(Side.CLIENT)

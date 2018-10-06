@@ -800,6 +800,7 @@ public class WorldServer extends World implements IThreadListener
 
         this.provider.onWorldUpdateEntities();
         super.updateEntities();
+        spigotConfig.currentPrimedTnt = 0; // Spigot
     }
 
     protected void tickPlayers()

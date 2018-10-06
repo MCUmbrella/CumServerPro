@@ -19,12 +19,14 @@ import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.monster.IMob;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.SoundEvents;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.datasync.DataParameter;
 import net.minecraft.network.datasync.DataSerializers;
 import net.minecraft.network.datasync.EntityDataManager;
+import net.minecraft.network.play.server.SPacketEffect;
 import net.minecraft.pathfinding.Path;
 import net.minecraft.pathfinding.PathHeap;
 import net.minecraft.pathfinding.PathPoint;
@@ -691,7 +693,23 @@ public class EntityDragon extends EntityLiving implements IEntityMultiPart, IMob
 
             if (this.deathTicks == 1)
             {
-                this.world.playBroadcastSound(1028, new BlockPos(this), 0);
+                // CraftBukkit start - Use relative location for far away sounds
+                int viewDistance = this.world.getServer().getViewDistance() * 16;
+                for (EntityPlayerMP player : this.world.getMinecraftServer().getPlayerList().playerEntityList) {
+                    double deltaX = this.posX - player.posX;
+                    double deltaZ = this.posZ - player.posZ;
+                    double distanceSquared = deltaX * deltaX + deltaZ * deltaZ;
+                    if (world.spigotConfig.dragonDeathSoundRadius > 0 && distanceSquared > world.spigotConfig.dragonDeathSoundRadius * world.spigotConfig.dragonDeathSoundRadius) continue; // Spigot
+                    if (distanceSquared > viewDistance * viewDistance) {
+                        double deltaLength = Math.sqrt(distanceSquared);
+                        double relativeX = player.posX + (deltaX / deltaLength) * viewDistance;
+                        double relativeZ = player.posZ + (deltaZ / deltaLength) * viewDistance;
+                        player.connection.sendPacket(new SPacketEffect(1028, new BlockPos((int) relativeX, (int) this.posY, (int) relativeZ), 0, true));
+                    } else {
+                        player.connection.sendPacket(new SPacketEffect(1028, new BlockPos((int) this.posX, (int) this.posY, (int) this.posZ), 0, true));
+                    }
+                }
+                // CraftBukkit end
             }
         }
 

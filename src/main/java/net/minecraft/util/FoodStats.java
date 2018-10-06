@@ -96,7 +96,7 @@ public class FoodStats
             if (this.foodTimer >= 80)
             {
                 player.heal(1.0F, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.SATIATED);
-                this.addExhaustion(6.0F);
+                this.addExhaustion(entityhuman.world.spigotConfig.regenExhaustion); // Spigot - Change to use configurable value
                 this.foodTimer = 0;
             }
         }

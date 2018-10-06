@@ -1555,7 +1555,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                             }
                         }
 
-                        this.addExhaustion(0.1F);
+                        this.addExhaustion(world.spigotConfig.combatExhaustion); // Spigot - Change to use configurable value
                     }
                     else
                     {
@@ -1946,11 +1946,11 @@ public abstract class EntityPlayer extends EntityLivingBase
 
         if (this.isSprinting())
         {
-            this.addExhaustion(0.2F);
+            this.addExhaustion(world.spigotConfig.jumpSprintExhaustion); // Spigot - Change to use configurable value
         }
         else
         {
-            this.addExhaustion(0.05F);
+            this.addExhaustion(world.spigotConfig.jumpWalkExhaustion); // Spigot - Change to use configurable value
         }
     }
 
@@ -1998,7 +1998,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                 if (i > 0)
                 {
                     this.addStat(StatList.DIVE_ONE_CM, i);
-                    this.addExhaustion(0.01F * (float)i * 0.01F);
+                    this.addExhaustion(world.spigotConfig.swimMultiplier * (float) i * 0.01F); // Spigot
                 }
             }
             else if (this.isInWater())
@@ -2008,7 +2008,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                 if (j > 0)
                 {
                     this.addStat(StatList.SWIM_ONE_CM, j);
-                    this.addExhaustion(0.01F * (float)j * 0.01F);
+                    this.addExhaustion(world.spigotConfig.swimMultiplier * (float) j * 0.01F); // Spigot
                 }
             }
             else if (this.isOnLadder())
@@ -2027,17 +2027,17 @@ public abstract class EntityPlayer extends EntityLivingBase
                     if (this.isSprinting())
                     {
                         this.addStat(StatList.SPRINT_ONE_CM, k);
-                        this.addExhaustion(0.1F * (float)k * 0.01F);
+                        this.addExhaustion(world.spigotConfig.sprintMultiplier * (float) k * 0.01F); // Spigot
                     }
                     else if (this.isSneaking())
                     {
                         this.addStat(StatList.CROUCH_ONE_CM, k);
-                        this.addExhaustion(0.0F * (float)k * 0.01F);
+                        this.addExhaustion(world.spigotConfig.sprintMultiplier * (float) k * 0.01F); // Spigot
                     }
                     else
                     {
                         this.addStat(StatList.WALK_ONE_CM, k);
-                        this.addExhaustion(0.0F * (float)k * 0.01F);
+                        this.addExhaustion(world.spigotConfig.sprintMultiplier * (float) k * 0.01F); // Spigot
                     }
                 }
             }
