@@ -2551,6 +2551,7 @@ public class Minecraft implements IThreadListener, ISnooperInfo
         EntityPlayerSP entityplayersp = this.player;
         this.player = this.playerController.createPlayer(this.world, this.player == null ? new StatisticsManager() : this.player.getStatFileWriter(), this.player == null ? new RecipeBook() : this.player.getRecipeBook());
         this.player.getDataManager().setEntryValues(entityplayersp.getDataManager().getAll());
+        this.player.updateSyncFields(entityplayersp); // Forge: fix MC-10657
         this.player.dimension = dimension;
         this.renderViewEntity = this.player;
         this.player.preparePlayerToSpawn();
