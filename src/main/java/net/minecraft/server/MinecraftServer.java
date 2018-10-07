@@ -847,6 +847,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.profiler.endSection();
         this.profiler.endSection();
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostServerTick();
+        org.spigotmc.WatchdogThread.tick(); // Spigot
         SpigotTimings.serverTickTimer.stopTiming(); // Spigot
         org.spigotmc.CustomTimingsHandler.tick(); // Spigot
     }
