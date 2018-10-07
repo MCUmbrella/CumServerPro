@@ -128,7 +128,7 @@ public class BlockDynamicLiquid extends BlockLiquid
             }
             if (this.blockMaterial == Material.LAVA && worldIn.getBlockState(pos.down()).getMaterial() == Material.WATER)
             {
-                if (org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(worldIn, pos.down(), Blocks.STONE.getDefaultState(), null)) {
+                if (org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(worldIn, pos.down(), net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(worldIn, pos.down(), pos, Blocks.STONE.getDefaultState()), null)) {
                     this.triggerMixEffects(worldIn, pos.down());
                 }
                 return;
@@ -164,7 +164,6 @@ public class BlockDynamicLiquid extends BlockLiquid
                 worldIn.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
-                    net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(worldIn, pos.down(), pos, Blocks.STONE.getDefaultState());
                     this.tryFlowInto(worldIn, pos.offset(enumfacing1), worldIn.getBlockState(pos.offset(enumfacing1)), k1);
                 }
             }
