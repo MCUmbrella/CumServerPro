@@ -1245,7 +1245,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
     public boolean isPopulated()
     {
-        return this.ticked && this.isTerrainPopulated && this.isLightPopulated;
+        return this.ticked && this.isTerrainPopulated;  // CatServer - remove light populated check
     }
 
     public boolean wasTicked()

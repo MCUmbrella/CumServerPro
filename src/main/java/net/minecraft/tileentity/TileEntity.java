@@ -539,7 +539,14 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
     @Nullable
     public InventoryHolder getOwner() {
         if (world == null) return null;
-        org.bukkit.block.BlockState state = world.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ()).getState();
+        // Spigot start
+        org.bukkit.block.Block block = world.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());
+        if (block == null) {
+            org.bukkit.Bukkit.getLogger().log(java.util.logging.Level.WARNING, "No block for owner at %s %d %d %d", new Object[]{world.getWorld(), pos.getX(), pos.getY(), pos.getZ()});
+            return null;
+        }
+        // Spigot end
+        org.bukkit.block.BlockState state = block.getState();
         if (state instanceof InventoryHolder)
         {
             return (InventoryHolder) state;

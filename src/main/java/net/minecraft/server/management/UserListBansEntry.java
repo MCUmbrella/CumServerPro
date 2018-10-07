@@ -14,7 +14,7 @@ public class UserListBansEntry extends UserListEntryBan<GameProfile>
 
     public UserListBansEntry(GameProfile profile, Date startDate, String banner, Date endDate, String banReason)
     {
-        super(profile, endDate, banner, endDate, banReason);
+        super(profile, startDate, banner, endDate, banReason);
     }
 
     public UserListBansEntry(JsonObject json)
@@ -34,10 +34,13 @@ public class UserListBansEntry extends UserListEntryBan<GameProfile>
 
     private static GameProfile toGameProfile(JsonObject json)
     {
-        if (json.has("uuid") && json.has("name"))
+        // Spigot start
+        // this whole method has to be reworked to account for the fact Bukkit only accepts UUID bans and gives no way for usernames to be stored!
+        UUID uuid = null;
+        String name = null;
+        if (json.has("uuid"))
         {
             String s = json.get("uuid").getAsString();
-            UUID uuid;
 
             try
             {
@@ -45,14 +48,20 @@ public class UserListBansEntry extends UserListEntryBan<GameProfile>
             }
             catch (Throwable var4)
             {
-                return null;
             }
-
-            return new GameProfile(uuid, json.get("name").getAsString());
+        }
+        if (json.has("name"))
+        {
+            name = json.get("name").getAsString();
+        }
+        if (uuid != null || name != null)
+        {
+            return new GameProfile(uuid, name);
         }
         else
         {
             return null;
         }
+        // Spigot End
     }
 }

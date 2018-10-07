@@ -681,7 +681,7 @@ public abstract class PlayerList
             }
 
             // return s;
-            event.disallow(PlayerLoginEvent.Result.KICK_BANNED, s);
+            if (!userlistipbansentry.hasBanExpired()) event.disallow(PlayerLoginEvent.Result.KICK_BANNED, s);
         }
         else
         {
@@ -866,6 +866,12 @@ public abstract class PlayerList
             Player respawnPlayer = cserver.getPlayer(entityplayermp);
             PlayerRespawnEvent respawnEvent = new PlayerRespawnEvent(respawnPlayer, location, isBedSpawn);
             cserver.getPluginManager().callEvent(respawnEvent);
+            // Spigot Start
+            if (playerIn.connection.isDisconnected()) {
+                return playerIn;
+            }
+            // Spigot End
+
 
             location = respawnEvent.getRespawnLocation();
             playerIn.reset();

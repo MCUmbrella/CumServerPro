@@ -542,7 +542,7 @@ public class WorldServer extends World implements IThreadListener
     {
         this.profiler.startSection("playerCheckLight");
 
-        if (!this.playerEntities.isEmpty())
+        if (spigotConfig.randomLightUpdates && !this.playerEntities.isEmpty()) // Spigot
         {
             int i = this.rand.nextInt(this.playerEntities.size());
             EntityPlayer entityplayer = this.playerEntities.get(i);
@@ -585,6 +585,7 @@ public class WorldServer extends World implements IThreadListener
                 chunk.enqueueRelightChecks();
                 this.profiler.endStartSection("tickChunk");
                 chunk.onTick(false);
+                if (!chunk.areNeighborsLoaded(1)) continue; // Spigot
                 this.profiler.endStartSection("thunder");
 
                 if (this.provider.canDoLightning(chunk) && flag && flag1 && this.rand.nextInt(100000) == 0)

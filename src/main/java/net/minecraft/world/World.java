@@ -2746,6 +2746,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                         }
                     }
 
+                    tileEntityIn.setWorld(this); // Spigot - No null worlds
                     this.addedTileEntityList.add(tileEntityIn);
                 }
                 else
