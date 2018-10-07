@@ -1,25 +1,8 @@
 package org.bukkit.plugin.java;
 
-import com.google.common.io.ByteStreams;
-
-import luohuayu.CatServer.CatServer;
-import luohuayu.CatServer.remapper.CatServerRemapper;
-import luohuayu.CatServer.remapper.ClassInheritanceProvider;
-import luohuayu.CatServer.remapper.Transformer;
-import net.md_5.specialsource.JarMapping;
-import net.md_5.specialsource.JarRemapper;
-import net.md_5.specialsource.RemapperProcessor;
-import net.md_5.specialsource.provider.ClassLoaderProvider;
-import net.md_5.specialsource.provider.JointProvider;
-import net.md_5.specialsource.repo.RuntimeRepo;
-import net.md_5.specialsource.transformer.MavenShade;
-import net.minecraft.server.MinecraftServer;
-
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.net.JarURLConnection;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -29,13 +12,24 @@ import java.security.CodeSource;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
-import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
 import java.util.jar.Manifest;
 
 import org.apache.commons.lang.Validate;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.PluginDescriptionFile;
+
+import luohuayu.CatServer.CatServer;
+import luohuayu.CatServer.remapper.CatServerRemapper;
+import luohuayu.CatServer.remapper.ClassInheritanceProvider;
+import luohuayu.CatServer.remapper.MappingLoader;
+import luohuayu.CatServer.remapper.Transformer;
+import net.md_5.specialsource.JarMapping;
+import net.md_5.specialsource.JarRemapper;
+import net.md_5.specialsource.provider.ClassLoaderProvider;
+import net.md_5.specialsource.provider.JointProvider;
+import net.md_5.specialsource.repo.RuntimeRepo;
+import net.minecraft.server.MinecraftServer;
 
 /**
  * A ClassLoader for plugins, to allow shared classes across multiple plugins
@@ -55,7 +49,6 @@ final class PluginClassLoader extends URLClassLoader {
 
     private JarRemapper remapper;
     private JarMapping jarMapping;
-    private static final String org_bukkit_craftbukkit = new String(new char[] {'o','r','g','/','b','u','k','k','i','t','/','c','r','a','f','t','b','u','k','k','i','t'});
 
     PluginClassLoader(final JavaPluginLoader loader, final ClassLoader parent, final PluginDescriptionFile description, final File dataFolder, final File file) throws IOException, InvalidPluginException, MalformedURLException {
         super(new URL[] {file.toURI().toURL()}, parent);
@@ -69,7 +62,7 @@ final class PluginClassLoader extends URLClassLoader {
         this.manifest = jar.getManifest();
         this.url = file.toURI().toURL();
 
-        jarMapping = getJarMapping();
+        jarMapping = MappingLoader.getJarMapping();
 
         JointProvider provider = new JointProvider();
         provider.add(new ClassInheritanceProvider());
@@ -169,36 +162,7 @@ final class PluginClassLoader extends URLClassLoader {
 
         javaPlugin.init(loader, loader.server, description, dataFolder, file, this);
     }
-    
-    
-    private void loadNmsMappings(JarMapping jarMapping, String obfVersion) throws IOException {
-        Map<String, String> relocations = new HashMap<String, String>();
-        relocations.put("net.minecraft.server", "net.minecraft.server." + obfVersion);
 
-        jarMapping.loadMappings(
-                new BufferedReader(new InputStreamReader(loader.getClass().getClassLoader().getResourceAsStream("mappings/"+obfVersion+"/cb2numpkg.srg"))),
-                new MavenShade(relocations),
-                null, false);
-    }
-
-    private JarMapping getJarMapping() {
-        JarMapping jarMapping = new JarMapping();
-        try {
-            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/com/google/gson", "com/google/gson");
-            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/it/unimi/dsi/fastutil", "it/unimi/dsi/fastutil");
-            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/jline", "jline");
-            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/joptsimple", "joptsimple");
-            jarMapping.methods.put("org/bukkit/Bukkit/getOnlinePlayers ()[Lorg/bukkit/entity/Player;", "getOnlinePlayers_1710");
-
-            loadNmsMappings(jarMapping, CatServer.getNativeVersion());
-
-            return jarMapping;
-        } catch (IOException ex) {
-            ex.printStackTrace();
-            return null;
-        }
-}
-    
     private Class<?> remappedFindClass(String name) throws ClassNotFoundException {
         Class<?> result = null;
 

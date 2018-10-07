@@ -176,6 +176,7 @@ import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.base64.Base64;
 import jline.console.ConsoleReader;
 import luohuayu.CatServer.command.CraftSimpleCommandMap;
+import luohuayu.CatServer.remapper.MappingLoader;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
@@ -309,6 +310,7 @@ public final class CraftServer implements Server {
         chunkGCPeriod = configuration.getInt("chunk-gc.period-in-ticks");
         chunkGCLoadThresh = configuration.getInt("chunk-gc.load-threshold");
         loadIcon();
+        MappingLoader.loadMapping(); // CatServr - Asynchronous loadMapping
     }
 
     public boolean getPermissionOverride(ICommandSender listener) {
