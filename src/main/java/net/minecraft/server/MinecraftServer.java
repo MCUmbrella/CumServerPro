@@ -979,7 +979,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     // TODO: Should we replace this for getWorldServer from below?
     public WorldServer getWorld(int dimension)
     {
-        WorldServer ret = net.minecraftforge.common.DimensionManager.getWorld(dimension);
+        WorldServer ret = net.minecraftforge.common.DimensionManager.getWorld(dimension, true);
         if (ret == null)
         {
             net.minecraftforge.common.DimensionManager.initDimension(dimension);
