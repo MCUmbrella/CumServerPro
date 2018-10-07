@@ -1387,6 +1387,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     }
 
     public boolean spawnEntity(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
+        org.spigotmc.AsyncCatcher.catchOp( "entity add"); // Spigot
         if (entity == null) return false;
 
         org.bukkit.event.Cancellable event = null;
@@ -1488,6 +1489,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public void removeEntity(Entity entityIn)
     {
+        org.spigotmc.AsyncCatcher.catchOp( "entity kill"); // Spigot
         if (entityIn.isBeingRidden())
         {
             entityIn.removePassengers();
@@ -1510,6 +1512,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public void removeEntityDangerously(Entity entityIn)
     {
+        org.spigotmc.AsyncCatcher.catchOp( "entity remove"); // Spigot
         entityIn.setDropItemsWhenDead(false);
         entityIn.setDead();
 
@@ -3483,6 +3486,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public void loadEntities(Collection<Entity> entityCollection)
     {
+        org.spigotmc.AsyncCatcher.catchOp( "entity world add"); // Spigot
         for (Entity entity4 : entityCollection)
         {
             if (!net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityJoinWorldEvent(entity4, this)))

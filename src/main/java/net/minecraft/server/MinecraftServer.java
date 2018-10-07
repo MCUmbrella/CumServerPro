@@ -529,6 +529,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
 
     public void stopServer() throws MinecraftException
     {
+        org.spigotmc.AsyncCatcher.enabled = false; // Spigot
         // CraftBukkit start - prevent double stopping on multiple threads
         synchronized(stopLock) {
             if (hasStopped) return;

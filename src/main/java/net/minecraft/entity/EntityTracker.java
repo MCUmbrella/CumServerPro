@@ -217,6 +217,7 @@ public class EntityTracker
 
     public void track(Entity entityIn, int trackingRange, final int updateFrequency, boolean sendVelocityUpdates)
     {
+        org.spigotmc.AsyncCatcher.catchOp( "entity track"); // Spigot
         trackingRange = org.spigotmc.TrackingRange.getEntityTrackingRange(entityIn, trackingRange); // Spigot
         try
         {
@@ -265,6 +266,7 @@ public class EntityTracker
 
     public void untrack(Entity entityIn)
     {
+        org.spigotmc.AsyncCatcher.catchOp( "entity untrack"); // Spigot
         if (entityIn instanceof EntityPlayerMP)
         {
             EntityPlayerMP entityplayermp = (EntityPlayerMP)entityIn;

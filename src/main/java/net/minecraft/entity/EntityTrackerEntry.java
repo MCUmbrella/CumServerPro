@@ -419,6 +419,7 @@ public class EntityTrackerEntry
 
     public void updatePlayerEntity(EntityPlayerMP playerMP)
     {
+        org.spigotmc.AsyncCatcher.catchOp( "player tracker update"); // Spigot
         if (playerMP != this.trackedEntity)
         {
             if (this.isVisibleTo(playerMP))
