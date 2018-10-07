@@ -385,6 +385,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
         return false;
     }
 
+    // CatServer - TODO: move into Forge, support handle Forge container
     private static boolean pullItemFromSlot(IHopper hopper, IInventory inventoryIn, int index, EnumFacing direction)
     {
         ItemStack itemstack = inventoryIn.getStackInSlot(index);
@@ -401,7 +402,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
             if (inventoryIn instanceof InventoryLargeChest) {
                 sourceInventory = new org.bukkit.craftbukkit.inventory.CraftInventoryDoubleChest((InventoryLargeChest) inventoryIn);
             } else {
-                sourceInventory = inventoryIn.getOwner() != null ? inventoryIn.getOwner().getInventory() : new CatCustomInventory(inventoryIn); // CatServer
+                sourceInventory = inventoryIn.getOwner() != null ? inventoryIn.getOwner().getInventory() : new CatCustomInventory(inventoryIn).getInventory(); // CatServer
             }
 
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(sourceInventory, oitemstack.clone(), hopper.getOwner().getInventory(), false);

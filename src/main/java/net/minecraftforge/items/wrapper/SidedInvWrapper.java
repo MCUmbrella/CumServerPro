@@ -230,4 +230,9 @@ public class SidedInvWrapper implements IItemHandlerModifiable
     {
         return inv.getInventoryStackLimit();
     }
+    // CatServer start
+    public net.minecraft.inventory.IInventory getInv() {
+        return this.inv;
+    }
+    // CatServer end
 }

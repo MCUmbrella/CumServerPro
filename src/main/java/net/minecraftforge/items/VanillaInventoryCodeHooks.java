@@ -23,6 +23,7 @@ import net.minecraft.block.Block;
 import net.minecraft.block.BlockDropper;
 import net.minecraft.block.BlockHopper;
 import net.minecraft.inventory.IInventory;
+import net.minecraft.inventory.InventoryLargeChest;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.IHopper;
 import net.minecraft.tileentity.TileEntity;
@@ -37,6 +38,8 @@ import org.apache.commons.lang3.tuple.Pair;
 import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
+
+import luohuayu.CatServer.inventory.CatCustomInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -106,12 +109,11 @@ public class VanillaInventoryCodeHooks
             CraftItemStack oitemstack = CraftItemStack.asCraftMirror(stack.copy().splitStack(1));
 
             TileEntity te = (TileEntity) destination;
-            Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : null;
-  
+            Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : CatCustomInventory.inventoryFromForge(itemHandler);
+            
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(dropper.getOwner().getInventory(), oitemstack.clone(), destinationInventory, true);
             if (destinationInventory != null) world.getServer().getPluginManager().callEvent(event);
 
-            event.setCancelled(true);
             if (event.isCancelled()) {
                 return false;
             }
@@ -126,7 +128,7 @@ public class VanillaInventoryCodeHooks
             {
                 remainder = stack.copy();
             }
-            // CatServer
+            // CatServer end
             dropper.setInventorySlotContents(slot, remainder);
             return false;
         }
@@ -162,10 +164,11 @@ public class VanillaInventoryCodeHooks
                         CraftItemStack remainder = CraftItemStack.asCraftMirror(hopper.decrStackSize(i, hopper.world.spigotConfig.hopperAmount)); // Spigot
 
                         TileEntity te = (TileEntity) destination;
-                        Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : null;
+                        Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : CatCustomInventory.inventoryFromForge(itemHandler);
 
                         InventoryMoveItemEvent event = new InventoryMoveItemEvent(hopper.getOwner().getInventory(), remainder.clone(), destinationInventory, true);
                         if (destinationInventory != null) hopper.getWorld().getServer().getPluginManager().callEvent(event); //CatServer
+
                         if (event.isCancelled()) {
                             hopper.setInventorySlotContents(i, originalSlotContents);
                             hopper.setTransferCooldown(hopper.world.spigotConfig.hopperTransfer); // Spigot

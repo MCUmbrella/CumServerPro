@@ -34,7 +34,11 @@ public class CraftInventoryCustom extends CraftInventory {
     public CraftInventoryCustom(InventoryHolder owner, int size, String title) {
         super(new MinecraftInventory(owner, size, title));
     }
-
+    // CatServer start
+    public CraftInventoryCustom(InventoryHolder owner, NonNullList<ItemStack> items) {
+        super(new MinecraftInventory(owner, items));
+    }
+    // CatServer end
     static class MinecraftInventory implements IInventory {
         private final NonNullList<ItemStack> items;
         private int maxStack = MAX_STACK;
@@ -65,7 +69,15 @@ public class CraftInventoryCustom extends CraftInventory {
             this.owner = owner;
             this.type = InventoryType.CHEST;
         }
-
+        // CatServer start
+        public MinecraftInventory(InventoryHolder owner, NonNullList<ItemStack> items) {
+            this.items = items;
+            this.title = "Chest";
+            this.viewers = new ArrayList<HumanEntity>();
+            this.owner = owner;
+            this.type = InventoryType.CHEST;
+        }
+        // CatServer end
         @Override
         public int getSizeInventory() {
             return items.size();
