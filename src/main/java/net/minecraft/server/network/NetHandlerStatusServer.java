@@ -136,7 +136,7 @@ public class NetHandlerStatusServer implements INetHandlerStatusServer
             ping.setServerDescription(new TextComponentTranslation(event.getMotd()));
             ping.setPlayers(playerSample);
             int version = server.getServerStatusResponse().getVersion().getProtocol();
-            ping.setVersion(new ServerStatusResponse.Version(server.getServerModName() + " " + server.getMinecraftVersion(), version));
+            ping.setVersion(new ServerStatusResponse.Version(server.getMinecraftVersion(), version));
 
             this.networkManager.sendPacket(new SPacketServerInfo(ping));
         }
