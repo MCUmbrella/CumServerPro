@@ -185,6 +185,9 @@ final class PluginClassLoader extends URLClassLoader {
         JarMapping jarMapping = new JarMapping();
         try {
             jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/com/google/gson", "com/google/gson");
+            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/it/unimi/dsi/fastutil", "it/unimi/dsi/fastutil");
+            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/jline", "jline");
+            jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/joptsimple", "joptsimple");
 
             loadNmsMappings(jarMapping, CatServer.getNativeVersion());
 
