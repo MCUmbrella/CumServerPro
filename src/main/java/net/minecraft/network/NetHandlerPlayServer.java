@@ -1571,7 +1571,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
     private void handleSlashCommand(String command)
     {
         // CraftBukkit start - whole method
-        // this.serverController.getCommandManager().executeCommand(this.player, command);
+        org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.startTiming(); // Spigot
         if (org.spigotmc.SpigotConfig.logCommands) // Spigot
         this.LOGGER.info(this.player.getName() + " issued server command: " + command);
 
@@ -1581,11 +1581,13 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         this.server.getPluginManager().callEvent(event);
 
         if (event.isCancelled()) {
+            org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.stopTiming(); // Spigot
             return;
         }
 
         try {
             if (this.server.dispatchCommand(event.getPlayer(), event.getMessage().substring(1))) {
+                org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.stopTiming(); // Spigot
                 return;
             }
         } catch (org.bukkit.command.CommandException ex) {
@@ -1593,6 +1595,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             java.util.logging.Logger.getLogger(NetHandlerPlayServer.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
             return;
         }
+        org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.stopTiming(); // Spigot
         // CraftBukkit end
     }
 

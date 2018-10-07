@@ -1085,6 +1085,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
     public void populateCB(IChunkProvider chunkProvider, IChunkGenerator chunkGenrator, boolean newChunk)
     {
+        world.timings.syncChunkLoadPostTimer.startTiming(); // Spigot
         Server server = world.getServer();
         if (server != null) {
             /*
@@ -1138,6 +1139,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
                 chunk4.populate(chunkGenrator);
             }
         }
+        world.timings.syncChunkLoadPostTimer.stopTiming(); // Spigot
     }
 
     protected void populate(IChunkGenerator generator)

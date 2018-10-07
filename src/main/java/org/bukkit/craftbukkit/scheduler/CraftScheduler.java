@@ -14,7 +14,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.logging.Level;
 
-import org.apache.commons.lang3.Validate;
+import org.apache.commons.lang.Validate;
 import org.bukkit.plugin.IllegalPluginAccessException;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -74,8 +74,12 @@ public class CraftScheduler implements BukkitScheduler {
      * These are tasks that are currently active. It's provided for 'viewing' the current state.
      */
     private final ConcurrentHashMap<Integer, CraftTask> runners = new ConcurrentHashMap<Integer, CraftTask>();
+    /**
+     * The sync task that is currently running on the main thread.
+     */
+    private volatile CraftTask currentTask = null;
     private volatile int currentTick = -1;
-    private final Executor executor = Executors.newCachedThreadPool();
+    private final Executor executor = Executors.newCachedThreadPool(new com.google.common.util.concurrent.ThreadFactoryBuilder().setNameFormat("Craft Scheduler Thread - %1$d").build()); // Spigot
     private CraftAsyncDebugger debugHead = new CraftAsyncDebugger(-1, null, null) {@Override StringBuilder debugTo(StringBuilder string) {return string;}};
     private CraftAsyncDebugger debugTail = debugHead;
     private static final int RECENT_TICKS;
@@ -269,12 +273,15 @@ public class CraftScheduler implements BukkitScheduler {
 
     public boolean isCurrentlyRunning(final int taskId) {
         final CraftTask task = runners.get(taskId);
-        if (task == null || task.isSync()) {
+        if (task == null) {
             return false;
+        }
+        if (task.isSync()) {
+            return (task == currentTask); 
         }
         final CraftAsyncTask asyncTask = (CraftAsyncTask) task;
         synchronized (asyncTask.getWorkers()) {
-            return asyncTask.getWorkers().isEmpty();
+            return !asyncTask.getWorkers().isEmpty();
         }
     }
 
@@ -348,8 +355,11 @@ public class CraftScheduler implements BukkitScheduler {
                 continue;
             }
             if (task.isSync()) {
+                currentTask = task;
                 try {
+                    task.timings.startTiming(); // Spigot
                     task.run();
+                    task.timings.stopTiming(); // Spigot
                 } catch (final Throwable throwable) {
                     task.getOwner().getLogger().log(
                             Level.WARNING,
@@ -358,6 +368,8 @@ public class CraftScheduler implements BukkitScheduler {
                                 task.getTaskId(),
                                 task.getOwner().getDescription().getFullName()),
                             throwable);
+                } finally {
+                    currentTask = null;
                 }
                 parsePending();
             } else {

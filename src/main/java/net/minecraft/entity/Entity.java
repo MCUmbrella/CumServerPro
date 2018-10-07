@@ -224,6 +224,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public boolean valid;
     public org.bukkit.projectiles.ProjectileSource projectileSource; // For projectiles only
     public boolean forceExplosionKnockback; // SPIGOT-949
+    public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getEntityTimings(this); // Spigot
 
     public float getBukkitYaw() {
         return this.rotationYaw;
@@ -725,6 +726,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
     public void move(MoverType type, double x, double y, double z)
     {
+        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.startTiming(); // Spigot
         if (this.noClip)
         {
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
@@ -1197,6 +1199,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
             this.world.profiler.endSection();
         }
+        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
     }
 
     public void resetPositionToBB()

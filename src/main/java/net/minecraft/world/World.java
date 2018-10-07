@@ -84,6 +84,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
+import org.bukkit.craftbukkit.SpigotTimings;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
 import org.bukkit.craftbukkit.util.CraftMagicNumbers;
 import org.bukkit.entity.NPC;
@@ -163,6 +164,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public boolean populating;
     private int tickPosition;
     public final org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
+
+    public final SpigotTimings.WorldTimingsHandler timings; // Spigot
 
     public static boolean haveWeSilencedAPhysicsCrash;
     public static String blockLocation;
@@ -262,6 +265,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         });
         this.getServer().addWorld(this.world);
         // CraftBukkit end
+        timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
     }
@@ -284,6 +288,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.worldBorder = providerIn.createWorldBorder();
         perWorldStorage = DimensionManager.getWorld(0) != null ? DimensionManager.getWorld(0).mapStorage : new MapStorage(null);
         this.mapStorage = DimensionManager.getWorld(0) != null ? DimensionManager.getWorld(0).mapStorage : new MapStorage(null);
+        timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
     }
@@ -1999,6 +2004,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.profiler.endStartSection("regular");
 
         org.spigotmc.ActivationRange.activateEntities(this); // Spigot
+        timings.entityTick.startTiming(); // Spigot
         // CraftBukkit start - Use field for loop variable
         int entitiesThisCycle = 0;
         if (tickPosition < 0) tickPosition = 0;
@@ -2026,9 +2032,11 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             {
                 try
                 {
+                    SpigotTimings.tickEntityTimer.startTiming(); // Spigot
                     net.minecraftforge.server.timings.TimeTracker.ENTITY_UPDATE.trackStart(entity2);
                     this.updateEntity(entity2);
                     net.minecraftforge.server.timings.TimeTracker.ENTITY_UPDATE.trackEnd(entity2);
+                    SpigotTimings.tickEntityTimer.stopTiming(); // Spigot
                 }
                 catch (Throwable throwable1)
                 {
@@ -2065,7 +2073,9 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             this.profiler.endSection();
         }
 
+        timings.entityTick.stopTiming(); // Spigot
         this.profiler.endStartSection("blockEntities");
+        timings.tileEntityTick.startTiming(); // Spigot
 
         this.processingLoadedTiles = true; //FML Move above remove to prevent CMEs
 
@@ -2110,6 +2120,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                         {
                             return String.valueOf((Object)TileEntity.getKey(tileentity.getClass()));
                         });
+                        tileentity.tickTimer.startTiming(); // Spigot
                         net.minecraftforge.server.timings.TimeTracker.TILE_ENTITY_UPDATE.trackStart(tileentity);
                         ((ITickable)tileentity).update();
                         net.minecraftforge.server.timings.TimeTracker.TILE_ENTITY_UPDATE.trackEnd(tileentity);
@@ -2129,6 +2140,12 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                         else
                         throw new ReportedException(crashreport2);
                     }
+                    // Spigot start
+                    finally {
+                        tileentity.tickTimer.stopTiming();
+                    }
+                    // Spigot end
+
                 }
             }
 
@@ -2148,6 +2165,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             }
         }
 
+        timings.tileEntityTick.stopTiming(); // Spigot
+        timings.tileEntityPending.startTiming(); // Spigot
         this.processingLoadedTiles = false;
         this.profiler.endStartSection("pendingBlockEntities");
 
@@ -2185,6 +2204,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             this.addedTileEntityList.clear();
         }
 
+        timings.tileEntityPending.stopTiming(); // Spigot
         this.profiler.endSection();
         this.profiler.endSection();
     }
