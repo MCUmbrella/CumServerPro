@@ -1755,7 +1755,7 @@ public abstract class EntityPlayer extends EntityLivingBase
     {
         net.minecraftforge.event.ForgeEventFactory.onPlayerWakeup(this, immediately, updateWorldFlag, setSpawn);
         this.setSize(0.6F, 1.8F);
-        IBlockState iblockstate = this.world.getBlockState(this.bedLocation);
+        IBlockState iblockstate = this.bedLocation == null ? null : this.world.getBlockState(this.bedLocation);
 
         if (this.bedLocation != null && iblockstate.getBlock().isBed(iblockstate, world, bedLocation, this))
         {
