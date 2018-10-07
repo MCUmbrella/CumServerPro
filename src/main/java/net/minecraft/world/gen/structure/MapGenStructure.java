@@ -176,7 +176,7 @@ public abstract class MapGenStructure extends MapGenBase
         if (this.structureData == null && worldIn != null)
         {
             // Spigot Start
-            if (world.spigotConfig.saveStructureInfo) {
+            if (worldIn.spigotConfig.saveStructureInfo) {
                 this.structureData = (MapGenStructureData)worldIn.getPerWorldStorage().getOrLoadData(MapGenStructureData.class, this.getStructureName());
             } else {
                 this.structureData = new MapGenStructureData(this.getStructureName());
