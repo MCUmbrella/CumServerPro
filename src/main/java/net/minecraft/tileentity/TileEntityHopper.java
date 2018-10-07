@@ -37,6 +37,8 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 
+import luohuayu.CatServer.inventory.CatCustomInventory;
+
 public class TileEntityHopper extends TileEntityLockableLoot implements IHopper, ITickable
 {
     private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(5, ItemStack.EMPTY);
@@ -399,7 +401,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
             if (inventoryIn instanceof InventoryLargeChest) {
                 sourceInventory = new org.bukkit.craftbukkit.inventory.CraftInventoryDoubleChest((InventoryLargeChest) inventoryIn);
             } else {
-                sourceInventory = inventoryIn.getOwner() != null ? inventoryIn.getOwner().getInventory() : null; // CatServer
+                sourceInventory = inventoryIn.getOwner() != null ? inventoryIn.getOwner().getInventory() : new CatCustomInventory(inventoryIn); // CatServer
             }
 
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(sourceInventory, oitemstack.clone(), hopper.getOwner().getInventory(), false);

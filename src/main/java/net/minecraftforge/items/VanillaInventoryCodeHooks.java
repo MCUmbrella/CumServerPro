@@ -22,6 +22,7 @@ package net.minecraftforge.items;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockDropper;
 import net.minecraft.block.BlockHopper;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.IHopper;
 import net.minecraft.tileentity.TileEntity;
@@ -52,6 +53,8 @@ public class VanillaInventoryCodeHooks
         Pair<IItemHandler, Object> itemHandlerResult = getItemHandler(dest, EnumFacing.UP);
         if (itemHandlerResult == null)
             return null;
+
+        if (itemHandlerResult.getValue() instanceof IInventory) return null; // CatServer - handle in vanilla
 
         IItemHandler handler = itemHandlerResult.getKey();
 
@@ -99,10 +102,22 @@ public class VanillaInventoryCodeHooks
         {
             IItemHandler itemHandler = destinationResult.getKey();
             Object destination = destinationResult.getValue();
-            ItemStack dispensedStack = stack.copy().splitStack(1);
-            ItemStack remainder = putStackInInventoryAllSlots(dropper, destination, itemHandler, dispensedStack);
+            // CatServer start
+            CraftItemStack oitemstack = CraftItemStack.asCraftMirror(stack.copy().splitStack(1));
 
-            if (remainder.isEmpty())
+            TileEntity te = (TileEntity) destination;
+            Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : null;
+  
+            InventoryMoveItemEvent event = new InventoryMoveItemEvent(dropper.getOwner().getInventory(), oitemstack.clone(), destinationInventory, true);
+            if (destinationInventory != null) world.getServer().getPluginManager().callEvent(event);
+
+            event.setCancelled(true);
+            if (event.isCancelled()) {
+                return false;
+            }
+
+            ItemStack remainder = putStackInInventoryAllSlots(dropper, destination, itemHandler, CraftItemStack.asNMSCopy(event.getItem()));
+            if (event.getItem().equals(oitemstack) && remainder.isEmpty())
             {
                 remainder = stack.copy();
                 remainder.shrink(1);
@@ -111,7 +126,7 @@ public class VanillaInventoryCodeHooks
             {
                 remainder = stack.copy();
             }
-
+            // CatServer
             dropper.setInventorySlotContents(slot, remainder);
             return false;
         }
