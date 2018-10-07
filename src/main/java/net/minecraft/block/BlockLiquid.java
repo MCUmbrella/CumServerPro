@@ -285,6 +285,7 @@ public abstract class BlockLiquid extends Block
                 if (integer.intValue() == 0)
                 {
                     if (org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(worldIn, pos, Blocks.OBSIDIAN.getDefaultState(), null)) {
+                        net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(worldIn, pos, pos, Blocks.OBSIDIAN.getDefaultState());
                         this.triggerMixEffects(worldIn, pos);
                     }
                     return true;
@@ -293,6 +294,7 @@ public abstract class BlockLiquid extends Block
                 if (integer.intValue() <= 4)
                 {
                     if (org.bukkit.craftbukkit.event.CraftEventFactory.handleBlockFormEvent(worldIn, pos, Blocks.COBBLESTONE.getDefaultState(), null)) {
+                        net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(worldIn, pos, pos, Blocks.COBBLESTONE.getDefaultState());
                         this.triggerMixEffects(worldIn, pos);
                     }
                     return true;

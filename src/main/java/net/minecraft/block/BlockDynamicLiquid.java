@@ -164,6 +164,7 @@ public class BlockDynamicLiquid extends BlockLiquid
                 worldIn.getServer().getPluginManager().callEvent(event);
 
                 if (!event.isCancelled()) {
+                    net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(worldIn, pos.down(), pos, Blocks.STONE.getDefaultState());
                     this.tryFlowInto(worldIn, pos.offset(enumfacing1), worldIn.getBlockState(pos.offset(enumfacing1)), k1);
                 }
             }

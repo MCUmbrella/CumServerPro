@@ -68,6 +68,7 @@ public class BlockStaticLiquid extends BlockLiquid
                                     if (CraftEventFactory.callBlockIgniteEvent(worldIn, blockpos.getX(), blockpos.getY(), blockpos.getZ(), pos.getX(), pos.getY(), pos.getZ()).isCancelled()) {
                                         continue;
                                     }
+                                    net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(worldIn, blockpos, pos, Blocks.FIRE.getDefaultState());
                                 }
                                 worldIn.setBlockState(blockpos, Blocks.FIRE.getDefaultState());
                                 return;
@@ -96,6 +97,7 @@ public class BlockStaticLiquid extends BlockLiquid
                             BlockPos up = blockpos1.up();
                             if (worldIn.getBlockState(up) != Blocks.FIRE) {
                                 if (CraftEventFactory.callBlockIgniteEvent(worldIn, up.getX(), up.getY(), up.getZ(), pos.getX(), pos.getY(), pos.getZ()).isCancelled()) {
+                                    net.minecraftforge.event.ForgeEventFactory.fireFluidPlaceBlockEvent(worldIn, blockpos1.up(), pos, Blocks.FIRE.getDefaultState());
                                     continue;
                                 }
                             }
