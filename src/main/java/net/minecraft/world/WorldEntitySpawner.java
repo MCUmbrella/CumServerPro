@@ -277,6 +277,14 @@ public final class WorldEntitySpawner
         }
         else
         {
+            return spawnPlacementTypeIn.canSpawnAt(worldIn, pos);
+        }
+    }
+
+    public static boolean canCreatureTypeSpawnBody(EntityLiving.SpawnPlacementType spawnPlacementTypeIn, World worldIn, BlockPos pos)
+    {
+        {
+
             IBlockState iblockstate = worldIn.getBlockState(pos);
 
             if (spawnPlacementTypeIn == EntityLiving.SpawnPlacementType.IN_WATER)

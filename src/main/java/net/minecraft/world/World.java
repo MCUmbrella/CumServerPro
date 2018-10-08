@@ -748,7 +748,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                     {
                         try
                         {
-                            return String.format("ID #%d (%s // %s)", Block.getIdFromBlock(blockIn), blockIn.getUnlocalizedName(), blockIn.getClass().getCanonicalName());
+                            return String.format("ID #%d (%s // %s // %s)", Block.getIdFromBlock(blockIn), blockIn.getUnlocalizedName(), blockIn.getClass().getName(), blockIn.getRegistryName());
                         }
                         catch (Throwable var2)
                         {
