@@ -201,7 +201,7 @@ public class WorldServer extends World implements IThreadListener
             scoreboardsavedata.setScoreboard(this.worldScoreboard);
             ((ServerScoreboard)this.worldScoreboard).addDirtyRunnable(new WorldSavedDataCallableSave(scoreboardsavedata));
         } else {
-            getServer().getScoreboardManager().getMainScoreboard().getHandle();
+            this.worldScoreboard = getServer().getScoreboardManager().getMainScoreboard().getHandle();
         }
 
         this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
