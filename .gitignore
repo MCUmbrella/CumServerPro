@@ -3,3 +3,8 @@
 /projects
 /eclipse
 /.gradle
+/CatServer.iml
+/CatServer.ipr
+/CatServer.iws
+/run
+/out
