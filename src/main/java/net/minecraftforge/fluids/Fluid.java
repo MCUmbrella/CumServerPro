@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016.
+ * Copyright (c) 2016-2018.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -67,6 +67,9 @@ public class Fluid
     protected final ResourceLocation still;
     protected final ResourceLocation flowing;
 
+    @Nullable
+    protected final ResourceLocation overlay;
+
     private SoundEvent fillSound;
     private SoundEvent emptySound;
 
@@ -108,8 +111,6 @@ public class Fluid
     /**
      * This indicates if the fluid is gaseous.
      *
-     * Useful for rendering the fluid in containers and the world.
-     *
      * Generally this is associated with negative density fluids.
      */
     protected boolean isGaseous;
@@ -127,7 +128,7 @@ public class Fluid
      * The default value of null should remain for any Fluid without a Block implementation.
      */
     protected Block block = null;
-    
+
     /**
      * Color used by universal bucket and the ModelFluid baked model.
      * Note that this int includes the alpha so converting this to RGB with alpha would be
@@ -140,22 +141,38 @@ public class Fluid
 
     public Fluid(String fluidName, ResourceLocation still, ResourceLocation flowing, Color color)
     {
-        this(fluidName, still, flowing);
+        this(fluidName, still, flowing, null, color);
+    }
+
+    public Fluid(String fluidName, ResourceLocation still, ResourceLocation flowing, @Nullable ResourceLocation overlay, Color color)
+    {
+        this(fluidName, still, flowing, overlay);
         this.setColor(color);
     }
 
     public Fluid(String fluidName, ResourceLocation still, ResourceLocation flowing, int color)
     {
-        this(fluidName, still, flowing);
+        this(fluidName, still, flowing, null, color);
+    }
+
+    public Fluid(String fluidName, ResourceLocation still, ResourceLocation flowing, @Nullable ResourceLocation overlay, int color)
+    {
+        this(fluidName, still, flowing, overlay);
         this.setColor(color);
     }
-    
+
     public Fluid(String fluidName, ResourceLocation still, ResourceLocation flowing)
+    {
+        this(fluidName, still, flowing, (ResourceLocation) null);
+    }
+
+    public Fluid(String fluidName, ResourceLocation still, ResourceLocation flowing, @Nullable ResourceLocation overlay)
     {
         this.fluidName = fluidName.toLowerCase(Locale.ENGLISH);
         this.unlocalizedName = fluidName;
         this.still = still;
         this.flowing = flowing;
+        this.overlay = overlay;
     }
 
     public Fluid setUnlocalizedName(String unlocalizedName)
@@ -225,13 +242,13 @@ public class Fluid
         this.emptySound = emptySound;
         return this;
     }
-    
+
     public Fluid setColor(Color color)
     {
         this.color = color.getRGB();
         return this;
     }
-    
+
     public Fluid setColor(int color)
     {
         this.color = color;
@@ -253,7 +270,17 @@ public class Fluid
         return block != null;
     }
 
-	/**
+    public final boolean isLighterThanAir()
+    {
+        int density = this.density;
+        if (block instanceof BlockFluidBase)
+        {
+            density = ((BlockFluidBase) block).getDensity();
+        }
+        return density <= 0;
+    }
+
+    /**
      * Determines if this fluid should vaporize in dimensions where water vaporizes when placed.
      * To preserve the intentions of vanilla, fluids that can turn lava into obsidian should vaporize.
      * This prevents players from making the nether safe with a single bucket.
@@ -269,7 +296,7 @@ public class Fluid
         return block.getDefaultState().getMaterial() == Material.WATER;
     }
 
-	/**
+    /**
      * Called instead of placing the fluid block if {@link WorldProvider#doesWaterVaporize()} and {@link #doesVaporize(FluidStack)} are true.
      * Override this to make your explosive liquid blow up instead of the default smoke, etc.
      * Based on {@link net.minecraft.item.ItemBucket#tryPlaceContainedLiquid(EntityPlayer, World, BlockPos)}
@@ -358,6 +385,12 @@ public class Fluid
     public ResourceLocation getFlowing()
     {
         return flowing;
+    }
+
+    @Nullable
+    public ResourceLocation getOverlay()
+    {
+        return overlay;
     }
 
     public SoundEvent getFillSound()
