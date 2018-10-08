@@ -1,0 +1,22 @@
+version: 2
+jobs:
+  build:
+    docker:
+      - image: circleci/openjdk:8-jdk
+    working_directory: ~/CatServer
+    environment:
+      JVM_OPTS: -Xmx3200m
+      TERM: dumb
+    steps:
+    - checkout
+    - restore_cache:
+        keys:
+        - v1-dep-{{ .Branch }}-
+    - run: chmod +x gradlew
+    - run: ./gradlew build
+    - save_cache:
+        key: v1-dep-{{ .Branch }}-{{ epoch }}
+        paths:
+        - ~/.gradle
+    - store_artifacts:
+        path: ~/CatServer/build/libs
