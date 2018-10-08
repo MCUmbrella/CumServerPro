@@ -9,6 +9,7 @@ plugins {
 }
 
 repositories {
+    clear()
     mavenLocal()
     mavenCentral()
     maven {
@@ -37,6 +38,7 @@ group = 'luohuayu.CatServer'
 version = versioning {
     full { it.tag ?: it.branch + '-' + it.abbreviated }
     branchEnv = ['CI_BUILD_REF_NAME', 'GIT_LOCAL_BRANCH']
+    dirty = { t -> t }
 }.info.full
 
 sourceCompatibility = 1.8

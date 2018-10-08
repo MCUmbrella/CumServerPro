@@ -17,6 +17,7 @@ jobs:
     - save_cache:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
         paths:
-        - ~/.gradle
+        - ~/.m2
     - store_artifacts:
         path: ~/CatServer/build/libs
+        destination: CatServer
