@@ -104,6 +104,7 @@ public abstract class EntityLivingBase extends Entity
     private static final Logger LOGGER = LogManager.getLogger();
     private static final UUID SPRINTING_SPEED_BOOST_ID = UUID.fromString("662A6B8D-DA3E-4C1C-8813-96EA6097278D");
     private static final AttributeModifier SPRINTING_SPEED_BOOST = (new AttributeModifier(SPRINTING_SPEED_BOOST_ID, "Sprinting speed boost", 0.30000001192092896D, 2)).setSaved(false);
+    public static final net.minecraft.entity.ai.attributes.IAttribute SWIM_SPEED = new net.minecraft.entity.ai.attributes.RangedAttribute(null, "forge.swimSpeed", 1.0D, 0.0D, 1024.0D).setShouldWatch(true);
     protected static final DataParameter<Byte> HAND_STATES = EntityDataManager.<Byte>createKey(EntityLivingBase.class, DataSerializers.BYTE);
     public static final DataParameter<Float> HEALTH = EntityDataManager.<Float>createKey(EntityLivingBase.class, DataSerializers.FLOAT);
     private static final DataParameter<Integer> POTION_EFFECTS = EntityDataManager.<Integer>createKey(EntityLivingBase.class, DataSerializers.VARINT);
@@ -227,6 +228,7 @@ public abstract class EntityLivingBase extends Entity
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.MOVEMENT_SPEED);
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ARMOR);
         this.getAttributeMap().registerAttribute(SharedMonsterAttributes.ARMOR_TOUGHNESS);
+        this.getAttributeMap().registerAttribute(SWIM_SPEED);
     }
 
     protected void updateFallState(double y, boolean onGroundIn, IBlockState state, BlockPos pos)
@@ -2131,12 +2133,12 @@ public abstract class EntityLivingBase extends Entity
 
     protected void handleJumpWater()
     {
-        this.motionY += 0.03999999910593033D;
+        this.motionY += 0.03999999910593033D * this.getEntityAttribute(SWIM_SPEED).getAttributeValue();
     }
 
     protected void handleJumpLava()
     {
-        this.motionY += 0.03999999910593033D;
+        this.motionY += 0.03999999910593033D * this.getEntityAttribute(SWIM_SPEED).getAttributeValue();
     }
 
     protected float getWaterSlowDown()
@@ -3319,5 +3321,31 @@ public abstract class EntityLivingBase extends Entity
     @SideOnly(Side.CLIENT)
     public void setPartying(BlockPos pos, boolean p_191987_2_)
     {
+    }
+
+    @Override
+    public void moveRelative(float strafe, float up, float forward, float friction)
+    {
+        float f = strafe * strafe + up * up + forward * forward;
+        if (f >= 1.0E-4F)
+        {
+            f = MathHelper.sqrt(f);
+            if (f < 1.0F) f = 1.0F;
+            f = friction / f;
+            strafe = strafe * f;
+            up = up * f;
+            forward = forward * f;
+            if(this.isInWater() || this.isInLava())
+            {
+                strafe = strafe * (float)this.getEntityAttribute(SWIM_SPEED).getAttributeValue();
+                up = up * (float)this.getEntityAttribute(SWIM_SPEED).getAttributeValue();
+                forward = forward * (float)this.getEntityAttribute(SWIM_SPEED).getAttributeValue();
+            }
+            float f1 = MathHelper.sin(this.rotationYaw * 0.017453292F);
+            float f2 = MathHelper.cos(this.rotationYaw * 0.017453292F);
+            this.motionX += (double)(strafe * f2 - forward * f1);
+            this.motionY += (double)up;
+            this.motionZ += (double)(forward * f2 + strafe * f1);
+        }
     }
 }
