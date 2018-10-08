@@ -229,7 +229,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                 {
                     this.wakeUpPlayer(true, true, false);
                 }
-                else if (this.world.isDaytime())
+                else if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(this, this.bedLocation))
                 {
                     this.wakeUpPlayer(false, true, true);
                 }
@@ -1663,7 +1663,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                 return SleepResult.NOT_POSSIBLE_HERE;
             }
 
-            if (this.world.isDaytime())
+            if (!net.minecraftforge.event.ForgeEventFactory.fireSleepingTimeCheck(this, this.bedLocation))
             {
                 return SleepResult.NOT_POSSIBLE_NOW;
             }
