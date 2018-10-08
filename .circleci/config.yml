@@ -18,6 +18,7 @@ jobs:
         key: v1-dep-{{ .Branch }}-{{ epoch }}
         paths:
         - ~/.m2
+        - ~/.gradle
     - store_artifacts:
         path: ~/CatServer/build/libs
         destination: CatServer
