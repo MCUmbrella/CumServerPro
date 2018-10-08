@@ -204,6 +204,7 @@ public abstract class PlayerList
             serverChannel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(playerIn.dimension, DimensionManager.getProviderType(playerIn.dimension).name()));
         }
         // CatServer end
+        net.minecraftforge.fml.common.FMLCommonHandler.instance().fireServerConnectionEvent(netManager);
         nethandlerplayserver.sendPacket(new SPacketJoinGame(playerIn.getEntityId(), playerIn.interactionManager.getGameType(), worldinfo.isHardcoreModeEnabled(), worldserver.provider.getDimension(), worldserver.getDifficulty(), this.getMaxPlayers(), worldinfo.getTerrainType(), worldserver.getGameRules().getBoolean("reducedDebugInfo")));
         playerIn.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
         nethandlerplayserver.sendPacket(new SPacketCustomPayload("MC|Brand", (new PacketBuffer(Unpooled.buffer())).writeString(this.getServerInstance().getServerModName())));

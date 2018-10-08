@@ -137,8 +137,8 @@ public abstract class EntityPlayer extends EntityLivingBase
     @SideOnly(Side.CLIENT)
     public float renderOffsetY;
     public float renderOffsetZ;
-    private BlockPos spawnPos;
-    private boolean spawnForced;
+    protected BlockPos spawnPos;
+    protected boolean spawnForced;
     public PlayerCapabilities capabilities = new PlayerCapabilities();
     public int experienceLevel;
     public int experienceTotal;
