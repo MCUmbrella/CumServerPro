@@ -188,17 +188,22 @@ public class WorldServer extends World implements IThreadListener
             this.villageCollection.setWorldsForAll(this);
         }
 
-        this.worldScoreboard = getServer().getScoreboardManager() == null ? new ServerScoreboard(this.mcServer) : getServer().getScoreboardManager().getMainScoreboard().getHandle(); // CatServer - use CraftBukit scoreboard
-        ScoreboardSaveData scoreboardsavedata = (ScoreboardSaveData)this.mapStorage.getOrLoadData(ScoreboardSaveData.class, "scoreboard");
+        if (getServer().getScoreboardManager() == null) { // CraftBukkit
+            this.worldScoreboard = new ServerScoreboard(this.mcServer);
+            ScoreboardSaveData scoreboardsavedata = (ScoreboardSaveData)this.mapStorage.getOrLoadData(ScoreboardSaveData.class, "scoreboard");
+    
+            if (scoreboardsavedata == null)
+            {
+                scoreboardsavedata = new ScoreboardSaveData();
+                this.mapStorage.setData("scoreboard", scoreboardsavedata);
+            }
 
-        if (scoreboardsavedata == null)
-        {
-            scoreboardsavedata = new ScoreboardSaveData();
-            this.mapStorage.setData("scoreboard", scoreboardsavedata);
+            scoreboardsavedata.setScoreboard(this.worldScoreboard);
+            ((ServerScoreboard)this.worldScoreboard).addDirtyRunnable(new WorldSavedDataCallableSave(scoreboardsavedata));
+        } else {
+            getServer().getScoreboardManager().getMainScoreboard().getHandle();
         }
 
-        scoreboardsavedata.setScoreboard(this.worldScoreboard);
-        ((ServerScoreboard)this.worldScoreboard).addDirtyRunnable(new WorldSavedDataCallableSave(scoreboardsavedata));
         this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
         this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
         this.functionManager = new FunctionManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "functions"), this.mcServer);
