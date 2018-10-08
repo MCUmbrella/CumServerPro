@@ -149,35 +149,12 @@ public abstract class CommandHandler implements ICommandManager
     protected abstract MinecraftServer getServer();
 
     public ICommand registerCommand(ICommand command) {
-        /*this.commandMap.put(command.getName(), command);
-        this.commandSet.add(command);
-
-        for (String s : command.getAliases())
-        {
-            ICommand icommand = this.commandMap.get(s);
-
-            if (icommand == null || !icommand.getName().equals(s))
-            {
-                this.commandMap.put(s, command);
-            }
-        }
-
-        return command;*/
-        // register commands with permission nodes, defaulting to class name
-        return registerCommand(command, command.getClass().getName());
-    }
-
-    private ICommand registerCommand(String permissionGroup, ICommand command) {
-        return registerCommand(command, permissionGroup + "." + command.getName());
-    }
-
-    public ICommand registerCommand(ICommand command, String permissionNode) {
         this.commandMap.put(command.getName(), command);
         this.commandSet.add(command);
         // register vanilla commands with Bukkit to support permissions.
         CraftSimpleCommandMap commandMap = MinecraftServer.getServerInst().server.getCraftCommandMap();
         ModCustomCommand customCommand = new ModCustomCommand(command);
-        customCommand.setPermission(permissionNode);
+
         List<String> list = command.getAliases();
         if (list != null) customCommand.setAliases(list);
         commandMap.register(command.getName(), customCommand);
