@@ -3105,10 +3105,10 @@ public abstract class EntityLivingBase extends Entity
         if (!this.activeItemStack.isEmpty() && this.isHandActive())
         {
             this.updateItemUse(this.activeItemStack, 16);
-            ItemStack itemstack;
-            // this.setHeldItem(this.getActiveHand(), itemstack);
+            ItemStack itemstack = this.activeItemStack;
+
             if (this instanceof EntityPlayer) {
-                org.bukkit.inventory.ItemStack craftItem = CraftItemStack.asBukkitCopy(this.activeItemStack);
+                org.bukkit.inventory.ItemStack craftItem = CraftItemStack.asBukkitCopy(itemstack);
                 PlayerItemConsumeEvent event = new PlayerItemConsumeEvent((Player) this.getBukkitEntity(), craftItem);
                 world.getServer().getPluginManager().callEvent(event);
 
@@ -3119,12 +3119,12 @@ public abstract class EntityLivingBase extends Entity
                     return;
                 }
 
-                itemstack = (craftItem.equals(event.getItem())) ? this.activeItemStack.onItemUseFinish(this.world, this) : CraftItemStack.asNMSCopy(event.getItem()).onItemUseFinish(world, this);
-            } else {
-                itemstack = this.activeItemStack.onItemUseFinish(this.world, this);
+                itemstack = CraftItemStack.asNMSCopy(event.getItem());
             }
-            // TODO: Is it correct to bypass forge event in such way, after craftbukkit?
-            itemstack = net.minecraftforge.event.ForgeEventFactory.onItemUseFinish(this, activeItemStack, getItemInUseCount(), itemstack);
+
+            ItemStack activeItemStackCopy = activeItemStack.copy();
+            itemstack = itemstack.onItemUseFinish(world, this);
+            itemstack = net.minecraftforge.event.ForgeEventFactory.onItemUseFinish(this, activeItemStackCopy, getItemInUseCount(), itemstack);
             this.setHeldItem(this.getActiveHand(), itemstack);
             this.resetActiveHand();
         }
