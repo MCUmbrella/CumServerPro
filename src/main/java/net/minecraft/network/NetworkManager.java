@@ -71,7 +71,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
     private final EnumPacketDirection direction;
     private final Queue<InboundHandlerTuplePacketListener> outboundPacketsQueue = Queues.<InboundHandlerTuplePacketListener>newConcurrentLinkedQueue();
     private final ReentrantReadWriteLock readWriteLock = new ReentrantReadWriteLock();
-    private Channel channel;
+    public Channel channel; // CatServer - private -> public
     // Spigot Start // PAIL
     public SocketAddress socketAddress;
     public java.util.UUID spoofedUUID;
