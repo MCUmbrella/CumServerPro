@@ -51,7 +51,7 @@ public class ReflectionTransformer {
     public static void remapForName(AbstractInsnNode insn) {
         MethodInsnNode method = (MethodInsnNode) insn;
         if (!method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
-        method.owner = "luohuayu/CatServer/remapper/RemappedMethods";
+        method.owner = "luohuayu/CatServer/remapper/ReflectionMethods";
     }
 
     public static void remapVirtual(AbstractInsnNode insn) {
@@ -69,7 +69,7 @@ public class ReflectionTransformer {
         args.addAll(Arrays.asList(Type.getArgumentTypes(method.desc)));
 
         method.setOpcode(Opcodes.INVOKESTATIC);
-        method.owner = "luohuayu/CatServer/remapper/RemappedMethods";
+        method.owner = "luohuayu/CatServer/remapper/ReflectionMethods";
         method.desc = Type.getMethodDescriptor(returnType, args.toArray(new Type[args.size()]));
     }
 }
