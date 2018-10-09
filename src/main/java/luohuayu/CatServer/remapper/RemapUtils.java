@@ -17,7 +17,7 @@ public class RemapUtils {
     }
 
     public static String reverseMap(String check) {
-        for (Entry<String, String> entry : Transformer.jarMapping.classes.entrySet()) {
+        for (Entry<String, String> entry : ReflectionTransformer.jarMapping.classes.entrySet()) {
             if (entry.getValue().equals(check))
             {
                 
@@ -41,7 +41,7 @@ public class RemapUtils {
     public static String mapMethodInternal(Class<?> inst, String name, Class<?>... parameterTypes) {
         String match = reverseMap(inst) + "/" + name + " ";
 
-        for (Entry<String, String> entry : Transformer.jarMapping.methods.entrySet()) {
+        for (Entry<String, String> entry : ReflectionTransformer.jarMapping.methods.entrySet()) {
             if (entry.getKey().startsWith(match)) {
                 // Check type to see if it matches
                 String[] str = entry.getKey().split("\\s+");

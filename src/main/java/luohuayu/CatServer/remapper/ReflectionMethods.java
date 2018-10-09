@@ -5,24 +5,24 @@ import java.lang.reflect.Method;
 
 import luohuayu.CatServer.CatServer;
 
-public class RemappedMethods {
+public class ReflectionMethods {
     public static Class<?> forName(String className) throws ClassNotFoundException {
         return forName(className, true, ReflectionUtils.getCallerClassloader());
     }
 
     public static Class<?> forName(String className, boolean initialize, ClassLoader classLoader) throws ClassNotFoundException {
         if (!className.startsWith("net.minecraft.server."+CatServer.getNativeVersion())) return Class.forName(className, initialize, classLoader);
-        className = Transformer.jarMapping.classes.get(className.replace('.', '/')).replace('/', '.');
+        className = ReflectionTransformer.jarMapping.classes.get(className.replace('.', '/')).replace('/', '.');
         return Class.forName(className, initialize, classLoader);
     }
 
     // Get Fields
     public static Field getField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
-        return inst.getField(Transformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
+        return inst.getField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
     }
 
     public static Field getDeclaredField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
-        return inst.getDeclaredField(Transformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
+        return inst.getDeclaredField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
     }
 
     // Get Methods

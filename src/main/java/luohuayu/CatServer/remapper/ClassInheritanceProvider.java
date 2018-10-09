@@ -10,7 +10,7 @@ import net.md_5.specialsource.provider.InheritanceProvider;
 public class ClassInheritanceProvider implements InheritanceProvider {
     @Override
     public Collection<String> getParents(String className) {
-        className = Transformer.remapper.map(className);
+        className = ReflectionTransformer.remapper.map(className);
 
         try {
             Collection<String> parents = new HashSet<String>();

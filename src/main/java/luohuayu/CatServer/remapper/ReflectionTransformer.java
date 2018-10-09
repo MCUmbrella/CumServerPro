@@ -8,7 +8,6 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
 import org.objectweb.asm.Type;
-import org.objectweb.asm.commons.Remapper;
 import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
@@ -16,27 +15,10 @@ import org.objectweb.asm.tree.MethodNode;
 
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;
-import net.md_5.specialsource.repo.RuntimeRepo;
 
-public class Transformer {
+public class ReflectionTransformer {
     public static JarMapping jarMapping;
     public static JarRemapper remapper;
-
-    public static void init(JarMapping mapping, JarRemapper remapper) {
-        if (Transformer.jarMapping == null) Transformer.jarMapping = mapping;
-        if (Transformer.remapper == null) Transformer.remapper = remapper;
-    }
-
-    /**
-     * Remap code using the provided jarMapping and
-     * convert code from using Class.X methods to our remapped versions
-     */
-    public static byte[] transformSS(JarRemapper remapper, byte[] code) {
-        return remapper.remapClassFile(
-                transform(code),
-                RuntimeRepo.getInstance());
-
-    }
 
     /**
      * Convert code from using Class.X methods to our remapped versions

@@ -23,7 +23,7 @@ import luohuayu.CatServer.CatServer;
 import luohuayu.CatServer.remapper.CatServerRemapper;
 import luohuayu.CatServer.remapper.ClassInheritanceProvider;
 import luohuayu.CatServer.remapper.MappingLoader;
-import luohuayu.CatServer.remapper.Transformer;
+import luohuayu.CatServer.remapper.ReflectionTransformer;
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;
 import net.md_5.specialsource.provider.ClassLoaderProvider;
@@ -63,15 +63,8 @@ final class PluginClassLoader extends URLClassLoader {
         this.url = file.toURI().toURL();
 
         jarMapping = MappingLoader.getJarMapping();
-
-        JointProvider provider = new JointProvider();
-        provider.add(new ClassInheritanceProvider());
-        provider.add(new ClassLoaderProvider(this));
-        jarMapping.setFallbackInheritanceProvider(provider);
-
         remapper = new CatServerRemapper(jarMapping);
-
-        Transformer.init(jarMapping, remapper);
+        MappingLoader.addProvider(new ClassLoaderProvider(this));
 
         try {
             Class<?> jarClass;
@@ -120,11 +113,7 @@ final class PluginClassLoader extends URLClassLoader {
                 }
     
                 if (result == null) {
-                    if (remapper == null) {
-                        result = super.findClass(name);
-                    } else {
-                        result = remappedFindClass(name);
-                    }
+                    result = remappedFindClass(name);
     
                     if (result != null) {
                         loader.setClass(name, result);
@@ -177,7 +166,7 @@ final class PluginClassLoader extends URLClassLoader {
 
                     // Remap the classes
                     bytecode = remapper.remapClassFile(stream, RuntimeRepo.getInstance());
-                    byte[] remappedBytecode = Transformer.transform(bytecode);
+                    bytecode = ReflectionTransformer.transform(bytecode);
 
                     // Define (create) the class using the modified byte code
                     // The top-child class loader is used for this to prevent access violations
@@ -188,7 +177,7 @@ final class PluginClassLoader extends URLClassLoader {
                     URL jarURL = jarURLConnection.getJarFileURL();
                     CodeSource codeSource = new CodeSource(jarURL, new CodeSigner[0]);
 
-                    result = this.defineClass(name, remappedBytecode, 0, remappedBytecode.length, codeSource);
+                    result = this.defineClass(name, bytecode, 0, bytecode.length, codeSource);
                     if (result != null) {
                         // Resolve it - sets the class loader of the class
                         this.resolveClass(result);
