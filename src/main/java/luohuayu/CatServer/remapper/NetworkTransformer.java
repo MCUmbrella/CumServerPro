@@ -26,15 +26,15 @@ public class NetworkTransformer implements IClassTransformer {
 
         /*
          * public void sendPacket(Packet<?> packetIn) {
-         * super.func_147359_a(packetIn);
+         *      super.func_147359_a(packetIn);
          * }
          */
 
-        MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "sendPacket", "(Lnet/minecraft/network/Packet<*>;)V", null, null);
+        MethodVisitor mv = classWriter.visitMethod(ACC_PUBLIC, "sendPacket", "(Lnet/minecraft/network/Packet;)V", "(Lnet/minecraft/network/Packet<*>;)V", null);
         mv.visitCode();
         mv.visitVarInsn(ALOAD, 0);
         mv.visitVarInsn(ALOAD, 1);
-        mv.visitMethodInsn(INVOKEINTERFACE, "net/minecraft/network/NetHandlerPlayServer", "func_147359_a", "(Lnet/minecraft/network/Packet;)V", true);
+        mv.visitMethodInsn(INVOKESPECIAL, "net/minecraft/network/NetHandlerPlayServer", "func_147359_a", "(Lnet/minecraft/network/Packet;)V", true);
         mv.visitInsn(RETURN);
         mv.visitEnd();
 
