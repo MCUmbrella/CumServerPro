@@ -154,7 +154,6 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
 
     private void updateEmptyState()
     {
-        if (this.isEmpty && this == ItemStack.EMPTY) throw new AssertionError("TRAP");
         this.isEmpty = this.isEmpty();
     }
 
