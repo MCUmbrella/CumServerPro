@@ -45,6 +45,7 @@ import com.google.gson.JsonParseException;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDoor;
 import net.minecraft.block.BlockLiquid;
 import net.minecraft.block.BlockMushroom;
 import net.minecraft.block.BlockSapling;
@@ -861,6 +862,12 @@ public class ForgeHooks
                 {
                     entityPlayer.connection.sendPacket(pkt);
                 }
+            }
+
+            // Send other half of the door
+            if (state.getBlock() instanceof BlockDoor) {
+                boolean bottom = state.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER;
+                entityPlayer.connection.sendPacket(new SPacketBlockChange(world, bottom ? pos.up() : pos.down()));
             }
         }
         return event.isCanceled() ? -1 : event.getExpToDrop();

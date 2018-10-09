@@ -22,12 +22,12 @@ package net.minecraftforge.event.world;
 import java.util.EnumSet;
 import java.util.List;
 
-import net.minecraft.block.material.Material;
 import net.minecraft.block.BlockPortal;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Enchantments;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumHand;
@@ -43,7 +43,9 @@ import com.google.common.collect.ImmutableList;
 
 import javax.annotation.Nonnull;
 
+import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.event.CraftEventFactory;
+import org.bukkit.event.block.BlockBreakEvent;
 
 public class BlockEvent extends Event
 {
@@ -126,17 +128,18 @@ public class BlockEvent extends Event
         {
             super(world, pos, state);
             this.player = player;
+            // CatSerer start - handle event on bukkit side
+            org.bukkit.event.block.BlockBreakEvent bukkitEvent = CraftEventFactory.callBlockBreakEvent(world, pos, state, (EntityPlayerMP) player);
 
-            if (state == null || !ForgeHooks.canHarvestBlock(state.getBlock(), player, world, pos) || // Handle empty block or player unable to break block scenario
-                (state.getBlock().canSilkHarvest(world, pos, world.getBlockState(pos), player) && EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, player.getHeldItemMainhand()) > 0)) // If the block is being silk harvested, the exp dropped is 0
+            if(bukkitEvent.isCancelled())
             {
-                this.exp = 0;
+                this.setCanceled(true);
             }
             else
             {
-                int bonusLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, player.getHeldItemMainhand());
-                this.exp = state.getBlock().getExpDrop(state, world, pos, bonusLevel);
+                this.exp = bukkitEvent.getExpToDrop();
             }
+            // CatSerer end
         }
 
         public EntityPlayer getPlayer()

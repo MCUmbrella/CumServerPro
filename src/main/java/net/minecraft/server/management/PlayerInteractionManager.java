@@ -342,67 +342,11 @@ public class PlayerInteractionManager
         return flag;
     }
 
+    /**
+     * Attempts to harvest a block
+     */
     public boolean tryHarvestBlock(BlockPos pos)
     {
-        // CraftBukkit start - fire BlockBreakEvent
-        BlockBreakEvent event = null;
-
-        if (this.player instanceof EntityPlayerMP) {
-            org.bukkit.block.Block block = this.world.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());
-
-            // Sword + Creative mode pre-cancel
-            boolean isSwordNoBreak = this.gameType.isCreative() && !this.player.getHeldItemMainhand().isEmpty() && this.player.getHeldItemMainhand().getItem() instanceof ItemSword;
-
-            // Tell client the block is gone immediately then process events
-            // Don't tell the client if its a creative sword break because its not broken!
-            if (world.getTileEntity(pos) == null && !isSwordNoBreak) {
-                SPacketBlockChange packet = new SPacketBlockChange(this.world, pos);
-                packet.blockState = Blocks.AIR.getDefaultState();
-                ((EntityPlayerMP) this.player).connection.sendPacket(packet);
-            }
-
-            event = new BlockBreakEvent(block, this.player.getBukkitEntity());
-
-            // Sword + Creative mode pre-cancel
-            event.setCancelled(isSwordNoBreak);
-
-            // Calculate default block experience
-            IBlockState nmsData = this.world.getBlockState(pos);
-            Block nmsBlock = nmsData.getBlock();
-
-            ItemStack itemstack = this.player.getItemStackFromSlot(EntityEquipmentSlot.MAINHAND);
-
-            if (nmsBlock != null && !event.isCancelled() && !this.isCreative() && this.player.canHarvestBlock(nmsBlock.getDefaultState())) {
-                // Copied from block.a(World world, EntityHuman entityhuman, BlockPosition blockposition, IBlockData iblockdata, @Nullable TileEntity tileentity, ItemStack itemstack)
-                // PAIL: checkme each update
-                if (!(nmsBlock.getEnableStats() && EnchantmentHelper.getEnchantmentLevel(Enchantments.SILK_TOUCH, itemstack) > 0)) {
-                    int bonusLevel = EnchantmentHelper.getEnchantmentLevel(Enchantments.FORTUNE, itemstack);
-
-                    event.setExpToDrop(nmsBlock.getExpDrop(this.world, nmsData, bonusLevel));
-                }
-            }
-
-            this.world.getServer().getPluginManager().callEvent(event);
-
-            if (event.isCancelled()) {
-                if (isSwordNoBreak) {
-                    return false;
-                }
-                // Let the client know the block still exists
-                ((EntityPlayerMP) this.player).connection.sendPacket(new SPacketBlockChange(this.world, pos));
-                // Send other half of the door
-                if (nmsBlock instanceof BlockDoor) {
-                    boolean bottom = nmsData.getValue(BlockDoor.HALF) == BlockDoor.EnumDoorHalf.LOWER;
-                    ((EntityPlayerMP) this.player).connection.sendPacket(new SPacketBlockChange(world, bottom ? pos.up() : pos.down()));
-                }
-                // Update any tile entity data for this block
-                TileEntity tileentity = this.world.getTileEntity(pos);
-                if (tileentity != null) {
-                    this.player.connection.sendPacket(tileentity.getUpdatePacket());
-                }
-                return false;
-            }
-        }
         int exp = net.minecraftforge.common.ForgeHooks.onBlockBreakEvent(world, gameType, player, pos);
         if (exp == -1)
         {
@@ -411,22 +355,8 @@ public class PlayerInteractionManager
         else
         {
             IBlockState iblockstate = this.world.getBlockState(pos);
-            if (iblockstate.getBlock() == Blocks.AIR) return false; // CraftBukkit - A plugin set block to air without cancelling
             TileEntity tileentity = this.world.getTileEntity(pos);
             Block block = iblockstate.getBlock();
-
-            // CraftBukkit start - Special case skulls, their item data comes from a tile entity (Also check if block should drop items)
-            if (iblockstate.getBlock() == Blocks.SKULL && !this.isCreative() && event.isDropItems()) {
-                iblockstate.getBlock().dropBlockAsItemWithChance(world, pos, iblockstate, 1.0F, 0);
-                return this.removeBlock(pos);
-            }
-
-            // And shulker boxes too for duplication on cancel reasons (Also check if block should drop items)
-            if (iblockstate.getBlock() instanceof BlockShulkerBox && event.isDropItems()) {
-                iblockstate.getBlock().dropBlockAsItemWithChance(world, pos, iblockstate, 1.0F, 0);
-                return this.removeBlock(pos);
-            }
-            // CraftBukkit end
 
             if ((block instanceof BlockCommandBlock || block instanceof BlockStructure) && !this.player.canUseCommandBlock())
             {
@@ -439,14 +369,7 @@ public class PlayerInteractionManager
                 if (!stack.isEmpty() && stack.getItem().onBlockStartBreak(stack, pos, player)) return false;
 
                 this.world.playEvent(this.player, 2001, pos, Block.getStateId(iblockstate));
-                world.captureDrops = new ArrayList<>();
                 boolean flag1 = false;
-                if (event.isDropItems()) {
-                    for (EntityItem item : world.captureDrops) {
-                        world.spawnEntity(item);
-                    }
-                }
-                world.captureDrops = null;
 
                 if (this.isCreative())
                 {
@@ -466,14 +389,12 @@ public class PlayerInteractionManager
                     }
 
                     flag1 = this.removeBlock(pos, flag);
-                    // CraftBukkit - Check if block should drop items
-                    if (flag1 && flag && event.isDropItems())
+                    if (flag1 && flag)
                     {
                         iblockstate.getBlock().harvestBlock(this.world, this.player, pos, iblockstate, tileentity, itemstack2);
                     }
                 }
 
-                // TODO: Implement exp drop from CraftBukkit here
                 // Drop experience
                 if (!this.isCreative() && flag1 && exp > 0)
                 {
