@@ -241,6 +241,7 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable
         {
             this.secretKey = packetIn.getSecretKey(privatekey);
             this.currentLoginState = LoginState.AUTHENTICATING;
+            this.networkManager.enableEncryption(this.secretKey);
             (new Thread(net.minecraftforge.fml.common.thread.SidedThreadGroups.SERVER, "User Authenticator #" + AUTHENTICATOR_THREAD_ID.incrementAndGet())
             {
                 public void run()
