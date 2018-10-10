@@ -24,6 +24,8 @@ import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
+
+import luohuayu.CatServer.inventory.CustomModRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockObserver;
@@ -428,6 +430,7 @@ public class GameData
         {
             private static ItemStack result = new ItemStack(Items.DIAMOND, 64);
             private ResourceLocation name;
+            private Recipe bukkitRecip; // CatServer - bukkit compatibility
 
             @Override
             public IRecipe setRegistryName(ResourceLocation name) {
@@ -444,7 +447,9 @@ public class GameData
 
             @Override
             public Recipe toBukkitRecipe() {
-                throw new IllegalStateException("Cannot get bukkit-recipe from DummyRecipe!");
+                if (bukkitRecip == null)
+                    bukkitRecip = new CustomModRecipe(this, this.getRegistryName());
+                return this.bukkitRecip;
             }
 
             @Override

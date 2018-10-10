@@ -34,7 +34,7 @@ public class RecipeIterator implements Iterator<Recipe> {
                 return recipe.toBukkitRecipe();
             } catch (AbstractMethodError ex) {
                 // No Bukkit wrapper provided
-                return new CustomModRecipe(recipe);
+                return recipe == null ? null :new CustomModRecipe(recipe, recipe.getRegistryName());
             }
         } else {
             net.minecraft.item.ItemStack item;
