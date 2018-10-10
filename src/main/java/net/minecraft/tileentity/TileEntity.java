@@ -24,7 +24,7 @@ import org.apache.logging.log4j.Logger;
 import org.bukkit.inventory.InventoryHolder;
 import org.spigotmc.CustomTimingsHandler;
 
-import luohuayu.CatServer.inventory.CraftCustomContainer;
+import luohuayu.CatServer.inventory.CatCustomInventory;
 
 public abstract class TileEntity implements net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound>
 {
@@ -553,7 +553,7 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
         {
             return (InventoryHolder) state;
         } else if (this instanceof IInventory) { // CatServer
-            return (InventoryHolder) new CraftCustomContainer(state.getBlock());
+            return (InventoryHolder) new CatCustomInventory((IInventory) this);
         }
         return null;
     }
