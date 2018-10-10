@@ -112,7 +112,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         this(itemIn, amount, 0);
     }
 
-    public ItemStack(Item itemIn, int amount, int meta){ this(itemIn, amount, meta, true); }
+    public ItemStack(Item itemIn, int amount, int meta){ this(itemIn, amount, meta, null); }
     public ItemStack(Item itemIn, int amount, int meta, @Nullable NBTTagCompound capNBT)
     {
         this.capNBT = capNBT;
@@ -129,48 +129,9 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         this.forgeInit();
     }
 
-    public ItemStack(Item itemIn, int amount, int meta, boolean convert)
-    {
-        this.item = itemIn;
-        this.itemDamage = meta;
-        this.stackSize = amount;
-
-        // CraftBukkit start - Pass to setData to do filtering
-        if (MinecraftServer.getServerInst() != null) {
-            this.setItemDamage(meta);
-        }
-        // CraftBukkit end
-
-        if (this.itemDamage < 0)
-        {
-            // this.itemDamage = 0;
-        }
-
-        this.updateEmptyState();
-        this.forgeInit();
-        if (convert)
-            this.convertStack();
-    }
-
     private void updateEmptyState()
     {
         this.isEmpty = this.isEmpty();
-    }
-
-    // Called to run this stack through the data converter to handle older storage methods and serialized items
-    public void convertStack() {
-        if (MinecraftServer.getServerInst() != null) {
-            // Don't convert beds - both the old and new data values are valid
-            // Conversion would make getting white beds (data value 0) impossible
-            if (this.item == Items.BED) {
-                return;
-            }
-
-            NBTTagCompound savedStack = new NBTTagCompound();
-            this.writeToNBT(savedStack);
-            MinecraftServer.getServerInst().dataFixer.process(FixTypes.ITEM_INSTANCE, savedStack);
-            this.load(savedStack);
-        }
     }
 
     public ItemStack(NBTTagCompound compound)
@@ -497,8 +458,7 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
 
     public ItemStack copy()
     {
-        // ItemStack itemstack = new ItemStack(this.item, this.stackSize, this.itemDamage, this.capabilities != null ? this.capabilities.serializeNBT() : null);
-        ItemStack itemstack = new ItemStack(this.item, this.stackSize, this.itemDamage, false);
+        ItemStack itemstack = new ItemStack(this.item, this.stackSize, this.itemDamage, this.capabilities != null ? this.capabilities.serializeNBT() : null);
         itemstack.setAnimationsToGo(this.getAnimationsToGo());
 
         if (this.stackTagCompound != null)
