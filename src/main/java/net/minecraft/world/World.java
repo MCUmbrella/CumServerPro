@@ -1475,6 +1475,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         {
             ((IWorldEventListener)this.eventListeners.get(i)).onEntityAdded(entityIn);
         }
+        entityIn.onAddedToWorld();
         entityIn.valid = true;
     }
 
@@ -1484,6 +1485,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         {
             ((IWorldEventListener)this.eventListeners.get(i)).onEntityRemoved(entityIn);
         }
+        entityIn.onRemovedFromWorld();
         entityIn.valid = false;
     }
 
