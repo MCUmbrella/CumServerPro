@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016-2018.
+ * Copyright (c) 2016.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -34,18 +34,16 @@ public class TerminalTransformer implements IClassTransformer
         ClassReader reader = new ClassReader(basicClass);
         ClassWriter writer = new ClassWriter(ClassWriter.COMPUTE_MAXS);
 
-        ExitVisitor visitor = new ExitVisitor(writer);
+        ClassVisitor visitor = writer;
+        visitor = new ExitVisitor(visitor);
 
         reader.accept(visitor, 0);
-
-        if (!visitor.dirty) return basicClass;
         return writer.toByteArray();
     }
 
     public static class ExitVisitor extends ClassVisitor
     {
         private String clsName = null;
-        private boolean dirty;
         private static final String callbackOwner = org.objectweb.asm.Type.getInternalName(ExitVisitor.class);
 
         private ExitVisitor(ClassVisitor cv)
@@ -64,15 +62,15 @@ public class TerminalTransformer implements IClassTransformer
         public MethodVisitor visitMethod(int mAccess, final String mName, final String mDesc, String mSignature, String[] mExceptions)
         {
             final boolean warn = !(clsName.equals("net/minecraft/client/Minecraft") ||
-                    clsName.equals("net/minecraft/server/dedicated/DedicatedServer") ||
-                    clsName.equals("net/minecraft/server/dedicated/ServerHangWatchdog") ||
-                    clsName.equals("net/minecraft/server/dedicated/ServerHangWatchdog$1") ||
-                    clsName.equals("net/minecraftforge/fml/common/FMLCommonHandler") ||
-                    clsName.startsWith("com/jcraft/jogg/") ||
-                    clsName.startsWith("scala/sys/") ||
-                    clsName.startsWith("net/minecraft/server/gui/MinecraftServerGui") ||
-                    clsName.startsWith("com/sun/jna/")
-            ) && false; // CatServer
+                                   clsName.equals("net/minecraft/server/dedicated/DedicatedServer") ||
+                                   clsName.equals("net/minecraft/server/dedicated/ServerHangWatchdog") ||
+                                   clsName.equals("net/minecraft/server/dedicated/ServerHangWatchdog$1") ||
+                                   clsName.equals("net/minecraftforge/fml/common/FMLCommonHandler") ||
+                                   clsName.startsWith("com/jcraft/jogg/") ||
+                                   clsName.startsWith("scala/sys/") ||
+                                   clsName.startsWith("net/minecraft/server/gui/MinecraftServerGui") ||
+                                   clsName.startsWith("com/sun/jna/")
+                                   ) && false; // CatServer
 
             return new MethodVisitor(Opcodes.ASM5, super.visitMethod(mAccess, mName, mDesc, mSignature, mExceptions))
             {
@@ -91,7 +89,6 @@ public class TerminalTransformer implements IClassTransformer
                         }
                         owner = ExitVisitor.callbackOwner;
                         name = "systemExitCalled";
-                        dirty = true;
                     }
                     else if (opcode == Opcodes.INVOKEVIRTUAL && owner.equals("java/lang/Runtime") && name.equals("exit") && desc.equals("(I)V"))
                     {
@@ -107,7 +104,6 @@ public class TerminalTransformer implements IClassTransformer
                         owner = ExitVisitor.callbackOwner;
                         name = "runtimeExitCalled";
                         desc = "(Ljava/lang/Runtime;I)V";
-                        dirty = true;
                     }
                     else if (opcode == Opcodes.INVOKEVIRTUAL && owner.equals("java/lang/Runtime") && name.equals("halt") && desc.equals("(I)V"))
                     {
@@ -123,7 +119,6 @@ public class TerminalTransformer implements IClassTransformer
                         owner = ExitVisitor.callbackOwner;
                         name = "runtimeHaltCalled";
                         desc = "(Ljava/lang/Runtime;I)V";
-                        dirty = true;
                     }
 
                     super.visitMethodInsn(opcode, owner, name, desc, isIntf);

@@ -784,7 +784,6 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         entityIn.chunkCoordY = k;
         entityIn.chunkCoordZ = this.z;
         this.entityLists[k].add(entityIn);
-        this.markDirty(); // Forge - ensure chunks are marked to save after an entity add
         // Spigot start - increment creature type count
         // Keep this synced up with World.a(Class)
         if (entityIn instanceof EntityLiving) {
@@ -821,7 +820,6 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         }
 
         this.entityLists[index].remove(entityIn);
-        this.markDirty(); // Forge - ensure chunks are marked to save after entity removals
         // Spigot start - decrement creature type count
         // Keep this synced up with World.a(Class)
         if (entityIn instanceof EntityLiving) {

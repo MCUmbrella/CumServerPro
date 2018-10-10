@@ -1,6 +1,6 @@
 /*
  * Minecraft Forge
- * Copyright (c) 2016-2018.
+ * Copyright (c) 2016.
  *
  * This library is free software; you can redistribute it and/or
  * modify it under the terms of the GNU Lesser General Public
@@ -60,14 +60,13 @@ public class FluidBucketWrapper implements IFluidHandlerItem, ICapabilityProvide
         return container;
     }
 
-    public boolean canFillFluidType(FluidStack fluidStack)
+    public boolean canFillFluidType(FluidStack fluid)
     {
-        Fluid fluid = fluidStack.getFluid();
-        if (fluid == FluidRegistry.WATER || fluid == FluidRegistry.LAVA || fluid.getName().equals("milk"))
+        if (fluid.getFluid() == FluidRegistry.WATER || fluid.getFluid() == FluidRegistry.LAVA || fluid.getFluid().getName().equals("milk"))
         {
             return true;
         }
-        return FluidRegistry.isUniversalBucketEnabled() && FluidRegistry.hasBucket(fluid);
+        return FluidRegistry.isUniversalBucketEnabled() && FluidRegistry.getBucketFluids().contains(fluid.getFluid());
     }
 
     @Nullable
