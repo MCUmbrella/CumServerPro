@@ -177,7 +177,7 @@ public class CraftBlock implements Block {
     }
 
     public Material getType() {
-        return Material.getMaterial(getTypeId());
+        return Material.getBlockMaterial(getTypeId());
     }
 
     @Deprecated
