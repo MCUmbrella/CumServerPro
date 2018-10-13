@@ -99,12 +99,12 @@ public class EntityEnderman extends EntityMob
     public void setAttackTarget(@Nullable EntityLivingBase entitylivingbaseIn)
     {
         // CraftBukkit start - fire event
-        setAttackTarget(entitylivingbaseIn, EntityTargetEvent.TargetReason.UNKNOWN, true);
+        setGoalTarget(entitylivingbaseIn, EntityTargetEvent.TargetReason.UNKNOWN, true);
     }
 
     @Override
-    public boolean setAttackTarget(@Nullable EntityLivingBase entityliving, org.bukkit.event.entity.EntityTargetEvent.TargetReason reason, boolean fireEvent) {
-        if (!super.setAttackTarget(entityliving, reason, fireEvent)) {
+    public boolean setGoalTarget(@Nullable EntityLivingBase entityliving, org.bukkit.event.entity.EntityTargetEvent.TargetReason reason, boolean fireEvent) {
+        if (!super.setGoalTarget(entityliving, reason, fireEvent)) {
             return false;
         }
         entityliving = getAttackTarget();

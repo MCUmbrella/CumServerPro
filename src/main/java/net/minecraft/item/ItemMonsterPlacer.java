@@ -243,7 +243,7 @@ public class ItemMonsterPlacer extends Item
                     // worldIn.spawnEntity(entity);
                     // entityliving.playLivingSound();
                     // CraftBukkit start - don't return an entity when CreatureSpawnEvent is canceled
-                    if (!worldIn.spawnEntity(entity, spawnReason)) {
+                    if (!worldIn.addEntity(entity, spawnReason)) {
                         entity = null;
                     } else {
                         entityliving.playLivingSound();

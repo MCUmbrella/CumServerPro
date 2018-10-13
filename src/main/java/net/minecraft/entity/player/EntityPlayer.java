@@ -2417,7 +2417,7 @@ public abstract class EntityPlayer extends EntityLivingBase
             }
 
             entity.setPosition(this.posX, this.posY + 0.699999988079071D, this.posZ);
-            return this.world.spawnEntity(entity, CreatureSpawnEvent.SpawnReason.SHOULDER_ENTITY);
+            return this.world.addEntity(entity, CreatureSpawnEvent.SpawnReason.SHOULDER_ENTITY);
         }
         return true;
     }

@@ -136,7 +136,7 @@ public class EntityAIMate extends EntityAIBase
             this.targetMate.resetInLove();
             entityageable.setGrowingAge(-24000);
             entityageable.setLocationAndAngles(this.animal.posX, this.animal.posY, this.animal.posZ, 0.0F, 0.0F);
-            this.world.spawnEntity(entityageable, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING);
+            this.world.addEntity(entityageable, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING);
             Random random = this.animal.getRNG();
 
             for (int i = 0; i < 7; ++i)

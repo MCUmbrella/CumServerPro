@@ -184,10 +184,10 @@ public abstract class EntityLiving extends EntityLivingBase
         this.attackTarget = entitylivingbaseIn;
         net.minecraftforge.common.ForgeHooks.onLivingSetAttackTarget(this, entitylivingbaseIn);
         // CraftBukkit start - fire event
-        setAttackTarget(entitylivingbaseIn, EntityTargetEvent.TargetReason.UNKNOWN, true);
+        setGoalTarget(entitylivingbaseIn, EntityTargetEvent.TargetReason.UNKNOWN, true);
     }
 
-    public boolean setAttackTarget(@Nullable EntityLivingBase entityliving, EntityTargetEvent.TargetReason reason, boolean fireEvent) {
+    public boolean setGoalTarget(@Nullable EntityLivingBase entityliving, EntityTargetEvent.TargetReason reason, boolean fireEvent) {
         if (getAttackTarget() == entityliving) return false;
         if (fireEvent) {
             if (reason == EntityTargetEvent.TargetReason.UNKNOWN && getAttackTarget() != null && entityliving == null) {

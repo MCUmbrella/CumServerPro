@@ -119,8 +119,8 @@ public class EntityWolf extends EntityTameable
 
     // CraftBukkit - add overriden version
     @Override
-    public boolean setAttackTarget(@Nullable EntityLivingBase entityliving, org.bukkit.event.entity.EntityTargetEvent.TargetReason reason, boolean fire) {
-        if (!super.setAttackTarget(entityliving, reason, fire)) {
+    public boolean setGoalTarget(@Nullable EntityLivingBase entityliving, org.bukkit.event.entity.EntityTargetEvent.TargetReason reason, boolean fire) {
+        if (!super.setGoalTarget(entityliving, reason, fire)) {
             return false;
         }
         entityliving = getAttackTarget();
@@ -441,7 +441,7 @@ public class EntityWolf extends EntityTameable
                 this.aiSit.setSitting(!this.isSitting());
                 this.isJumping = false;
                 this.navigator.clearPath();
-                this.setAttackTarget((EntityLivingBase)null, EntityTargetEvent.TargetReason.FORGOT_TARGET, true);
+                this.setGoalTarget((EntityLivingBase)null, EntityTargetEvent.TargetReason.FORGOT_TARGET, true);
             }
         }
         else if (itemstack.getItem() == Items.BONE && !this.isAngry())

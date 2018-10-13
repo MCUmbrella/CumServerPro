@@ -208,7 +208,7 @@ public final class WorldEntitySpawner
 
                                                     if (entityliving.isNotColliding())
                                                     {
-                                                        if (worldServerIn.spawnEntity(entityliving, CreatureSpawnEvent.SpawnReason.NATURAL)) {
+                                                        if (worldServerIn.addEntity(entityliving, CreatureSpawnEvent.SpawnReason.NATURAL)) {
                                                             ++j2;
                                                             moblimit--; // Spigot
                                                         }
@@ -353,7 +353,7 @@ public final class WorldEntitySpawner
                             // CraftBukkit start - Added a reason for spawning this creature, moved entityliving.onInitialSpawn(ientitylivingdata) up
                             // worldIn.spawnEntity(entityliving);
                             ientitylivingdata = entityliving.onInitialSpawn(worldIn.getDifficultyForLocation(new BlockPos(entityliving)), ientitylivingdata);
-                            worldIn.spawnEntity(entityliving, CreatureSpawnEvent.SpawnReason.CHUNK_GEN);
+                            worldIn.addEntity(entityliving, CreatureSpawnEvent.SpawnReason.CHUNK_GEN);
                             // CraftBukkit end
                             flag = true;
                         }

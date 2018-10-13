@@ -127,7 +127,7 @@ public class EntityAIVillagerMate extends EntityAIBase
         entityvillager = event.getChild();
         entityvillager.setGrowingAge(-24000);
         entityvillager.setLocationAndAngles(this.villager.posX, this.villager.posY, this.villager.posZ, 0.0F, 0.0F);
-        this.world.spawnEntity(entityvillager, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING);
+        this.world.addEntity(entityvillager, org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason.BREEDING);
         this.world.setEntityState(entityvillager, (byte)12);
     }
 }

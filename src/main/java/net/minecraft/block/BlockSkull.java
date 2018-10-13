@@ -252,7 +252,7 @@ public class BlockSkull extends BlockContainer
                 entitywither.setLocationAndAngles((double)blockpos1.getX() + 0.5D, (double)blockpos1.getY() + 0.55D, (double)blockpos1.getZ() + 0.5D, blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X ? 0.0F : 90.0F, 0.0F);
                 entitywither.renderYawOffset = blockpattern$patternhelper.getForwards().getAxis() == EnumFacing.Axis.X ? 0.0F : 90.0F;
                 entitywither.ignite();
-                if (worldIn.spawnEntity(entitywither, CreatureSpawnEvent.SpawnReason.BUILD_WITHER)) {
+                if (worldIn.addEntity(entitywither, CreatureSpawnEvent.SpawnReason.BUILD_WITHER)) {
                     blockList.updateList();
 
                     for (EntityPlayerMP entityplayermp : worldIn.getEntitiesWithinAABB(EntityPlayerMP.class, entitywither.getEntityBoundingBox().grow(50.0D))) {

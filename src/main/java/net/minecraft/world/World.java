@@ -1383,10 +1383,10 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public boolean spawnEntity(Entity entityIn)
     {
         // CraftBukkit start - Used for entities other than creatures
-        return spawnEntity(entityIn, CreatureSpawnEvent.SpawnReason.DEFAULT);
+        return addEntity(entityIn, CreatureSpawnEvent.SpawnReason.DEFAULT);
     }
 
-    public boolean spawnEntity(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
+    public boolean addEntity(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
         org.spigotmc.AsyncCatcher.catchOp( "entity add"); // Spigot
         if (entity == null) return false;
 
