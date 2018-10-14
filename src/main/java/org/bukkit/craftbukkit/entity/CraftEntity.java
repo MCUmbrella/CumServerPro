@@ -17,7 +17,6 @@ import net.minecraft.entity.EntityCreature;
 import net.minecraft.entity.EntityFlying;
 import net.minecraft.entity.EntityHanging;
 import net.minecraft.entity.EntityLeashKnot;
-import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.MultiPartEntityPart;
 import net.minecraft.entity.boss.EntityDragon;
@@ -242,7 +241,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
                 else { return new CraftAmbient(server, (EntityAmbientCreature) entity); }
             }
             else if (entity instanceof EntityArmorStand) { return new CraftArmorStand(server, (EntityArmorStand) entity); }
-            else  { return new CraftLivingEntity(server, (EntityLiving) entity); }
+            else  { return new CraftLivingEntity(server, (EntityLivingBase) entity); }
         }
         else if (entity instanceof MultiPartEntityPart) {
             MultiPartEntityPart part = (MultiPartEntityPart) entity;
