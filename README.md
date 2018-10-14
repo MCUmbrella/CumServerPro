@@ -11,6 +11,6 @@ Telegram group: @CatServer
 性能更高更稳定<br>
 
 ### 构建
-git clone https://gitee.com/CatServer/CatServer.git<br>
-gradlew build<br>
-
+1.克隆: git clone https://gitee.com/CatServer/CatServer.git<br>
+2.构建项目: gradlew build<br>
+3.转储lib文件: gradlew dumpLibs
