@@ -21,7 +21,7 @@ public class FoodStats
     private EntityPlayer entityhuman;
 
     public FoodStats() {
-        throw new AssertionError("Whoopsie, we missed the bukkit.");
+        this.entityhuman = null;
     }
 
     public FoodStats(EntityPlayer entityhuman) {
@@ -37,16 +37,20 @@ public class FoodStats
 
     public void addStats(ItemFood foodItem, ItemStack stack)
     {
-        // this.addStats(foodItem.getHealAmount(stack), foodItem.getSaturationModifier(stack));
-        int oldFoodLevel = foodLevel;
+        if (entityhuman == null) // CatServer - allow mods use FoodStats
+        {
+            this.addStats(foodItem.getHealAmount(stack), foodItem.getSaturationModifier(stack));
+        } else {
+            int oldFoodLevel = foodLevel;
 
-        org.bukkit.event.entity.FoodLevelChangeEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callFoodLevelChangeEvent(entityhuman, foodItem.getHealAmount(stack) + oldFoodLevel);
+            org.bukkit.event.entity.FoodLevelChangeEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callFoodLevelChangeEvent(entityhuman, foodItem.getHealAmount(stack) + oldFoodLevel);
 
-        if (!event.isCancelled()) {
-            this.addStats(event.getFoodLevel() - oldFoodLevel, foodItem.getSaturationModifier(stack));
+            if (!event.isCancelled()) {
+                this.addStats(event.getFoodLevel() - oldFoodLevel, foodItem.getSaturationModifier(stack));
+            }
+
+            ((EntityPlayerMP) entityhuman).getBukkitEntity().sendHealthUpdate();
         }
-
-        ((EntityPlayerMP) entityhuman).getBukkitEntity().sendHealthUpdate();
     }
 
     public void onUpdate(EntityPlayer player)
@@ -64,14 +68,18 @@ public class FoodStats
             }
             else if (enumdifficulty != EnumDifficulty.PEACEFUL)
             {
-                // this.foodLevel = Math.max(this.foodLevel - 1, 0);
-                org.bukkit.event.entity.FoodLevelChangeEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callFoodLevelChangeEvent(entityhuman, Math.max(this.foodLevel - 1, 0));
+                if (entityhuman == null) // CatServer - allow mods use FoodStats
+                {
+                    this.foodLevel = Math.max(this.foodLevel - 1, 0);
+                } else {
+                    org.bukkit.event.entity.FoodLevelChangeEvent event = org.bukkit.craftbukkit.event.CraftEventFactory.callFoodLevelChangeEvent(entityhuman, Math.max(this.foodLevel - 1, 0));
 
-                if (!event.isCancelled()) {
-                    this.foodLevel = event.getFoodLevel();
+                    if (!event.isCancelled()) {
+                        this.foodLevel = event.getFoodLevel();
+                    }
+
+                    ((EntityPlayerMP) entityhuman).connection.sendPacket(new SPacketUpdateHealth(((EntityPlayerMP) entityhuman).getBukkitEntity().getScaledHealth(), this.foodLevel, this.foodSaturationLevel));
                 }
-
-                ((EntityPlayerMP) entityhuman).connection.sendPacket(new SPacketUpdateHealth(((EntityPlayerMP) entityhuman).getBukkitEntity().getScaledHealth(), this.foodLevel, this.foodSaturationLevel));
             }
         }
 
@@ -96,7 +104,7 @@ public class FoodStats
             if (this.foodTimer >= 80)
             {
                 player.heal(1.0F, org.bukkit.event.entity.EntityRegainHealthEvent.RegainReason.SATIATED);
-                this.addExhaustion(entityhuman.world.spigotConfig.regenExhaustion); // Spigot - Change to use configurable value
+                this.addExhaustion(entityhuman == null ? 6.0F : entityhuman.world.spigotConfig.regenExhaustion); // Spigot - Change to use configurable value
                 this.foodTimer = 0;
             }
         }
