@@ -14,7 +14,7 @@ public class ReflectionMethods {
     }
 
     public static Class<?> forName(String className, boolean initialize, ClassLoader classLoader) throws ClassNotFoundException {
-        if(!className.startsWith("net.minecraft.server." + CatServer.getNativeVersion())) return Class.forName(className, initialize, classLoader);
+        if (!className.startsWith("net.minecraft.server." + CatServer.getNativeVersion())) return Class.forName(className, initialize, classLoader);
         className = ReflectionTransformer.jarMapping.classes.get(className.replace('.', '/')).replace('/', '.');
         return Class.forName(className, initialize, classLoader);
     }
@@ -38,7 +38,7 @@ public class ReflectionMethods {
     }
 
     public static String demapField(Field pField) {
-        if(!pField.getDeclaringClass().getName().startsWith("net/minecraft")) return pField.getName();
+        if (!pField.getDeclaringClass().getName().startsWith("net/minecraft")) return pField.getName();
 
         return ReflectionTransformer.remapper.demapFieldName(Type.getInternalName(pField.getDeclaringClass()),
                 pField.getName(),
@@ -46,11 +46,24 @@ public class ReflectionMethods {
     }
 
     public static String demapMethod(Method pMethod) {
-        if(!pMethod.getDeclaringClass().getName().startsWith("net/minecraft")) return pMethod.getName();
+        if (!pMethod.getDeclaringClass().getName().startsWith("net.minecraft")) return pMethod.getName();
+        try {
+            return ReflectionTransformer.remapper.demapMethodName(Type.getInternalName(pMethod.getDeclaringClass()),
+                    pMethod.getName(),
+                    Type.getMethodDescriptor(pMethod),
+                    pMethod.getModifiers());
+        } catch (Throwable exp) {
+            exp.printStackTrace();
+        }
+        return pMethod.getName();
+    }
 
-        return ReflectionTransformer.remapper.demapMethodName(Type.getInternalName(pMethod.getDeclaringClass()),
-                pMethod.getName(),
-                Type.getMethodDescriptor(pMethod),
-                pMethod.getModifiers());
+    public static Class<?> getClass(String pClazzName) throws ClassNotFoundException {
+        return getClass((ClassLoader)null, pClazzName);
+    }
+    
+    public static Class<?> getClass(ClassLoader pLoader, String pClazzName) throws ClassNotFoundException {
+        String tMappedClass = ReflectionTransformer.jarMapping.mapClass(pClazzName.replace('.', '/'));
+        return pLoader == null ? Class.forName(tMappedClass) : pLoader.loadClass(tMappedClass);
     }
 }

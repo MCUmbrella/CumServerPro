@@ -13,18 +13,18 @@ public class CatServerRemapper extends JarRemapper {
     public String mapSignature(String signature, boolean typeSignature) {
         try {
             return super.mapSignature(signature, typeSignature);
-        }catch(Exception e) {
+        } catch (Exception e) {
             return signature;
         }
     }
 
     public String demapFieldName(String owner, String name, int access) {
-        String mapped = ReflectionTransformer.jarMapping.trydeClimb(jarMapping.fields, NodeType.FIELD, owner, name, access);
+        String mapped = ReflectionTransformer.jarMapping.trydeClimb(jarMapping.fields, NodeType.FIELD, owner, name, null, access);
         return mapped == null ? name : mapped;
     }
 
     public String demapMethodName(String owner, String name, String desc, int access) {
-        String mapped = ReflectionTransformer.jarMapping.trydeClimb(jarMapping.methods, NodeType.METHOD, owner, name + " " + desc, access);
+        String mapped = ReflectionTransformer.jarMapping.trydeClimb(jarMapping.methods, NodeType.METHOD, owner, name, desc, access);
         return mapped == null ? name : mapped;
     }
 

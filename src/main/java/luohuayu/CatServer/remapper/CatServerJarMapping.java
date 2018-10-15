@@ -1,12 +1,15 @@
 package luohuayu.CatServer.remapper;
 
-import java.lang.reflect.Modifier;
-import java.util.Collection;
 import java.util.Map;
 import java.util.Set;
 
+import org.objectweb.asm.Type;
+
+import com.google.common.base.Objects;
+
 import net.md_5.specialsource.InheritanceMap;
 import net.md_5.specialsource.JarMapping;
+import net.md_5.specialsource.JarRemapper;
 import net.md_5.specialsource.NodeType;
 import net.md_5.specialsource.provider.InheritanceProvider;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -36,42 +39,72 @@ public class CatServerJarMapping extends JarMapping {
         this._fallbackInheritanceProvider = fallbackInheritanceProvider;
     }
 
-    public String trydeClimb(Map<String, String> map, NodeType type, String owner, String name, int access) {
-        for(Map.Entry<String, String> sEntry : map.entrySet()) {
-            if(sEntry.getValue().equals(name)) {
-                int tIndex = sEntry.getKey().lastIndexOf('/');
-                String tOwner = tIndex == -1 ? "" : sEntry.getKey().substring(0, tIndex);
-                if(tOwner.equals(owner)) {
-                    String tName = sEntry.getKey().substring(tIndex == -1 ? 0 : tIndex + 1);
-                    if(type == NodeType.METHOD) {
-                        tName = tName.split(" ", 2)[0];
-                    }
-                    return tName;
+    public String trydeClimb(Map<String, String> map, NodeType type, String owner, String name, String desc, int access) {
+        for (Map.Entry<String, String> sEntry : map.entrySet()) {
+            if (sEntry.getValue().equals(name)) {
+                String tSign = sEntry.getKey(), tDesc = null;
+                if (type == NodeType.METHOD) {
+                    String[] tInfo = tSign.split(" ");
+                    tSign = tInfo[0];
+                    tDesc = tInfo.length > 1 ? rempaDesc(tInfo[1]) : tDesc;
+                }
+
+                int tIndex = tSign.lastIndexOf('/');
+                String tOwner = this.mapClass(tSign.substring(0, tIndex == -1 ? tSign.length() : tIndex));
+                if (tOwner.equals(owner) && (Objects.equal(desc, tDesc))) {
+                    return tSign.substring(tIndex == -1 ? 0 : tIndex + 1);
                 }
             }
         }
 
-        if((access == -1 || (!Modifier.isPrivate(access) && !Modifier.isStatic(access)))) {
-            Collection<String> parents = null;
-
-            if(_inheritanceMap.hasParents(owner)) {
-                parents = _inheritanceMap.getParents(owner);
-            }else if(_fallbackInheritanceProvider != null) {
-                parents = _fallbackInheritanceProvider.getParents(owner);
-                _inheritanceMap.setParents(owner, parents);
-            }
-
-            if(parents != null) {
-                // declimb the inheritance tree
-                for(String parent : parents) {
-                    String demapped = trydeClimb(map, type, parent, name, access);
-                    if(demapped != null) {
-                        return demapped;
-                    }
-                }
-            }
-        }
         return null;
+    }
+
+    /**
+     * remap Bukkit format to Forge
+     * 
+     * @param pMethodDesc
+     *            Bukkit Method Desc
+     * @return Forge Method Desc
+     */
+    public String rempaDesc(String pMethodDesc) {
+        Type[] tTypes = Type.getArgumentTypes(pMethodDesc);
+        for (int i = tTypes.length - 1; i >= 0; i--) {
+            String tTypeDesc = tTypes[i].getDescriptor();
+            if (tTypeDesc.endsWith(";")) {
+                int tIndex = tTypeDesc.indexOf("L");
+                String tMappedName = this.mapClass(tTypeDesc.substring(tIndex + 1, tTypeDesc.length() - 1));
+                tMappedName = "L" + tMappedName + ";";
+                if (tIndex > 0 && tIndex != 0) {
+                    tMappedName = tTypeDesc.substring(0, tIndex);
+                }
+
+                tTypes[i] = Type.getType(tMappedName);
+            }
+
+        }
+        return Type.getMethodDescriptor(Type.getType(mapClass(getTypeDesc(Type.getReturnType(pMethodDesc)))), tTypes);
+    }
+
+    public static final String NMS_PREFIX = "net/minecraft/server/";
+    public static final String NMS_VERSION = "v1_12_R1";
+
+    public String mapClass(String pBukkitClass) {
+        String tRemapped = JarRemapper.mapTypeName(pBukkitClass, this.packages, this.classes, pBukkitClass);
+        if (tRemapped.equals(pBukkitClass) && pBukkitClass.startsWith(NMS_PREFIX) && !pBukkitClass.contains(NMS_VERSION)) {
+            String tNewClassStr = NMS_PREFIX + NMS_VERSION + "/" + pBukkitClass.substring(NMS_PREFIX.length());
+            return JarRemapper.mapTypeName(tNewClassStr, this.packages, this.classes, pBukkitClass);
+        }
+        return tRemapped;
+    }
+
+    public String getTypeDesc(Type pType) {
+        try {
+            return pType.getInternalName();
+        } catch (NullPointerException ignore) {
+            return pType.toString();
+            // TODO: handle exception
+        }
     }
 
 }
