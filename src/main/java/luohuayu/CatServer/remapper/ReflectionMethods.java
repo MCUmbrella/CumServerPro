@@ -63,7 +63,7 @@ public class ReflectionMethods {
     }
     
     public static Class<?> getClass(ClassLoader pLoader, String pClazzName) throws ClassNotFoundException {
-        String tMappedClass = ReflectionTransformer.jarMapping.mapClass(pClazzName.replace('.', '/'));
+        String tMappedClass = ReflectionTransformer.jarMapping.mapClass(pClazzName.replace('.', '/')).replace('/', '.');
         return pLoader == null ? Class.forName(tMappedClass) : pLoader.loadClass(tMappedClass);
     }
 }
