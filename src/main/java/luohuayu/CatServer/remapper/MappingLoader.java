@@ -15,7 +15,7 @@ import net.md_5.specialsource.transformer.MavenShade;
 
 public class MappingLoader {
     private static final CountDownLatch latch = new CountDownLatch(1);
-    private static final JarMapping jarMapping = new JarMapping();
+    private static final CatServerJarMapping jarMapping = new CatServerJarMapping();
     public static final JointProvider providers = new JointProvider();
     private static final String org_bukkit_craftbukkit = new String(new char[] {'o','r','g','/','b','u','k','k','i','t','/','c','r','a','f','t','b','u','k','k','i','t'});
 

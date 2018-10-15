@@ -13,12 +13,12 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
-import net.md_5.specialsource.JarMapping;
-import net.md_5.specialsource.JarRemapper;
-
 public class ReflectionTransformer {
-    public static JarMapping jarMapping;
-    public static JarRemapper remapper;
+
+    public static final String DESC_ReflectionMethods = Type.getInternalName(ReflectionMethods.class);
+
+    public static CatServerJarMapping jarMapping;
+    public static CatServerRemapper remapper;
 
     /**
      * Convert code from using Class.X methods to our remapped versions
@@ -28,11 +28,13 @@ public class ReflectionTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0); // Visit using ClassNode
 
-        for (MethodNode method : node.methods) { // Taken from SpecialSource
+        for(MethodNode method : node.methods) { // Taken from SpecialSource
             ListIterator<AbstractInsnNode> insnIterator = method.instructions.iterator();
-            while (insnIterator.hasNext()) {
-                AbstractInsnNode insn = insnIterator.next();
-                switch (insn.getOpcode()) {
+            while(insnIterator.hasNext()) {
+                AbstractInsnNode next = insnIterator.next();
+                if(!(next instanceof MethodInsnNode)) continue;
+                MethodInsnNode insn = (MethodInsnNode)next;
+                switch(insn.getOpcode()){
                     case Opcodes.INVOKEVIRTUAL:
                         remapVirtual(insn);
                         break;
@@ -40,26 +42,40 @@ public class ReflectionTransformer {
                         remapForName(insn);
                         break;
                 }
+
+                if(insn.name.equals("getName") && insn.getOpcode() >= 182 && insn.getOpcode() <= 186) {
+                    if(insn.owner.equals("java/lang/reflect/Field")) {
+                        insn.owner = DESC_ReflectionMethods;
+                        insn.name="demapField";
+                        insn.setOpcode(Opcodes.INVOKESTATIC);
+                        insn.desc = "(Ljava/lang/reflect/Field;)Ljava/lang/String;";
+                    }else if(insn.owner.equals("java/lang/reflect/Method")) {
+                        insn.owner = DESC_ReflectionMethods;
+                        insn.name="demapMethod";
+                        insn.setOpcode(Opcodes.INVOKESTATIC);
+                        insn.desc = "(Ljava/lang/reflect/Method;)Ljava/lang/String;";
+                    }
+                }
             }
         }
 
-        ClassWriter writer = new ClassWriter(0/*ClassWriter.COMPUTE_FRAMES*/);
+        ClassWriter writer = new ClassWriter(0/* ClassWriter.COMPUTE_FRAMES */);
         node.accept(writer); // Convert back into bytes
         return writer.toByteArray();
     }
 
     public static void remapForName(AbstractInsnNode insn) {
-        MethodInsnNode method = (MethodInsnNode) insn;
-        if (!method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
-        method.owner = "luohuayu/CatServer/remapper/ReflectionMethods";
+        MethodInsnNode method = (MethodInsnNode)insn;
+        if(!method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
+        method.owner = DESC_ReflectionMethods;
     }
 
     public static void remapVirtual(AbstractInsnNode insn) {
-        MethodInsnNode method = (MethodInsnNode) insn;
+        MethodInsnNode method = (MethodInsnNode)insn;
 
-        if (!method.owner.equals("java/lang/Class") ||
+        if(!method.owner.equals("java/lang/Class") ||
                 !(method.name.equals("getField") || method.name.equals("getDeclaredField") ||
-                method.name.equals("getMethod") || method.name.equals("getDeclaredMethod")))
+                        method.name.equals("getMethod") || method.name.equals("getDeclaredMethod")))
             return;
 
         Type returnType = Type.getReturnType(method.desc);
@@ -69,7 +85,7 @@ public class ReflectionTransformer {
         args.addAll(Arrays.asList(Type.getArgumentTypes(method.desc)));
 
         method.setOpcode(Opcodes.INVOKESTATIC);
-        method.owner = "luohuayu/CatServer/remapper/ReflectionMethods";
+        method.owner = DESC_ReflectionMethods;
         method.desc = Type.getMethodDescriptor(returnType, args.toArray(new Type[args.size()]));
     }
 }
