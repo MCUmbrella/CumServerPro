@@ -1424,6 +1424,12 @@ public final class CraftServer implements Server {
 
     @Override
     public File getWorldContainer() {
+        // CatServer start - return the proper container
+        if (DimensionManager.getWorld(0) != null) {
+            return ((SaveHandler)DimensionManager.getWorld(0).getSaveHandler()).getWorldDirectory();
+        }
+        // CatServer end
+
         if (this.getServer().anvilFile != null) {
             return this.getServer().anvilFile;
         }
