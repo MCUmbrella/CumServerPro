@@ -110,7 +110,7 @@ public class DedicatedServer extends MinecraftServer implements IServer
                     return;
                 }
                 jline.console.ConsoleReader bufferedreader = reader;
-                if (net.minecraftforge.server.console.TerminalHandler.handleCommands(DedicatedServer.this)) return;
+//                if (net.minecraftforge.server.console.TerminalHandler.handleCommands(DedicatedServer.this)) return;
 //                BufferedReader bufferedreader = new BufferedReader(new InputStreamReader(System.in, StandardCharsets.UTF_8));
                 String s4;
 
