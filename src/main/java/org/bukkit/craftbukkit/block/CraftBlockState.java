@@ -43,7 +43,7 @@ public class CraftBlockState implements BlockState {
         this.flag = 3;
 
         createData(block.getData());
-        // CatServer - save TE data
+        // CatServer start - save TE data
         TileEntity te = world.getHandle().getTileEntity(new BlockPos(this.x, this.y, this.z));
         if (te != null)
         {
@@ -51,6 +51,7 @@ public class CraftBlockState implements BlockState {
             te.writeToNBT(nbt);
         }
         else nbt = null;
+        // CatServer end
     }
 
     public CraftBlockState(final Block block, int flag) {
@@ -75,16 +76,7 @@ public class CraftBlockState implements BlockState {
         this.type = net.minecraft.block.Block.getIdFromBlock(blocksnapshot.getReplacedBlock().getBlock());
         this.chunk = (CraftChunk) this.world.getBlockAt(this.x, this.y, this.z).getChunk();
         this.flag = 3;
-        TileEntity te = this.world.getHandle().getTileEntity(new BlockPos(x, y, z));
-        if (te != null)
-        {
-            this.nbt = new NBTTagCompound();
-            te.writeToNBT(this.nbt);
-        }
-        else
-        {
-            this.nbt = null;
-        }
+        this.nbt = blocksnapshot.getNbt(); // CatServer - save TE data
 
         this.createData((byte) blocksnapshot.getMeta());
     }
