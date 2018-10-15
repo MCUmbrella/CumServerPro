@@ -353,41 +353,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 world.initialize(worldsettings);
                 this.server.scoreboardManager = new org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager(this, world.getScoreboard());
             } else {
-                String dimStr = "DIM" + dim;
-
-                File newWorld = new File(new File(name), dimStr);
-                File oldWorld = new File(new File(saveName), dimStr);
-
-                if ((!newWorld.isDirectory()) && (oldWorld.isDirectory())) {
-                    MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder required ----");
-                    MinecraftServer.LOGGER.info("Unfortunately due to the way that Minecraft implemented multiworld support in 1.6, Bukkit requires that you move your " + worldType + " folder to a new location in order to operate correctly.");
-                    MinecraftServer.LOGGER.info("We will move this folder for you, but it will mean that you need to move it back should you wish to stop using Bukkit in the future.");
-                    MinecraftServer.LOGGER.info("Attempting to move " + oldWorld + " to " + newWorld + "...");
-
-                    if (newWorld.exists()) {
-                        MinecraftServer.LOGGER.warn("A file or folder already exists at " + newWorld + "!");
-                        MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder failed ----");
-                    } else if (newWorld.getParentFile().mkdirs()) {
-                        if (oldWorld.renameTo(newWorld)) {
-                            MinecraftServer.LOGGER.info("Success! To restore " + worldType + " in the future, simply move " + newWorld + " to " + oldWorld);
-                            // Migrate world data too.
-                            try {
-                                com.google.common.io.Files.copy(new File(new File(saveName), "level.dat"), new File(new File(name), "level.dat"));
-                                org.apache.commons.io.FileUtils.copyDirectory(new File(new File(saveName), "data"), new File(new File(name), "data"));
-                            } catch (IOException exception) {
-                                MinecraftServer.LOGGER.warn("Unable to migrate world data.");
-                            }
-                            MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder complete ----");
-                        } else {
-                            MinecraftServer.LOGGER.warn("Could not move folder " + oldWorld + " to " + newWorld + "!");
-                            MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder failed ----");
-                        }
-                    } else {
-                        MinecraftServer.LOGGER.warn("Could not create path for " + newWorld + "!");
-                        MinecraftServer.LOGGER.info("---- Migration of old " + worldType + " folder failed ----");
-                    }
-                }
-
                 ISaveHandler idatamanager = new AnvilSaveHandler(server.getWorldContainer(), name, true, this.dataFixer);
                 // world =, b0 to dimension, s1 to name, added Environment and gen
                 WorldInfo worlddata = idatamanager.loadWorldInfo();
