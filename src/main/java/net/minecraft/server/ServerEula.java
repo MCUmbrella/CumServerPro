@@ -28,14 +28,13 @@ public class ServerEula
     private boolean loadEULAFile(File inFile)
     {
         FileInputStream fileinputstream = null;
-        boolean flag = false;
+        boolean flag = true;
 
         try
         {
             Properties properties = new Properties();
             fileinputstream = new FileInputStream(inFile);
             properties.load(fileinputstream);
-            flag = true;
         }
         catch (Exception var8)
         {
