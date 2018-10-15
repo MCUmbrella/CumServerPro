@@ -35,7 +35,7 @@ public class ServerEula
             Properties properties = new Properties();
             fileinputstream = new FileInputStream(inFile);
             properties.load(fileinputstream);
-            flag = Boolean.parseBoolean(properties.getProperty("eula", "true"));
+            flag = true;
         }
         catch (Exception var8)
         {
@@ -64,7 +64,7 @@ public class ServerEula
             Properties properties = new Properties();
             fileoutputstream = new FileOutputStream(this.eulaFile);
             properties.setProperty("eula", "false");
-            properties.store(fileoutputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");
+            properties.store(fileoutputstream, "Keep it false. EULA?? What the FUCK ? is shit ?");
         }
         catch (Exception exception)
         {
