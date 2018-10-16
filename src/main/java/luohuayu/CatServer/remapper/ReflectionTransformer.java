@@ -28,13 +28,13 @@ public class ReflectionTransformer {
         ClassNode node = new ClassNode();
         reader.accept(node, 0); // Visit using ClassNode
 
-        for(MethodNode method : node.methods) { // Taken from SpecialSource
+        for (MethodNode method : node.methods) { // Taken from SpecialSource
             ListIterator<AbstractInsnNode> insnIterator = method.instructions.iterator();
-            while(insnIterator.hasNext()) {
+            while (insnIterator.hasNext()) {
                 AbstractInsnNode next = insnIterator.next();
-                if(!(next instanceof MethodInsnNode)) continue;
-                MethodInsnNode insn = (MethodInsnNode)next;
-                switch(insn.getOpcode()){
+                if (!(next instanceof MethodInsnNode)) continue;
+                MethodInsnNode insn = (MethodInsnNode) next;
+                switch (insn.getOpcode()) {
                     case Opcodes.INVOKEVIRTUAL:
                         remapVirtual(insn);
                         break;
@@ -43,24 +43,24 @@ public class ReflectionTransformer {
                         break;
                 }
 
-                if(insn.name.equals("getName") && insn.getOpcode() >= 182 && insn.getOpcode() <= 186) {
-                    if(insn.owner.equals("java/lang/reflect/Field")) {
+                if (insn.name.equals("getName") && insn.getOpcode() >= 182 && insn.getOpcode() <= 186) {
+                    if (insn.owner.equals("java/lang/reflect/Field")) {
                         insn.owner = DESC_ReflectionMethods;
-                        insn.name="demapField";
+                        insn.name = "demapField";
                         insn.setOpcode(Opcodes.INVOKESTATIC);
                         insn.desc = "(Ljava/lang/reflect/Field;)Ljava/lang/String;";
-                    }else if(insn.owner.equals("java/lang/reflect/Method")) {
+                    } else if (insn.owner.equals("java/lang/reflect/Method")) {
                         insn.owner = DESC_ReflectionMethods;
-                        insn.name="demapMethod";
+                        insn.name = "demapMethod";
                         insn.setOpcode(Opcodes.INVOKESTATIC);
                         insn.desc = "(Ljava/lang/reflect/Method;)Ljava/lang/String;";
                     }
                 }
 
-                if(insn.owner.equals("java/lang/ClassLoader") && insn.name.equals("loadClass")){
+                if (insn.owner.equals("java/lang/ClassLoader") && insn.name.equals("loadClass")) {
                     insn.owner = DESC_ReflectionMethods;
-                    insn.name="getClass";
-                    insn.desc="(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/lang/Class;";
+                    insn.name = "getClass";
+                    insn.desc = "(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/lang/Class;";
                     insn.setOpcode(Opcodes.INVOKESTATIC);
                 }
             }
@@ -72,15 +72,15 @@ public class ReflectionTransformer {
     }
 
     public static void remapForName(AbstractInsnNode insn) {
-        MethodInsnNode method = (MethodInsnNode)insn;
-        if(!method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
+        MethodInsnNode method = (MethodInsnNode) insn;
+        if (!method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
         method.owner = DESC_ReflectionMethods;
     }
 
     public static void remapVirtual(AbstractInsnNode insn) {
-        MethodInsnNode method = (MethodInsnNode)insn;
+        MethodInsnNode method = (MethodInsnNode) insn;
 
-        if(!method.owner.equals("java/lang/Class") ||
+        if (!method.owner.equals("java/lang/Class") ||
                 !(method.name.equals("getField") || method.name.equals("getDeclaredField") ||
                         method.name.equals("getMethod") || method.name.equals("getDeclaredMethod")))
             return;
