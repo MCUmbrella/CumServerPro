@@ -63,6 +63,12 @@ public class ReflectionTransformer {
                     insn.desc = "(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/lang/Class;";
                     insn.setOpcode(Opcodes.INVOKESTATIC);
                 }
+                
+                if(insn.owner.equals("javax/script/ScriptEngineManager")&&insn.desc.equals("()V")&&insn.name.equals("<init>")){
+                    insn.desc="(Ljava/lang/ClassLoader;)V";
+                    method.instructions.insertBefore(insn, new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/ClassLoader", "getSystemClassLoader", "()Ljava/lang/ClassLoader;"));
+                    method.maxStack++;
+                }
             }
         }
 
