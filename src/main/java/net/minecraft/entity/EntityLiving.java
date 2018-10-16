@@ -111,10 +111,6 @@ public abstract class EntityLiving extends EntityLivingBase
         {
             this.initEntityAI();
         }
-
-        // CraftBukkit start - default persistance to type's persistance value
-        this.persistenceRequired = !canDespawn();
-        // CraftBukkit end
     }
 
     protected void initEntityAI()
