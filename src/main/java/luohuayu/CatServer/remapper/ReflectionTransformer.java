@@ -56,16 +56,11 @@ public class ReflectionTransformer {
                         insn.desc = "(Ljava/lang/reflect/Method;)Ljava/lang/String;";
                     }
                 }
-                
-                if(insn.owner.equals("java/lang/ClassLoader")&&insn.name.equals("loadClass")){
+
+                if(insn.owner.equals("java/lang/ClassLoader") && insn.name.equals("loadClass")){
                     insn.owner = DESC_ReflectionMethods;
                     insn.name="getClass";
                     insn.desc="(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/lang/Class;";
-                    insn.setOpcode(Opcodes.INVOKESTATIC);
-                }else if(insn.name.equals("forClass")){
-                    insn.owner = DESC_ReflectionMethods;
-                    insn.name="getClass";
-                    insn.desc="Ljava/lang/String;)Ljava/lang/Class;";
                     insn.setOpcode(Opcodes.INVOKESTATIC);
                 }
             }
