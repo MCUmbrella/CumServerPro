@@ -13,12 +13,21 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import net.md_5.specialsource.provider.JointProvider;
+
 public class ReflectionTransformer {
 
     public static final String DESC_ReflectionMethods = Type.getInternalName(ReflectionMethods.class);
 
     public static CatServerJarMapping jarMapping;
     public static CatServerRemapper remapper;
+
+    public static void init() {
+        jarMapping = MappingLoader.loadMapping();
+        JointProvider provider = new JointProvider();
+        provider.add(new ClassInheritanceProvider());
+        remapper = new CatServerRemapper(jarMapping);
+    }
 
     /**
      * Convert code from using Class.X methods to our remapped versions

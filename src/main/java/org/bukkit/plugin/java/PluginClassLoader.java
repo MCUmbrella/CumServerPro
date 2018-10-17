@@ -62,9 +62,11 @@ final class PluginClassLoader extends URLClassLoader {
         this.manifest = jar.getManifest();
         this.url = file.toURI().toURL();
 
-        jarMapping = MappingLoader.getJarMapping();
+        jarMapping = MappingLoader.loadMapping();
+        JointProvider provider = new JointProvider();
+        provider.add(new ClassInheritanceProvider());
+        provider.add(new ClassLoaderProvider(this));
         remapper = new CatServerRemapper(jarMapping);
-        MappingLoader.addProvider(new ClassLoaderProvider(this));
 
         try {
             Class<?> jarClass;
@@ -120,6 +122,10 @@ final class PluginClassLoader extends URLClassLoader {
                     }
                 }
     
+                if (result == null) {
+                    throw new ClassNotFoundException(name);
+                }
+
                 classes.put(name, result);
             }
         }
