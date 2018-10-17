@@ -4,6 +4,7 @@ import java.util.Map;
 
 import org.apache.logging.log4j.Level;
 import org.bukkit.Material;
+import org.bukkit.block.Biome;
 
 import net.minecraft.block.Block;
 import net.minecraft.item.Item;
@@ -50,6 +51,17 @@ public class BukkitInjector {
                     FMLLog.log(Level.DEBUG, "Inject block failure %s with ID %d.", materialName, Block.getIdFromBlock(block));
                 }
             }
+        }
+    }
+
+    public static void injectBiomes() {
+        for1:
+        for (Map.Entry<ResourceLocation, net.minecraft.world.biome.Biome> entry : ForgeRegistries.BIOMES.getEntries()) {
+            String biomeName = entry.getKey().getResourcePath().toUpperCase(java.util.Locale.ENGLISH);
+            for (Biome biome : Biome.values()) {
+                if (biome.toString().equals(biomeName)) continue for1;
+            }
+            EnumHelper.addEnum(Biome.class, biomeName, new Class[]{}, new Object[]{});
         }
     }
 }

@@ -335,6 +335,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 if (!BukkitInjector.initializedBukkit) { // CatServer - inject bukkit materials before plugins load
                     BukkitInjector.injectBlockBukkitMaterials();
                     BukkitInjector.injectItemBukkitMaterials();
+                    BukkitInjector.injectBiomes();
                     BukkitInjector.initializedBukkit = true;
                 }
                 server.loadPlugins();
