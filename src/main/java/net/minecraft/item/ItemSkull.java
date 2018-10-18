@@ -183,15 +183,23 @@ public class ItemSkull extends Item
         return super.getItemStackDisplayName(stack);
     }
 
-    public boolean updateItemStackNBT(NBTTagCompound nbt)
+    public boolean updateItemStackNBT(final NBTTagCompound nbt) // Spigot - make final
     {
         super.updateItemStackNBT(nbt);
 
         if (nbt.hasKey("SkullOwner", 8) && !StringUtils.isBlank(nbt.getString("SkullOwner")))
         {
             GameProfile gameprofile = new GameProfile((UUID)null, nbt.getString("SkullOwner"));
-            gameprofile = TileEntitySkull.updateGameprofile(gameprofile);
-            nbt.setTag("SkullOwner", NBTUtil.writeGameProfile(new NBTTagCompound(), gameprofile));
+            // Spigot start
+            TileEntitySkull.updateGameprofile(gameprofile, new com.google.common.base.Predicate<GameProfile>() {
+
+                @Override
+                public boolean apply(GameProfile gameprofile) {
+                    nbt.setTag("SkullOwner", NBTUtil.writeGameProfile(new NBTTagCompound(), gameprofile));
+                    return false;
+                }
+            }, false);
+            // Spigot end
             return true;
         }
         else

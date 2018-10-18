@@ -75,8 +75,8 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
         super.applyToItem(tag);
 
         if (profile != null) {
-            // Fill in textures
-            profile = TileEntitySkull.updateGameprofile(profile);
+            // Must be done sync due to way client handles textures
+            profile = com.google.common.util.concurrent.Futures.getUnchecked(TileEntitySkull.updateGameprofile(profile, com.google.common.base.Predicates.alwaysTrue(), true)); // Spigot
 
             NBTTagCompound owner = new NBTTagCompound();
             NBTUtil.writeGameProfile(owner, profile);
