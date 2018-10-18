@@ -5,7 +5,10 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.ListIterator;
 
+import com.google.common.collect.ArrayListMultimap;
 import com.google.common.collect.Maps;
+import com.google.common.collect.Multimap;
+
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -19,14 +22,14 @@ import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.provider.JointProvider;
 
 public class ReflectionTransformer {
-
     public static final String DESC_ReflectionMethods = Type.getInternalName(ReflectionMethods.class);
+
     public static JarMapping jarMapping;
     public static CatServerRemapper remapper;
 
     public static final HashMap<String, String> classDeMapping = Maps.newHashMap();
-    public static final HashMap<String, String> methodDeMapping = Maps.newHashMap();
-    public static final HashMap<String, String> fieldDeMapping = Maps.newHashMap();
+    public static final Multimap<String, String> methodDeMapping = ArrayListMultimap.create();
+    public static final Multimap<String, String> fieldDeMapping = ArrayListMultimap.create();
 
     public static void init() {
         jarMapping = MappingLoader.loadMapping();

@@ -2,12 +2,13 @@ package luohuayu.CatServer.remapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Map;
+import java.util.Collection;
 import java.util.Map.Entry;
 
 import org.objectweb.asm.Type;
 
 import com.google.common.base.Objects;
+import com.google.common.collect.Multimap;
 
 import luohuayu.CatServer.CatServer;
 import net.md_5.specialsource.JarRemapper;
@@ -74,20 +75,24 @@ public class RemapUtils {
         return null;
     }
 
-    public static String trydeClimb(Map<String, String> map, NodeType type, String owner, String name, String desc, int access) {
-        if (map.containsKey(name)) {
-            String tSign = map.get(name), tDesc = null;
+    public static String trydeClimb(Multimap<String,String> map, NodeType type, String owner, String name, String desc, int access) {
+        Collection<String> colls = map.get(name);
+
+        for (String value : colls) {
+            String tSign = value, tDesc = null;
             if (type == NodeType.METHOD) {
                 String[] tInfo = tSign.split(" ");
                 tSign = tInfo[0];
                 tDesc = tInfo.length > 1 ? remapDesc(tInfo[1]) : tDesc;
             }
+
             int tIndex = tSign.lastIndexOf('/');
             String tOwner = mapClass(tSign.substring(0, tIndex == -1 ? tSign.length() : tIndex));
             if (tOwner.equals(owner) && (Objects.equal(desc, tDesc))) {
                 return tSign.substring(tIndex == -1 ? 0 : tIndex + 1);
             }
         }
+
         return null;
     }
 
