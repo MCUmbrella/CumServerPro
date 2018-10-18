@@ -17,13 +17,7 @@ public class RemapUtils {
     }
 
     public static String reverseMap(String check) {
-        for (Entry<String, String> entry : ReflectionTransformer.jarMapping.classes.entrySet()) {
-            if (entry.getValue().equals(check))
-            {
-                
-                return entry.getKey();}
-        }
-        return check;
+        return ReflectionTransformer.classDeMapping.getOrDefault(check, check);
     }
 
     // Methods

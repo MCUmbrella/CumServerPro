@@ -40,23 +40,19 @@ public class CatServerJarMapping extends JarMapping {
     }
 
     public String trydeClimb(Map<String, String> map, NodeType type, String owner, String name, String desc, int access) {
-        for (Map.Entry<String, String> sEntry : map.entrySet()) {
-            if (sEntry.getValue().equals(name)) {
-                String tSign = sEntry.getKey(), tDesc = null;
-                if (type == NodeType.METHOD) {
-                    String[] tInfo = tSign.split(" ");
-                    tSign = tInfo[0];
-                    tDesc = tInfo.length > 1 ? remapDesc(tInfo[1]) : tDesc;
-                }
-
-                int tIndex = tSign.lastIndexOf('/');
-                String tOwner = this.mapClass(tSign.substring(0, tIndex == -1 ? tSign.length() : tIndex));
-                if (tOwner.equals(owner) && (Objects.equal(desc, tDesc))) {
-                    return tSign.substring(tIndex == -1 ? 0 : tIndex + 1);
-                }
+        if (map.containsKey(name)) {
+            String tSign = map.get(name), tDesc = null;
+            if (type == NodeType.METHOD) {
+                String[] tInfo = tSign.split(" ");
+                tSign = tInfo[0];
+                tDesc = tInfo.length > 1 ? remapDesc(tInfo[1]) : tDesc;
+            }
+            int tIndex = tSign.lastIndexOf('/');
+            String tOwner = this.mapClass(tSign.substring(0, tIndex == -1 ? tSign.length() : tIndex));
+            if (tOwner.equals(owner) && (Objects.equal(desc, tDesc))) {
+                return tSign.substring(tIndex == -1 ? 0 : tIndex + 1);
             }
         }
-
         return null;
     }
 

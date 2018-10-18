@@ -2,8 +2,10 @@ package luohuayu.CatServer.remapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.ListIterator;
 
+import com.google.common.collect.Maps;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.Opcodes;
@@ -18,15 +20,22 @@ import net.md_5.specialsource.provider.JointProvider;
 public class ReflectionTransformer {
 
     public static final String DESC_ReflectionMethods = Type.getInternalName(ReflectionMethods.class);
-
     public static CatServerJarMapping jarMapping;
     public static CatServerRemapper remapper;
+
+    public static final HashMap<String, String> classDeMapping = Maps.newHashMap();
+    public static final HashMap<String, String> methodDeMapping = Maps.newHashMap();
+    public static final HashMap<String, String> fieldDeMapping = Maps.newHashMap();
 
     public static void init() {
         jarMapping = MappingLoader.loadMapping();
         JointProvider provider = new JointProvider();
         provider.add(new ClassInheritanceProvider());
         remapper = new CatServerRemapper(jarMapping);
+
+        jarMapping.classes.forEach((k, v) -> classDeMapping.put(v, k));
+        jarMapping.methods.forEach((k, v) -> methodDeMapping.put(v, k));
+        jarMapping.fields.forEach((k, v) -> fieldDeMapping.put(v, k));
     }
 
     /**

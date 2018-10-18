@@ -19,12 +19,12 @@ public class CatServerRemapper extends JarRemapper {
     }
 
     public String demapFieldName(String owner, String name, int access) {
-        String mapped = ReflectionTransformer.jarMapping.trydeClimb(jarMapping.fields, NodeType.FIELD, owner, name, null, access);
+        String mapped = ReflectionTransformer.jarMapping.trydeClimb(ReflectionTransformer.fieldDeMapping, NodeType.FIELD, owner, name, null, access);
         return mapped == null ? name : mapped;
     }
 
     public String demapMethodName(String owner, String name, String desc, int access) {
-        String mapped = ReflectionTransformer.jarMapping.trydeClimb(jarMapping.methods, NodeType.METHOD, owner, name, desc, access);
+        String mapped = ReflectionTransformer.jarMapping.trydeClimb(ReflectionTransformer.methodDeMapping, NodeType.METHOD, owner, name, desc, access);
         return mapped == null ? name : mapped;
     }
 
