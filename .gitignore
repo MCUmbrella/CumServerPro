@@ -32,6 +32,8 @@ manifest.mf
 *.ipr
 *.iws
 .idea/
+run/
+out/
 
 # other files
 *.log*
