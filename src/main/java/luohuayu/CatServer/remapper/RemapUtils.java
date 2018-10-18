@@ -47,7 +47,8 @@ public class RemapUtils {
                 String[] str = entry.getKey().split("\\s+");
                 int i = 0;
                 for (Type type : Type.getArgumentTypes(str[1])) {
-                    if (i >= parameterTypes.length || !type.getClassName().equals(reverseMapExternal(parameterTypes[i]))) {
+                    String typename = (type.getSort() == Type.ARRAY ? type.getInternalName() : type.getClassName());
+                    if (i >= parameterTypes.length || !typename.equals(reverseMapExternal(parameterTypes[i]))) {
                         i=-1;
                         break;
                     }
