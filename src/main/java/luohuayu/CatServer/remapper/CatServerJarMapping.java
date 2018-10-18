@@ -46,7 +46,7 @@ public class CatServerJarMapping extends JarMapping {
                 if (type == NodeType.METHOD) {
                     String[] tInfo = tSign.split(" ");
                     tSign = tInfo[0];
-                    tDesc = tInfo.length > 1 ? rempaDesc(tInfo[1]) : tDesc;
+                    tDesc = tInfo.length > 1 ? remapDesc(tInfo[1]) : tDesc;
                 }
 
                 int tIndex = tSign.lastIndexOf('/');
@@ -67,7 +67,7 @@ public class CatServerJarMapping extends JarMapping {
      *            Bukkit Method Desc
      * @return Forge Method Desc
      */
-    public String rempaDesc(String pMethodDesc) {
+    public String remapDesc(String pMethodDesc) {
         Type[] tTypes = Type.getArgumentTypes(pMethodDesc);
         for (int i = tTypes.length - 1; i >= 0; i--) {
             String tTypeDesc = tTypes[i].getDescriptor();
