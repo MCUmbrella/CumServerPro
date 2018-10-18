@@ -15,12 +15,13 @@ import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
 
+import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.provider.JointProvider;
 
 public class ReflectionTransformer {
 
     public static final String DESC_ReflectionMethods = Type.getInternalName(ReflectionMethods.class);
-    public static CatServerJarMapping jarMapping;
+    public static JarMapping jarMapping;
     public static CatServerRemapper remapper;
 
     public static final HashMap<String, String> classDeMapping = Maps.newHashMap();
@@ -77,12 +78,12 @@ public class ReflectionTransformer {
 
                 if (insn.owner.equals("java/lang/ClassLoader") && insn.name.equals("loadClass")) {
                     insn.owner = DESC_ReflectionMethods;
-                    insn.name = "getClass";
+                    insn.name = "loadClass";
                     insn.desc = "(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/lang/Class;";
                     insn.setOpcode(Opcodes.INVOKESTATIC);
                 }
-                
-                if(insn.owner.equals("javax/script/ScriptEngineManager")&&insn.desc.equals("()V")&&insn.name.equals("<init>")){
+
+                if(insn.owner.equals("javax/script/ScriptEngineManager") && insn.desc.equals("()V") && insn.name.equals("<init>")){
                     insn.desc="(Ljava/lang/ClassLoader;)V";
                     method.instructions.insertBefore(insn, new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/ClassLoader", "getSystemClassLoader", "()Ljava/lang/ClassLoader;"));
                     method.maxStack++;

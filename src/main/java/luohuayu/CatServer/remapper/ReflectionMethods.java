@@ -8,7 +8,7 @@ import org.objectweb.asm.Type;
 import luohuayu.CatServer.CatServer;
 
 public class ReflectionMethods {
-
+    // Class.forName
     public static Class<?> forName(String className) throws ClassNotFoundException {
         return forName(className, true, ReflectionUtils.getCallerClassloader());
     }
@@ -37,6 +37,7 @@ public class ReflectionMethods {
         return inst.getDeclaredMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
     }
 
+    // Field.getName
     public static String demapField(Field pField) {
         if (!pField.getDeclaringClass().getName().startsWith("net.minecraft")) return pField.getName();
 
@@ -45,6 +46,7 @@ public class ReflectionMethods {
                 pField.getModifiers());
     }
 
+    // Method.getName
     public static String demapMethod(Method pMethod) {
         if (!pMethod.getDeclaringClass().getName().startsWith("net.minecraft")) return pMethod.getName();
         try {
@@ -58,12 +60,13 @@ public class ReflectionMethods {
         return pMethod.getName();
     }
 
-    public static Class<?> getClass(String pClazzName) throws ClassNotFoundException {
-        return getClass((ClassLoader)null, pClazzName);
+    // ClassLoader.loadClass
+    public static Class<?> loadClass(String pClazzName) throws ClassNotFoundException {
+        return loadClass((ClassLoader)null, pClazzName);
     }
     
-    public static Class<?> getClass(ClassLoader pLoader, String pClazzName) throws ClassNotFoundException {
-        String tMappedClass = ReflectionTransformer.jarMapping.mapClass(pClazzName.replace('.', '/')).replace('/', '.');
+    public static Class<?> loadClass(ClassLoader pLoader, String pClazzName) throws ClassNotFoundException {
+        String tMappedClass = RemapUtils.mapClass(pClazzName.replace('.', '/')).replace('/', '.');
         return pLoader == null ? Class.forName(tMappedClass) : pLoader.loadClass(tMappedClass);
     }
 }

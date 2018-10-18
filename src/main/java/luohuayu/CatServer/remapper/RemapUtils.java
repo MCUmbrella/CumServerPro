@@ -2,9 +2,16 @@ package luohuayu.CatServer.remapper;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.objectweb.asm.Type;
+
+import com.google.common.base.Objects;
+
+import luohuayu.CatServer.CatServer;
+import net.md_5.specialsource.JarRemapper;
+import net.md_5.specialsource.NodeType;
 
 public class RemapUtils {
     // Classes
@@ -65,5 +72,69 @@ public class RemapUtils {
         }
 
         return null;
+    }
+
+    public static String trydeClimb(Map<String, String> map, NodeType type, String owner, String name, String desc, int access) {
+        if (map.containsKey(name)) {
+            String tSign = map.get(name), tDesc = null;
+            if (type == NodeType.METHOD) {
+                String[] tInfo = tSign.split(" ");
+                tSign = tInfo[0];
+                tDesc = tInfo.length > 1 ? remapDesc(tInfo[1]) : tDesc;
+            }
+            int tIndex = tSign.lastIndexOf('/');
+            String tOwner = mapClass(tSign.substring(0, tIndex == -1 ? tSign.length() : tIndex));
+            if (tOwner.equals(owner) && (Objects.equal(desc, tDesc))) {
+                return tSign.substring(tIndex == -1 ? 0 : tIndex + 1);
+            }
+        }
+        return null;
+    }
+
+    /**
+     * remap Bukkit format to Forge
+     * 
+     * @param pMethodDesc
+     *            Bukkit Method Desc
+     * @return Forge Method Desc
+     */
+    public static String remapDesc(String pMethodDesc) {
+        Type[] tTypes = Type.getArgumentTypes(pMethodDesc);
+        for (int i = tTypes.length - 1; i >= 0; i--) {
+            String tTypeDesc = tTypes[i].getDescriptor();
+            if (tTypeDesc.endsWith(";")) {
+                int tIndex = tTypeDesc.indexOf("L");
+                String tMappedName = mapClass(tTypeDesc.substring(tIndex + 1, tTypeDesc.length() - 1));
+                tMappedName = "L" + tMappedName + ";";
+                if (tIndex > 0 && tIndex != 0) {
+                    tMappedName = tTypeDesc.substring(0, tIndex);
+                }
+
+                tTypes[i] = Type.getType(tMappedName);
+            }
+
+        }
+        return Type.getMethodDescriptor(Type.getType(mapClass(getTypeDesc(Type.getReturnType(pMethodDesc)))), tTypes);
+    }
+
+    public static final String NMS_PREFIX = "net/minecraft/server/";
+    public static final String NMS_VERSION = CatServer.getNativeVersion();
+
+    public static String mapClass(String pBukkitClass) {
+        String tRemapped = JarRemapper.mapTypeName(pBukkitClass, ReflectionTransformer.jarMapping.packages, ReflectionTransformer.jarMapping.classes, pBukkitClass);
+        if (tRemapped.equals(pBukkitClass) && pBukkitClass.startsWith(NMS_PREFIX) && !pBukkitClass.contains(NMS_VERSION)) {
+            String tNewClassStr = NMS_PREFIX + NMS_VERSION + "/" + pBukkitClass.substring(NMS_PREFIX.length());
+            return JarRemapper.mapTypeName(tNewClassStr, ReflectionTransformer.jarMapping.packages, ReflectionTransformer.jarMapping.classes, pBukkitClass);
+        }
+        return tRemapped;
+    }
+
+    public static String getTypeDesc(Type pType) {
+        try {
+            return pType.getInternalName();
+        } catch (NullPointerException ignore) {
+            return pType.toString();
+            // TODO: handle exception
+        }
     }
 }

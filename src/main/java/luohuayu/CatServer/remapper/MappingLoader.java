@@ -6,7 +6,6 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
-import com.google.common.collect.Maps;
 import luohuayu.CatServer.CatServer;
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.transformer.MavenShade;
@@ -24,8 +23,8 @@ public class MappingLoader {
                 null, false);
     }
 
-    public static CatServerJarMapping loadMapping() {
-        CatServerJarMapping jarMapping = new CatServerJarMapping();
+    public static JarMapping loadMapping() {
+        JarMapping jarMapping = new JarMapping();
         try {
             jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/com/google/gson", "com/google/gson");
             jarMapping.packages.put(org_bukkit_craftbukkit + "/libs/it/unimi/dsi/fastutil", "it/unimi/dsi/fastutil");
