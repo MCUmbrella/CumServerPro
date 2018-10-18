@@ -38,7 +38,7 @@ public class ReflectionMethods {
     }
 
     public static String demapField(Field pField) {
-        if (!pField.getDeclaringClass().getName().startsWith("net/minecraft")) return pField.getName();
+        if (!pField.getDeclaringClass().getName().startsWith("net.minecraft")) return pField.getName();
 
         return ReflectionTransformer.remapper.demapFieldName(Type.getInternalName(pField.getDeclaringClass()),
                 pField.getName(),
