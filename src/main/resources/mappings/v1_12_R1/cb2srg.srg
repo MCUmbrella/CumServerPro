@@ -16167,6 +16167,7 @@ MD: net/minecraft/server/EntityArmorStand/setArms (Z)V net/minecraft/entity/item
 MD: net/minecraft/server/EntityArmorStand/setBasePlate (Z)V net/minecraft/entity/item/EntityArmorStand/func_175426_l (Z)V
 MD: net/minecraft/server/EntityArmorStand/setBodyPose (Lnet/minecraft/server/Vector3f;)V net/minecraft/entity/item/EntityArmorStand/func_175424_b (Lnet/minecraft/util/math/Rotations;)V
 MD: net/minecraft/server/EntityArmorStand/setHeadPose (Lnet/minecraft/server/Vector3f;)V net/minecraft/entity/item/EntityArmorStand/func_175415_a (Lnet/minecraft/util/math/Rotations;)V
+MD: net/minecraft/server/EntityArmorStand/setInvisible (Z)V net/minecraft/entity/item/EntityArmorStand/func_82142_c (Z)V
 MD: net/minecraft/server/EntityArmorStand/setLeftArmPose (Lnet/minecraft/server/Vector3f;)V net/minecraft/entity/item/EntityArmorStand/func_175405_c (Lnet/minecraft/util/math/Rotations;)V
 MD: net/minecraft/server/EntityArmorStand/setLeftLegPose (Lnet/minecraft/server/Vector3f;)V net/minecraft/entity/item/EntityArmorStand/func_175417_e (Lnet/minecraft/util/math/Rotations;)V
 MD: net/minecraft/server/EntityArmorStand/setMarker (Z)V net/minecraft/entity/item/EntityArmorStand/func_181027_m (Z)V
@@ -24913,6 +24914,7 @@ MD: net/minecraft/server/World/getScoreboard ()Lnet/minecraft/server/Scoreboard;
 MD: net/minecraft/server/World/getSeaLevel ()I net/minecraft/world/World/func_181545_F ()I
 MD: net/minecraft/server/World/getSeed ()J net/minecraft/world/World/func_72905_C ()J
 MD: net/minecraft/server/World/getSpawn ()Lnet/minecraft/server/BlockPosition; net/minecraft/world/World/func_175694_M ()Lnet/minecraft/util/math/BlockPos;
+MD: net/minecraft/server/World/getTileEntity (Lnet/minecraft/server/BlockPosition;)Lnet/minecraft/server/TileEntity; net/minecraft/world/World/func_175625_s (Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/tileentity/TileEntity;
 MD: net/minecraft/server/World/getTime ()J net/minecraft/world/World/func_82737_E ()J
 MD: net/minecraft/server/World/getWorldBorder ()Lnet/minecraft/server/WorldBorder; net/minecraft/world/World/func_175723_af ()Lnet/minecraft/world/border/WorldBorder;
 MD: net/minecraft/server/World/getWorldChunkManager ()Lnet/minecraft/server/WorldChunkManager; net/minecraft/world/World/func_72959_q ()Lnet/minecraft/world/biome/BiomeProvider;
@@ -25890,6 +25892,7 @@ MD: net/minecraft/server/WorldServer/getEntity (Ljava/util/UUID;)Lnet/minecraft/
 MD: net/minecraft/server/WorldServer/getPlayerChunkMap ()Lnet/minecraft/server/PlayerChunkMap; net/minecraft/world/WorldServer/func_184164_w ()Lnet/minecraft/server/management/PlayerChunkMap;
 MD: net/minecraft/server/WorldServer/getSpawnAnimals ()Z net/minecraft/world/WorldServer/func_175735_ai ()Z
 MD: net/minecraft/server/WorldServer/getSpawnNPCs ()Z net/minecraft/world/WorldServer/func_175738_ah ()Z
+MD: net/minecraft/server/WorldServer/getTileEntity (Lnet/minecraft/server/BlockPosition;)Lnet/minecraft/server/TileEntity; net/minecraft/world/WorldServer/func_175625_s (Lnet/minecraft/util/math/BlockPos;)Lnet/minecraft/tileentity/TileEntity;
 MD: net/minecraft/server/WorldServer/getTracker ()Lnet/minecraft/server/EntityTracker; net/minecraft/world/WorldServer/func_73039_n ()Lnet/minecraft/entity/EntityTracker;
 MD: net/minecraft/server/WorldServer/getTravelAgent ()Lnet/minecraft/server/PortalTravelAgent; net/minecraft/world/WorldServer/func_85176_s ()Lnet/minecraft/world/Teleporter;
 MD: net/minecraft/server/WorldServer/h ()V net/minecraft/world/WorldServer/func_72974_f ()V
