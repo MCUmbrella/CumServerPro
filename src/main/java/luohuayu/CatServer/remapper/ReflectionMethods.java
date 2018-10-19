@@ -35,16 +35,21 @@ public class ReflectionMethods {
         return inst.getDeclaredMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
     }
 
-    // Field.getName
+    // getName
     public static String getName(Field field) {
         if (!field.getDeclaringClass().getName().startsWith("net.minecraft")) return field.getName();
         return RemapUtils.demapFieldName(field);
     }
 
-    // Method.getName
     public static String getName(Method method) {
         if (!method.getDeclaringClass().getName().startsWith("net.minecraft")) return method.getName();
         return RemapUtils.demapMethodName(method);
+    }
+
+    // getSimpleName
+    public static String getSimpleName(Class<?> inst) {
+        String[] name = RemapUtils.reverseMapExternal(inst).split("\\.");
+        return name[name.length - 1];
     }
 
     // ClassLoader.loadClass

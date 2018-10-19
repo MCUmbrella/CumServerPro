@@ -98,7 +98,7 @@ public class RemapUtils {
         String name = field.getName();
         String match = reverseMap(field.getDeclaringClass());
 
-        Collection<String> colls = ReflectionTransformer.methodDeMapping.get(name);
+        Collection<String> colls = ReflectionTransformer.fieldDeMapping.get(name);
 
         for (String value : colls) {
             if (value.startsWith(match)) {
