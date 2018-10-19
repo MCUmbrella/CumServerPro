@@ -21,6 +21,7 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.craftbukkit.block.CraftBlockEntityState;
 import org.bukkit.inventory.InventoryHolder;
 import org.spigotmc.CustomTimingsHandler;
 
@@ -552,8 +553,10 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
         if (state instanceof InventoryHolder)
         {
             return (InventoryHolder) state;
-        } else if (this instanceof IInventory) { // CatServer
-            return (InventoryHolder) new CatCustomInventory((IInventory) this);
+        } else if (state instanceof CraftBlockEntityState) { // CatServer
+            TileEntity te = ((CraftBlockEntityState) state).getTileEntity();
+            if (te instanceof IInventory)
+                return (InventoryHolder) new CatCustomInventory((IInventory) te);
         }
         return null;
     }
