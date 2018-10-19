@@ -1,5 +1,7 @@
 package luohuayu.CatServer.remapper;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -7,12 +9,8 @@ import java.util.Map.Entry;
 
 import org.objectweb.asm.Type;
 
-import com.google.common.base.Objects;
-import com.google.common.collect.Multimap;
-
 import luohuayu.CatServer.CatServer;
 import net.md_5.specialsource.JarRemapper;
-import net.md_5.specialsource.NodeType;
 
 public class RemapUtils {
     // Classes
@@ -75,53 +73,6 @@ public class RemapUtils {
         return null;
     }
 
-    public static String trydeClimb(Multimap<String,String> map, NodeType type, String owner, String name, String desc, int access) {
-        Collection<String> colls = map.get(name);
-
-        for (String value : colls) {
-            String tSign = value, tDesc = null;
-            if (type == NodeType.METHOD) {
-                String[] tInfo = tSign.split(" ");
-                tSign = tInfo[0];
-                tDesc = tInfo.length > 1 ? remapDesc(tInfo[1]) : tDesc;
-            }
-
-            int tIndex = tSign.lastIndexOf('/');
-            String tOwner = mapClass(tSign.substring(0, tIndex == -1 ? tSign.length() : tIndex));
-            if (tOwner.equals(owner) && (Objects.equal(desc, tDesc))) {
-                return tSign.substring(tIndex == -1 ? 0 : tIndex + 1);
-            }
-        }
-
-        return null;
-    }
-
-    /**
-     * remap Bukkit format to Forge
-     * 
-     * @param pMethodDesc
-     *            Bukkit Method Desc
-     * @return Forge Method Desc
-     */
-    public static String remapDesc(String pMethodDesc) {
-        Type[] tTypes = Type.getArgumentTypes(pMethodDesc);
-        for (int i = tTypes.length - 1; i >= 0; i--) {
-            String tTypeDesc = tTypes[i].getDescriptor();
-            if (tTypeDesc.endsWith(";")) {
-                int tIndex = tTypeDesc.indexOf("L");
-                String tMappedName = mapClass(tTypeDesc.substring(tIndex + 1, tTypeDesc.length() - 1));
-                tMappedName = "L" + tMappedName + ";";
-                if (tIndex > 0 && tIndex != 0) {
-                    tMappedName = tTypeDesc.substring(0, tIndex);
-                }
-
-                tTypes[i] = Type.getType(tMappedName);
-            }
-
-        }
-        return Type.getMethodDescriptor(Type.getType(mapClass(getTypeDesc(Type.getReturnType(pMethodDesc)))), tTypes);
-    }
-
     public static final String NMS_PREFIX = "net/minecraft/server/";
     public static final String NMS_VERSION = CatServer.getNativeVersion();
 
@@ -141,5 +92,39 @@ public class RemapUtils {
             return pType.toString();
             // TODO: handle exception
         }
+    }
+
+    public static String demapFieldName(Field field) {
+        String name = field.getName();
+        String match = reverseMap(field.getDeclaringClass());
+
+        Collection<String> colls = ReflectionTransformer.methodDeMapping.get(name);
+
+        for (String value : colls) {
+            if (value.startsWith(match)) {
+                String[] matched = value.split("\\/");
+                String rtr =  matched[matched.length - 1];
+                return rtr;
+            }
+        }
+
+        return name;
+    }
+
+    public static String demapMethodName(Method method) {
+        String name = method.getName();
+        String match = reverseMap(method.getDeclaringClass());
+
+        Collection<String> colls = ReflectionTransformer.methodDeMapping.get(name);
+
+        for (String value : colls) {
+            if (value.startsWith(match)) {
+                String[] matched = value.split("\\s+")[0].split("\\/");
+                String rtr =  matched[matched.length - 1];
+                return rtr;
+            }
+        }
+
+        return name;
     }
 }

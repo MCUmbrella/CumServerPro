@@ -3,8 +3,6 @@ package luohuayu.CatServer.remapper;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
-import org.objectweb.asm.Type;
-
 import luohuayu.CatServer.CatServer;
 
 public class ReflectionMethods {
@@ -38,26 +36,15 @@ public class ReflectionMethods {
     }
 
     // Field.getName
-    public static String demapField(Field pField) {
-        if (!pField.getDeclaringClass().getName().startsWith("net.minecraft")) return pField.getName();
-
-        return ReflectionTransformer.remapper.demapFieldName(Type.getInternalName(pField.getDeclaringClass()),
-                pField.getName(),
-                pField.getModifiers());
+    public static String getName(Field field) {
+        if (!field.getDeclaringClass().getName().startsWith("net.minecraft")) return field.getName();
+        return RemapUtils.demapFieldName(field);
     }
 
     // Method.getName
-    public static String demapMethod(Method pMethod) {
-        if (!pMethod.getDeclaringClass().getName().startsWith("net.minecraft")) return pMethod.getName();
-        try {
-            return ReflectionTransformer.remapper.demapMethodName(Type.getInternalName(pMethod.getDeclaringClass()),
-                    pMethod.getName(),
-                    Type.getMethodDescriptor(pMethod),
-                    pMethod.getModifiers());
-        } catch (Throwable exp) {
-            exp.printStackTrace();
-        }
-        return pMethod.getName();
+    public static String getName(Method method) {
+        if (!method.getDeclaringClass().getName().startsWith("net.minecraft")) return method.getName();
+        return RemapUtils.demapMethodName(method);
     }
 
     // ClassLoader.loadClass

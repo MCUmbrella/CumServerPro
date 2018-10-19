@@ -35,6 +35,7 @@ public class ReflectionTransformer {
         jarMapping = MappingLoader.loadMapping();
         JointProvider provider = new JointProvider();
         provider.add(new ClassInheritanceProvider());
+        jarMapping.setFallbackInheritanceProvider(provider);
         remapper = new CatServerRemapper(jarMapping);
 
         jarMapping.classes.forEach((k, v) -> classDeMapping.put(v, k));
@@ -68,12 +69,12 @@ public class ReflectionTransformer {
                 if (insn.name.equals("getName") && insn.getOpcode() >= 182 && insn.getOpcode() <= 186) {
                     if (insn.owner.equals("java/lang/reflect/Field")) {
                         insn.owner = DESC_ReflectionMethods;
-                        insn.name = "demapField";
+                        insn.name = "getName";
                         insn.setOpcode(Opcodes.INVOKESTATIC);
                         insn.desc = "(Ljava/lang/reflect/Field;)Ljava/lang/String;";
                     } else if (insn.owner.equals("java/lang/reflect/Method")) {
                         insn.owner = DESC_ReflectionMethods;
-                        insn.name = "demapMethod";
+                        insn.name = "getName";
                         insn.setOpcode(Opcodes.INVOKESTATIC);
                         insn.desc = "(Ljava/lang/reflect/Method;)Ljava/lang/String;";
                     }
