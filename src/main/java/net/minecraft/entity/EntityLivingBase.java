@@ -822,7 +822,6 @@ public abstract class EntityLivingBase extends Entity
 
     public void addPotionEffect(PotionEffect potioneffectIn)
     {
-        org.spigotmc.AsyncCatcher.catchOp( "effect add"); // Spigot
         if (isTickingEffects) {
             effectsToProcess.add(potioneffectIn);
             return;

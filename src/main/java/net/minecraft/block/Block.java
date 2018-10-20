@@ -532,13 +532,10 @@ public class Block extends net.minecraftforge.registries.IForgeRegistryEntry.Imp
     }
 
     public void onBlockAdded(World worldIn, BlockPos pos, IBlockState state)
-    {
-        org.spigotmc.AsyncCatcher.catchOp( "block onPlace"); // Spigot
-    }
+    {}
 
     public void breakBlock(World worldIn, BlockPos pos, IBlockState state)
     {
-        org.spigotmc.AsyncCatcher.catchOp( "block remove"); // Spigot
         if (hasTileEntity(state) && !(this instanceof BlockContainer))
         {
             worldIn.removeTileEntity(pos);
