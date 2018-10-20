@@ -10,9 +10,9 @@ import java.util.Map;
 public class CorePlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
-        return new String[] {
+        return !CatServer.isDev() ? new String[] {
                 NetworkTransformer.class.getCanonicalName()
-        };
+        } : null;
     }
 
     @Override

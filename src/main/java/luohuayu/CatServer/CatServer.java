@@ -11,4 +11,8 @@ public class CatServer {
     public static String getNativeVersion() {
         return native_verson;
     }
+
+    public static boolean isDev() {
+        return System.getProperty("net.minecraftforge.gradle.GradleStart.srg.srg-mcp") != null;
+    }
 }
