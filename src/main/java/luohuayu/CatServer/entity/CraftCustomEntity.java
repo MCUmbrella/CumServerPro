@@ -33,6 +33,6 @@ public class CraftCustomEntity extends CraftEntity {
         EntityType type = EntityType.fromName(this.entityName);
         if (type != null)
             return type;
-        else return EntityType.UNKNOWN;
+        else return EntityType.MOD_CUSTOM;
     }
 }
