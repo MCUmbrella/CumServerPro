@@ -8,6 +8,9 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
+
+import luohuayu.CatServer.inventory.CustomModRecipe;
+
 import java.util.Map;
 import java.util.Set;
 import java.util.Map.Entry;
@@ -380,6 +383,11 @@ public class ShapedRecipes extends net.minecraftforge.registries.IForgeRegistryE
 
     @Override
     public Recipe toBukkitRecipe() {
+        // CatServer start - handle special custom recipe
+        if (this.recipeHeight < 1 || this.recipeHeight > 3 || this.recipeWidth < 1 || this.recipeWidth > 3) {
+            return new CustomModRecipe((IRecipe) this, this.getRegistryName());
+        }
+        // CatServer end
         CraftItemStack result = CraftItemStack.asCraftMirror(this.recipeOutput);
         CraftShapedRecipe recipe = new CraftShapedRecipe(result, this);
         switch (this.recipeHeight) {
