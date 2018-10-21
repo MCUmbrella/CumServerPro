@@ -29,6 +29,10 @@ public enum EnumCreatureType
         this.isAnimal = isAnimalIn;
     }
 
+    public boolean matches(Entity entity) { return innerClass().isAssignableFrom(entity.getClass()); } // Paper
+
+    public Class<? extends IAnimals> innerClass() { return this.getCreatureClass(); } // Paper - OBFHELPER
+
     public Class <? extends IAnimals > getCreatureClass()
     {
         return this.creatureClass;

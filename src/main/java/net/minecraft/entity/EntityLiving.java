@@ -753,6 +753,8 @@ public abstract class EntityLiving extends EntityLivingBase
         return true;
     }
 
+    public boolean isDespawnableByDefault() { return canDespawn(); } // Paper - sortof an obf helper, too annoying to change visibility here
+
     public boolean canDespawn()
     {
         return true;

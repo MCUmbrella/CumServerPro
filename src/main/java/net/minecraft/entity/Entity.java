@@ -110,6 +110,7 @@ import org.spigotmc.CustomTimingsHandler;
 
 public abstract class Entity implements ICommandSender, net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound>
 {
+    public boolean hasBeenCounted = false; // Paper
     // CraftBukkit start
     private static final int CURRENT_LEVEL = 2;
     static boolean isLevelAtLeast(NBTTagCompound tag, int level) {
