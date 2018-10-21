@@ -37,6 +37,14 @@ public class NettyPacketEncoder extends MessageToByteEncoder < Packet<? >>
                 LOGGER.debug(RECEIVED_PACKET_MARKER, "OUT: [{}:{}] {}", p_encode_1_.channel().attr(NetworkManager.PROTOCOL_ATTRIBUTE_KEY).get(), integer, p_encode_2_.getClass().getName());
             }
 
+            // CatServer start - Forge set the state is PLAY, but the LOGIN packet hasn't encoded.
+            if (integer == null)
+            {
+                integer = EnumConnectionState.LOGIN.getPacketId(this.direction, p_encode_2_);
+                LOGGER.warn("current state is {}, but send packet is {}", enumconnectionstate, p_encode_2_.getClass().getSimpleName());
+            }
+            // CatServer end
+
             if (integer == null)
             {
                 throw new IOException("Can't serialize unregistered packet");
