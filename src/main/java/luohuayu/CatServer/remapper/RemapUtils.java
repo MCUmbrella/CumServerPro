@@ -5,7 +5,6 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.Map.Entry;
 
 import org.objectweb.asm.Type;
 
@@ -39,25 +38,24 @@ public class RemapUtils {
      * Recursive method for finding a method from superclasses/interfaces
      */
     public static String mapMethodInternal(Class<?> inst, String name, Class<?>... parameterTypes) {
-        String match = reverseMap(inst) + "/" + name + " ";
+        String match = reverseMap(inst) + "/" + name;
+        ReflectionTransformer.jarMapping.methods.entrySet();
 
-        for (Entry<String, String> entry : ReflectionTransformer.jarMapping.methods.entrySet()) {
-            if (entry.getKey().startsWith(match)) {
-                // Check type to see if it matches
-                String[] str = entry.getKey().split("\\s+");
-                int i = 0;
-                for (Type type : Type.getArgumentTypes(str[1])) {
-                    String typename = (type.getSort() == Type.ARRAY ? type.getInternalName() : type.getClassName());
-                    if (i >= parameterTypes.length || !typename.equals(reverseMapExternal(parameterTypes[i]))) {
-                        i=-1;
-                        break;
-                    }
-                    i++;
+        Collection<String> colls = ReflectionTransformer.methodFastMapping.get(match);
+        for (String value : colls) {
+            String[] str = value.split("\\s+");
+            int i = 0;
+            for (Type type : Type.getArgumentTypes(str[1])) {
+                String typename = (type.getSort() == Type.ARRAY ? type.getInternalName() : type.getClassName());
+                if (i >= parameterTypes.length || !typename.equals(reverseMapExternal(parameterTypes[i]))) {
+                    i=-1;
+                    break;
                 }
-
-                if (i >= parameterTypes.length)
-                    return entry.getValue();
+                i++;
             }
+
+            if (i >= parameterTypes.length)
+                return ReflectionTransformer.jarMapping.methods.get(value);
         }
 
         // Search interfaces
