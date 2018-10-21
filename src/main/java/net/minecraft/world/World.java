@@ -17,7 +17,6 @@ import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
-import luohuayu.CatServer.entity.CatWorldEntityList;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.Block;
@@ -105,7 +104,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     private int seaLevel = 63;
     protected boolean scheduledUpdatesAreImmediate;
-    public final CatWorldEntityList loadedEntityList = new CatWorldEntityList(this); // Paper cache
+    public final List<Entity> loadedEntityList = Lists.<Entity>newArrayList();
     protected final List<Entity> unloadedEntityList = Lists.<Entity>newArrayList();
     public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
     public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();
@@ -167,7 +166,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public final org.spigotmc.SpigotWorldConfig spigotConfig; // Spigot
 
     public final SpigotTimings.WorldTimingsHandler timings; // Spigot
-    public boolean guardEntityList; // Spigot Paper
 
     public static boolean haveWeSilencedAPhysicsCrash;
     public static String blockLocation;
@@ -2009,7 +2007,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
         org.spigotmc.ActivationRange.activateEntities(this); // Spigot
         timings.entityTick.startTiming(); // Spigot
-        guardEntityList = true; // Spigot
         // CraftBukkit start - Use field for loop variable
         int entitiesThisCycle = 0;
         if (tickPosition < 0) tickPosition = 0;
@@ -2071,15 +2068,12 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                     this.getChunkFromChunkCoords(l1, i2).removeEntity(entity2);
                 }
 
-                guardEntityList = false; // Spigot
                 this.loadedEntityList.remove(this.tickPosition--); // CraftBukkit - Use field for loop variable
-                guardEntityList = true; // Spigot
                 this.onEntityRemoved(entity2);
             }
 
             this.profiler.endSection();
         }
-        guardEntityList = false; // Spigot
 
         timings.entityTick.stopTiming(); // Spigot
         this.profiler.endStartSection("blockEntities");

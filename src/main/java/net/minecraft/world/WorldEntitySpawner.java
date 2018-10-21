@@ -133,7 +133,7 @@ public final class WorldEntitySpawner
                     int k4 = worldServerIn.countEntities(enumcreaturetype.getCreatureClass());
                     int l4 = limit * i / MOB_COUNT_DIV; // CraftBukkit - use per-world limits
 
-                    if ((mobcnt = worldServerIn.loadedEntityList.getCreatureCount(enumcreaturetype)) <= limit * i / 256)
+                    if ((mobcnt = getEntityCount(worldServerIn, enumcreaturetype.getCreatureClass())) <= limit * i / 256)
                     {
                         BlockPos.MutableBlockPos blockpos$mutableblockpos = new BlockPos.MutableBlockPos();
                         Iterator<ChunkPos> iterator = this.eligibleChunksForSpawning.iterator();
