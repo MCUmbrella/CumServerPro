@@ -58,16 +58,6 @@ public class RemapUtils {
                 return ReflectionTransformer.jarMapping.methods.get(value);
         }
 
-        // Search interfaces
-        ArrayList<Class<?>> parents = new ArrayList<Class<?>>();
-        parents.add(inst.getSuperclass());
-        parents.addAll(Arrays.asList(inst.getInterfaces()));
-
-        for (Class<?> superClass : parents) {
-            if (superClass == null) continue;
-            mapMethodInternal(superClass, name, parameterTypes);
-        }
-
         return null;
     }
 
