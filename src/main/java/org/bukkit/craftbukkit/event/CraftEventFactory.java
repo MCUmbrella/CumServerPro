@@ -10,6 +10,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 
+import luohuayu.CatServer.CatServer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -841,6 +842,7 @@ public class CraftEventFactory {
     }
 
     public static Container callInventoryOpenEvent(EntityPlayerMP player, Container container, boolean cancelled) {
+        if (CatServer.asyncCatch("call InventoryOpenEvent")) return container;
         if (player.openContainer != player.inventoryContainer) { // fire INVENTORY_CLOSE if one already open
             player.connection.processCloseWindow(new CPacketCloseWindow(player.openContainer.windowId));
         }
@@ -982,6 +984,7 @@ public class CraftEventFactory {
     }
 
     public static void handleInventoryCloseEvent(EntityPlayer human) {
+        if (CatServer.asyncCatch("call InventoryCloseEvent")) return;
         InventoryCloseEvent event = new InventoryCloseEvent(human.openContainer.getBukkitView());
         if(human.openContainer.getBukkitView() != null) human.world.getServer().getPluginManager().callEvent(event); // CatServer - mods bypass
         human.openContainer.transferTo(human.inventoryContainer, human.getBukkitEntity());
