@@ -9,11 +9,13 @@ import java.io.DataInputStream;
 import java.io.DataOutputStream;
 import java.io.File;
 import java.io.IOException;
+import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class RegionFileCache
 {
-    private static final Map<File, RegionFile> REGIONS_BY_FILE = Maps.<File, RegionFile>newHashMap();
+    public static final Map<File, RegionFile> REGIONS_BY_FILE = new LinkedHashMap(256, 0.75f, true); // Spigot - private -> public, Paper - HashMap -> LinkedHashMap
 
     public static synchronized RegionFile createOrLoadRegionFile(File worldDir, int chunkX, int chunkZ)
     {
@@ -34,7 +36,7 @@ public class RegionFileCache
 
             if (REGIONS_BY_FILE.size() >= 256)
             {
-                clearRegionFileReferences();
+                trimCache(); // Paper
             }
 
             RegionFile regionfile1 = new RegionFile(file2);
@@ -42,6 +44,21 @@ public class RegionFileCache
             return regionfile1;
         }
     }
+
+    // Paper Start
+    private static synchronized void trimCache() {
+        Iterator<Map.Entry<File, RegionFile>> itr = RegionFileCache.REGIONS_BY_FILE.entrySet().iterator();
+        int count = RegionFileCache.REGIONS_BY_FILE.size() - 256;
+        while (count-- >= 0 && itr.hasNext()) {
+            try {
+                itr.next().getValue().close();
+            } catch (IOException ioexception) {
+                ioexception.printStackTrace();
+            }
+            itr.remove();
+        }
+    }
+    // Paper End
 
     public static synchronized RegionFile getRegionFileIfExists(File worldDir, int chunkX, int chunkZ)
     {
