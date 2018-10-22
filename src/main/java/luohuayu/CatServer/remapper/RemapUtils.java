@@ -39,7 +39,6 @@ public class RemapUtils {
      */
     public static String mapMethodInternal(Class<?> inst, String name, Class<?>... parameterTypes) {
         String match = reverseMap(inst) + "/" + name;
-        ReflectionTransformer.jarMapping.methods.entrySet();
 
         Collection<String> colls = ReflectionTransformer.methodFastMapping.get(match);
         for (String value : colls) {
