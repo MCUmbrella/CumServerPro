@@ -787,12 +787,12 @@ public abstract class EntityLiving extends EntityLivingBase
                 double d2 = entity.posZ - this.posZ;
                 double d3 = d0 * d0 + d1 * d1 + d2 * d2;
 
-                if (/*this.canDespawn() && */d3 > 16384.0D) // CraftBukkit - remove canDespawn() check
+                if (this.canDespawn() && d3 > 16384.0D)
                 {
                     this.setDead();
                 }
 
-                if (this.idleTime > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D/* && this.canDespawn()*/) // CraftBukkit - remove canDespawn() check
+                if (this.idleTime > 600 && this.rand.nextInt(800) == 0 && d3 > 1024.0D && this.canDespawn())
                 {
                     this.setDead();
                 }
