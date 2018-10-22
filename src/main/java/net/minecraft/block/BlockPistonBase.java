@@ -386,6 +386,34 @@ public class BlockPistonBase extends BlockDirectional
                     return bblock.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());
                 }
             };
+
+            // CatServer start - prohibit move or brok TE!
+            boolean cancell = false;
+            for (BlockPos blockPos : moved) {
+                if (worldIn.getTileEntity(blockPos) != null) {
+                    cancell = true;
+                    break;
+                }
+            }
+            for (BlockPos blockPos : broken) {
+                if (worldIn.getTileEntity(blockPos) != null) {
+                    cancell = true;
+                    break;
+                }
+            }
+            if (cancell) {
+                for (BlockPos b : broken) {
+                    worldIn.notifyBlockUpdate(b, Blocks.AIR.getDefaultState(), worldIn.getBlockState(b), 3);
+                }
+                for (BlockPos b : moved) {
+                    worldIn.notifyBlockUpdate(b, Blocks.AIR.getDefaultState(), worldIn.getBlockState(b), 3);
+                    b = b.offset(enumfacing);
+                    worldIn.notifyBlockUpdate(b, Blocks.AIR.getDefaultState(), worldIn.getBlockState(b), 3);
+                }
+                return false;
+            }
+            // CatServer end
+
             org.bukkit.event.block.BlockPistonEvent event;
             if (extending) {
                 event = new BlockPistonExtendEvent(bblock, blocks, CraftBlock.notchToBlockFace(enumfacing));
