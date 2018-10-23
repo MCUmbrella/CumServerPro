@@ -787,10 +787,10 @@ public abstract class PlayerList
 
     public EntityPlayerMP recreatePlayerEntity(EntityPlayerMP playerIn, int dimension, boolean conqueredEnd)
     {
-        return this.recreatePlayerEntity(playerIn, dimension, conqueredEnd, null, true);
+        return this.moveToWorld(playerIn, dimension, conqueredEnd, null, true);
     }
 
-    public EntityPlayerMP recreatePlayerEntity(EntityPlayerMP playerIn, int dimension, boolean conqueredEnd, Location location, boolean avoidSuffocation) {
+    public EntityPlayerMP moveToWorld(EntityPlayerMP playerIn, int dimension, boolean conqueredEnd, Location location, boolean avoidSuffocation) {
         playerIn.dismountRidingEntity(); // CraftBukkit
         World world = mcServer.getWorld(dimension);
         if (world == null)
@@ -1007,7 +1007,7 @@ public abstract class PlayerList
         exitWorld.getDefaultTeleporter().adjustExit(entityplayer, exit, velocity);
 
         entityplayer.invulnerableDimensionChange = true; // CraftBukkit - Set teleport invulnerability only if player changing worlds
-        this.recreatePlayerEntity(entityplayer, exitWorld.dimension, true, exit, true); // SPIGOT-3864
+        this.moveToWorld(entityplayer, exitWorld.dimension, true, exit, true); // SPIGOT-3864
         if (entityplayer.motionX != velocity.getX() || entityplayer.motionY != velocity.getY() || entityplayer.motionZ != velocity.getZ()) {
             entityplayer.getBukkitEntity().setVelocity(velocity);
         }
