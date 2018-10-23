@@ -62,7 +62,7 @@ public class ShrinkJarTask extends DefaultTask {
         if (annotations == null)
             return false;
         for (AnnotationNode annotation : annotations) {
-            if (annotation.desc.equals("Lcpw/mods/fml/relauncher/SideOnly;") && annotation.values != null) {
+            if (annotation.desc.equals("Lnet/minecraftforge/fml/relauncher/SideOnly;") && annotation.values != null) {
                 for (int x = 0; x < annotation.values.size() - 1; x += 2) {
                     Object key = annotation.values.get(x);
                     Object value = annotation.values.get(x + 1);
