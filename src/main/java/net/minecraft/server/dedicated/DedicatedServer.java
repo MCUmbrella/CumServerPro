@@ -62,7 +62,7 @@ public class DedicatedServer extends MinecraftServer implements IServer
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Pattern RESOURCE_PACK_SHA1_PATTERN = Pattern.compile("^[a-fA-F0-9]{40}$");
-    public final List<PendingCommand> pendingCommandList = Collections.<PendingCommand>synchronizedList(Lists.newArrayList());
+    public final java.util.Queue<PendingCommand> pendingCommandList = new java.util.concurrent.ConcurrentLinkedQueue<>(); // Paper - use a proper queue
     private RConThreadQuery rconQueryThread;
     public final RConConsoleSource rconConsoleSource = new RConConsoleSource(this);
     private RConThreadMain rconThread;
@@ -503,9 +503,8 @@ public class DedicatedServer extends MinecraftServer implements IServer
     public void executePendingCommands()
     {
         SpigotTimings.serverCommandTimer.startTiming(); // Spigot
-        while (!this.pendingCommandList.isEmpty())
-        {
-            PendingCommand pendingcommand = this.pendingCommandList.remove(0);
+        PendingCommand pendingcommand;
+        while ((pendingcommand = this.pendingCommandList.poll()) != null) {  // Paper - use proper queue
             // CraftBukkit start - ServerCommand for preprocessing
             ServerCommandEvent event = new ServerCommandEvent(console, pendingcommand.command);
             server.getPluginManager().callEvent(event);
