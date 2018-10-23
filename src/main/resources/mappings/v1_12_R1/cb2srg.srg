@@ -18046,6 +18046,7 @@ MD: net/minecraft/server/EntityPlayer/broadcastCarriedItem ()V net/minecraft/ent
 MD: net/minecraft/server/EntityPlayer/c ()Lnet/minecraft/server/BlockPosition; net/minecraft/entity/player/EntityPlayerMP/func_180425_c ()Lnet/minecraft/util/math/BlockPos;
 MD: net/minecraft/server/EntityPlayer/c (Lnet/minecraft/server/Entity;)V net/minecraft/entity/player/EntityPlayerMP/func_152339_d (Lnet/minecraft/entity/Entity;)V
 MD: net/minecraft/server/EntityPlayer/canPvP ()Z net/minecraft/entity/player/EntityPlayerMP/func_175400_cq ()Z
+MD: net/minecraft/server/EntityPlayer/closeInventory ()V net/minecraft/entity/player/EntityPlayerMP/func_71053_j ()V
 MD: net/minecraft/server/EntityPlayer/copyFrom (Lnet/minecraft/server/EntityPlayer;Z)V net/minecraft/entity/player/EntityPlayerMP/func_193104_a (Lnet/minecraft/entity/player/EntityPlayerMP;Z)V
 MD: net/minecraft/server/EntityPlayer/d (Lnet/minecraft/server/Entity;)V net/minecraft/entity/player/EntityPlayerMP/func_184848_d (Lnet/minecraft/entity/Entity;)V
 MD: net/minecraft/server/EntityPlayer/f (Lnet/minecraft/server/Entity;)V net/minecraft/entity/player/EntityPlayerMP/func_71059_n (Lnet/minecraft/entity/Entity;)V
