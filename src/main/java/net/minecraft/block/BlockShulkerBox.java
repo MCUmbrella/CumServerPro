@@ -160,32 +160,9 @@ public class BlockShulkerBox extends BlockContainer
         }
     }
 
-    // CraftBukkit start - override to prevent duplication when dropping
-    public void dropBlockAsItemWithChance(World world, BlockPos blockposition, IBlockState iblockdata, float f, int i) {
-        TileEntity tileentity = world.getTileEntity(blockposition);
-
-        if (tileentity instanceof TileEntityShulkerBox) {
-            TileEntityShulkerBox tileentityshulkerbox = (TileEntityShulkerBox) tileentity;
-
-            if (!tileentityshulkerbox.isCleared() && tileentityshulkerbox.shouldDrop()) {
-                ItemStack itemstack = new ItemStack(Item.getItemFromBlock(this));
-                NBTTagCompound nbttagcompound = new NBTTagCompound();
-                NBTTagCompound nbttagcompound1 = new NBTTagCompound();
-
-                nbttagcompound.setTag("BlockEntityTag", ((TileEntityShulkerBox) tileentity).saveToNbt(nbttagcompound1));
-                itemstack.setTagCompound(nbttagcompound);
-                if (tileentityshulkerbox.hasCustomName()) {
-                    itemstack.setStackDisplayName(tileentityshulkerbox.getName());
-                    tileentityshulkerbox.setCustomName("");
-                }
-
-                spawnAsEntity(world, blockposition, itemstack);
-            }
-
-            world.updateComparatorOutputLevel(blockposition, iblockdata.getBlock());
-        }
+    public void dropBlockAsItemWithChance(World worldIn, BlockPos pos, IBlockState state, float chance, int fortune)
+    {
     }
-    // CraftBukkit end
 
     public void onBlockPlacedBy(World worldIn, BlockPos pos, IBlockState state, EntityLivingBase placer, ItemStack stack)
     {
@@ -204,7 +181,7 @@ public class BlockShulkerBox extends BlockContainer
     {
         TileEntity tileentity = worldIn.getTileEntity(pos);
 
-        if (false && tileentity instanceof TileEntityShulkerBox) // CraftBukkit - moved up
+        if (tileentity instanceof TileEntityShulkerBox)
         {
             TileEntityShulkerBox tileentityshulkerbox = (TileEntityShulkerBox)tileentity;
 
@@ -225,9 +202,8 @@ public class BlockShulkerBox extends BlockContainer
                 spawnAsEntity(worldIn, pos, itemstack);
             }
 
-//            worldIn.updateComparatorOutputLevel(pos, state.getBlock());
+            worldIn.updateComparatorOutputLevel(pos, state.getBlock());
         }
-        worldIn.updateComparatorOutputLevel(pos, state.getBlock()); // CraftBukkit - moved down
 
         super.breakBlock(worldIn, pos, state);
     }
