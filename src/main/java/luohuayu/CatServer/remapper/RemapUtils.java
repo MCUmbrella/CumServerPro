@@ -57,6 +57,13 @@ public class RemapUtils {
                 return ReflectionTransformer.jarMapping.methods.get(value);
         }
 
+        // Search superclass
+        Class superClass = inst.getSuperclass();
+        if (superClass != null) {
+            String superMethodName = mapMethodInternal(superClass, name, parameterTypes);
+            if (superMethodName != null) return superMethodName;
+        }
+
         return null;
     }
 
