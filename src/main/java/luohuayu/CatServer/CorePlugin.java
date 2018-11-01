@@ -3,6 +3,7 @@ package luohuayu.CatServer;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import luohuayu.CatServer.remapper.NetworkTransformer;
+import luohuayu.CatServer.remapper.SideTransformer;
 
 import javax.annotation.Nullable;
 import java.util.Map;
@@ -11,7 +12,8 @@ public class CorePlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
         return !CatServer.isDev() ? new String[] {
-                NetworkTransformer.class.getCanonicalName()
+                NetworkTransformer.class.getCanonicalName(),
+                SideTransformer.class.getCanonicalName()
         } : null;
     }
 
