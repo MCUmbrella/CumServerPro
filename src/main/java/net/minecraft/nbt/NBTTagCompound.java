@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.regex.Pattern;
 import javax.annotation.Nullable;
 import net.minecraft.crash.CrashReport;
@@ -25,7 +26,7 @@ public class NBTTagCompound extends NBTBase
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Pattern SIMPLE_VALUE = Pattern.compile("[A-Za-z0-9._+-]+");
-    private final Map<String, NBTBase> tagMap = Maps.<String, NBTBase>newHashMap();
+    private final Map<String, NBTBase> tagMap = new ConcurrentHashMap<>(); // CatServer - HashMap -> ConcurrentHashMap
 
     void write(DataOutput output) throws IOException
     {
