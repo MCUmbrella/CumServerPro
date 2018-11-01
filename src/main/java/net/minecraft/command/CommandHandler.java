@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
+import luohuayu.CatServer.command.BukkitCommandWrapper;
 import luohuayu.CatServer.command.CraftSimpleCommandMap;
 import luohuayu.CatServer.command.ModCustomCommand;
 
@@ -40,6 +41,8 @@ public abstract class CommandHandler implements ICommandManager
         String s = astring[0];
         astring = dropFirstString(astring);
         ICommand icommand = this.commandMap.get(s);
+        if (icommand == null) icommand = BukkitCommandWrapper.toNMSCommand(sender, s); // CatServer - allow mods execute plugin command
+
         int i = 0;
 
         try
@@ -151,7 +154,7 @@ public abstract class CommandHandler implements ICommandManager
     public ICommand registerCommand(ICommand command) {
         this.commandMap.put(command.getName(), command);
         this.commandSet.add(command);
-        // register vanilla commands with Bukkit to support permissions.
+
         CraftSimpleCommandMap commandMap = MinecraftServer.getServerInst().server.getCraftCommandMap();
         ModCustomCommand customCommand = new ModCustomCommand(command);
 
