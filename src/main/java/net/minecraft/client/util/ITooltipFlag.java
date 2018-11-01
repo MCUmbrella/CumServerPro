@@ -1,14 +1,9 @@
 package net.minecraft.client.util;
 
-import net.minecraftforge.fml.relauncher.Side;
-import net.minecraftforge.fml.relauncher.SideOnly;
-
-@SideOnly(Side.CLIENT)
 public interface ITooltipFlag
 {
     boolean isAdvanced();
 
-    @SideOnly(Side.CLIENT)
     public static enum TooltipFlags implements ITooltipFlag
     {
         NORMAL(false),
