@@ -72,7 +72,7 @@ public abstract class Container
     private InventoryView computeBukkitView() {
         Set<IInventory> uniqueInventorySet = new HashSet<>();
         for(Slot slot : inventorySlots)
-            uniqueInventorySet.add(slot.inventory);
+            if (slot.inventory != null) uniqueInventorySet.add(slot.inventory);
         List<IInventory> inventories = new ArrayList<>(uniqueInventorySet);
         InventoryPlayer playerInv = null;
 

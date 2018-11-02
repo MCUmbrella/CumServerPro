@@ -97,7 +97,7 @@ public class FMLNetworkHandler
             if (remoteGuiContainer != null)
             {
                 // CatServer start - create bukkitView for passed container then fire open event.
-                if (remoteGuiContainer.getBukkitView() == null && entityPlayer != null) {
+                if (remoteGuiContainer.getBukkitView() == null) {
                     TileEntity te = entityPlayer.world.getTileEntity(new BlockPos(x, y, z));
                     if (te instanceof IInventory) {
                         remoteGuiContainer.setBukkitView(new CraftInventoryView(entityPlayer.getBukkitEntity(), new CraftInventory((IInventory) te), remoteGuiContainer));
