@@ -142,6 +142,17 @@ public abstract class PlayerList
 
     public void initializeConnectionToPlayer(NetworkManager netManager, EntityPlayerMP playerIn, NetHandlerPlayServer nethandlerplayserver)
     {
+        // CatServer start
+        if (!this.mcServer.isServerInOnlineMode()) {
+            String playerLowerName = playerIn.getName().toLowerCase();
+            for (EntityPlayerMP onlinePlayer : this.playerEntityList) {
+                if (onlinePlayer.getName().toLowerCase().equals(playerLowerName)) {
+                    nethandlerplayserver.disconnect("Player name duplicate!");
+                    return;
+                }
+            }
+        }
+        // CatServer end
         GameProfile gameprofile = playerIn.getGameProfile();
         PlayerProfileCache playerprofilecache = this.mcServer.getPlayerProfileCache();
         GameProfile gameprofile1 = playerprofilecache.getProfileByUUID(gameprofile.getId());
