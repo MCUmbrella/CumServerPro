@@ -917,6 +917,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 worldserver.timings.tracker.stopTiming(); // Spigot
                 this.profiler.endSection();
                 this.profiler.endSection();
+                worldserver.explosionDensityCache.clear(); // Paper - Optimize explosions
             // }
 
             // worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
