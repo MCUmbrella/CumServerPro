@@ -32,7 +32,15 @@ public class ReflectionTransformer {
     public static final Multimap<String, String> fieldDeMapping = ArrayListMultimap.create();
     public static final Multimap<String, String> methodFastMapping = ArrayListMultimap.create();
 
+    private static boolean disable = false;
+
     public static void init() {
+        try {
+            ReflectionUtils.getCallerClassloader();
+        } catch (Throwable e) {
+            new RuntimeException("Unsupported Java version, disabled reflection remap!", e).printStackTrace();
+            disable = true;
+        }
         jarMapping = MappingLoader.loadMapping();
         JointProvider provider = new JointProvider();
         provider.add(new ClassInheritanceProvider());
@@ -104,7 +112,7 @@ public class ReflectionTransformer {
 
     public static void remapForName(AbstractInsnNode insn) {
         MethodInsnNode method = (MethodInsnNode) insn;
-        if (!method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
+        if (disable || !method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
         method.owner = DESC_ReflectionMethods;
     }
 
