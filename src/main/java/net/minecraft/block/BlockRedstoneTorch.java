@@ -113,12 +113,19 @@ public class BlockRedstoneTorch extends BlockTorch
     public void updateTick(World worldIn, BlockPos pos, IBlockState state, Random rand)
     {
         boolean flag = this.shouldBeOff(worldIn, pos, state);
-        List<Toggle> list = (List)toggles.get(worldIn);
+        List<Toggle> list = toggles.get(worldIn);
 
-        while (list != null && !list.isEmpty() && worldIn.getTotalWorldTime() - (list.get(0)).time > 60L)
-        {
-            list.remove(0);
+        // Paper start
+        if (list != null) {
+            int index = 0;
+            while (index < list.size() && worldIn.getTotalWorldTime() - list.get(index).getTime() > 60L) {
+                index++;
+            }
+            if (index > 0) {
+                list.subList(0, index).clear();
+            }
         }
+        // Paper end
 
         org.bukkit.plugin.PluginManager manager = worldIn.getServer().getPluginManager();
         org.bukkit.block.Block block = worldIn.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ());
@@ -230,7 +237,7 @@ public class BlockRedstoneTorch extends BlockTorch
     static class Toggle
         {
             BlockPos pos;
-            long time;
+            long time; final long getTime() { return this.time; } // Paper - OBFHELPER;
 
             public Toggle(BlockPos pos, long time)
             {
