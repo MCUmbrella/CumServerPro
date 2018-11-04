@@ -41,6 +41,7 @@ public class PlayerVelocityEvent extends PlayerEvent implements Cancellable {
      * @param velocity The velocity vector that will be sent to the player
      */
     public void setVelocity(Vector velocity) {
+        velocity.checkFinite(); // CatServer - check before
         this.velocity = velocity;
     }
 
