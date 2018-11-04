@@ -10,6 +10,8 @@ import java.util.Map;
 import java.util.concurrent.locks.ReadWriteLock;
 import java.util.concurrent.locks.ReentrantReadWriteLock;
 import javax.annotation.Nullable;
+
+import it.unimi.dsi.fastutil.ints.Int2ObjectOpenHashMap;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.Entity;
@@ -26,7 +28,7 @@ public class EntityDataManager
     private static final Logger LOGGER = LogManager.getLogger();
     private static final Map < Class <? extends Entity > , Integer > NEXT_ID_MAP = Maps. < Class <? extends Entity > , Integer > newHashMap();
     private final Entity entity;
-    private final Map < Integer, DataEntry<? >> entries = Maps. < Integer, DataEntry<? >> newHashMap();
+    private final Map < Integer, DataEntry<? >> entries = new Int2ObjectOpenHashMap<>(); // Paper
     private final ReadWriteLock lock = new ReentrantReadWriteLock();
     private boolean empty = true;
     private boolean dirty;
