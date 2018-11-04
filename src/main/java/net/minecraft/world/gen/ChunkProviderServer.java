@@ -35,7 +35,27 @@ public class ChunkProviderServer implements IChunkProvider
     public final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
     public final IChunkGenerator chunkGenerator;
     public final IChunkLoader chunkLoader;
-    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<Chunk>(8192);
+    // Paper start
+    protected Chunk lastChunkByPos = null;
+    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<Chunk>(8192) {
+
+        @Override
+        public Chunk get(long key) {
+            if (lastChunkByPos != null && key == lastChunkByPos.chunkKey) {
+                return lastChunkByPos;
+            }
+            return lastChunkByPos = super.get(key);
+        }
+
+        @Override
+        public Chunk remove(long key) {
+            if (lastChunkByPos != null && key == lastChunkByPos.chunkKey) {
+                lastChunkByPos = null;
+            }
+            return super.remove(key);
+        }
+    }; // CraftBukkit
+    // Paper end
     public final WorldServer world;
     private final Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 
