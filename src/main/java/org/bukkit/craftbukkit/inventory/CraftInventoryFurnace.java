@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit.inventory;
 
+import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntityFurnace;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
@@ -9,7 +10,11 @@ public class CraftInventoryFurnace extends CraftInventory implements FurnaceInve
     public CraftInventoryFurnace(TileEntityFurnace inventory) {
         super(inventory);
     }
-
+    // CatServer start
+    public CraftInventoryFurnace(IInventory inventory) {
+        super(inventory);
+    }
+    // CatServer end
     public ItemStack getResult() {
         return getItem(2);
     }
