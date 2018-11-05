@@ -5,9 +5,12 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.potion.PotionEffectType;
 
 import net.minecraft.block.Block;
+import net.minecraft.enchantment.Enchantment;
 import net.minecraft.item.Item;
+import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.FMLLog;
@@ -63,5 +66,19 @@ public class BukkitInjector {
             }
             EnumHelper.addEnum(Biome.class, biomeName, new Class[]{}, new Object[]{});
         }
+    }
+
+    public static void registerEnchantments() {
+        for (Object enchantment : Enchantment.REGISTRY) {
+            org.bukkit.enchantments.Enchantment.registerEnchantment(new org.bukkit.craftbukkit.enchantments.CraftEnchantment((Enchantment) enchantment));
+        }
+        org.bukkit.enchantments.Enchantment.stopAcceptingRegistrations();
+    }
+
+    public static void registerPotions() {
+        for (Object effect : Potion.REGISTRY) {
+            org.bukkit.potion.PotionEffectType.registerPotionEffectType(new org.bukkit.craftbukkit.potion.CraftPotionEffectType((Potion) effect));
+        }
+        PotionEffectType.stopAcceptingRegistrations();
     }
 }
