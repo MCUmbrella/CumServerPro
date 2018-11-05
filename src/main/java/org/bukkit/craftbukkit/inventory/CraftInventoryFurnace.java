@@ -4,6 +4,7 @@ import net.minecraft.inventory.IInventory;
 import net.minecraft.tileentity.TileEntityFurnace;
 import org.bukkit.block.Furnace;
 import org.bukkit.inventory.FurnaceInventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 
 public class CraftInventoryFurnace extends CraftInventory implements FurnaceInventory {
@@ -41,6 +42,7 @@ public class CraftInventoryFurnace extends CraftInventory implements FurnaceInve
 
     @Override
     public Furnace getHolder() {
-        return (Furnace) inventory.getOwner();
+        InventoryHolder owner = inventory.getOwner();
+        return owner instanceof Furnace ? (Furnace) owner : null;
     }
 }
