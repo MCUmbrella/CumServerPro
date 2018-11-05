@@ -299,7 +299,7 @@ public class DimensionManager
             worldType = worldType.replace("provider", "");
 
             if(Environment.getEnvironment(DimensionManager.getProviderType(dim).getId()) == null){
-                env = DimensionManager.registerBukkitDimension(DimensionManager.getProviderType(dim).getId(),worldType);
+                env = DimensionManager.registerBukkitDimension(DimensionManager.getProviderType(dim).getId(), worldType);
             }
 
             name = provider.getSaveFolder();
@@ -309,7 +309,8 @@ public class DimensionManager
         if (mcServer instanceof DedicatedServer) {
             worldSettings.setGeneratorOptions(((DedicatedServer) mcServer).getStringProperty("generator-settings", ""));
         }
-        WorldServer world = (dim == 0 ? overworld : (WorldServer)(new WorldServerMulti(mcServer, new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true, mcServer.getDataFixer()), dim, overworld, mcServer.profiler).init()));
+        WorldInfo worldInfo = new WorldInfo(worldSettings, name);
+        WorldServer world = (dim == 0 ? overworld : (WorldServer)(new WorldServerMulti(mcServer, new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true, mcServer.getDataFixer()), dim, overworld, mcServer.profiler, worldInfo, env, gen).init()));
         if (gen != null)
         {
             world.getWorld().getPopulators().addAll(gen.getDefaultPopulators(world.getWorld()));
