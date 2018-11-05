@@ -94,7 +94,6 @@ import net.minecraft.world.gen.feature.WorldGeneratorBonusChest;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraft.world.storage.ISaveHandler;
-import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.world.storage.WorldSavedDataCallableSave;
 import net.minecraft.world.storage.loot.LootTableManager;
@@ -143,7 +142,6 @@ public class WorldServer extends World implements IThreadListener
         this.provider.setWorld(this);
         this.provider.setDimension(providerDim);
         this.chunkProvider = this.createChunkProvider();
-        perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler((WorldServer)this, saveHandlerIn));
         this.worldTeleporter = new org.bukkit.craftbukkit.CraftTravelAgent(this); // CraftBukkit
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
@@ -163,7 +161,6 @@ public class WorldServer extends World implements IThreadListener
         this.provider.setWorld(this);
         this.provider.setDimension(providerDim);
         this.chunkProvider = this.createChunkProvider();
-        perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler(this, saveHandlerIn));
         this.worldTeleporter = new Teleporter(this);
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
@@ -173,7 +170,6 @@ public class WorldServer extends World implements IThreadListener
 
     public World init()
     {
-        this.mapStorage = new MapStorage(this.saveHandler);
         String s = VillageCollection.fileNameForProvider(this.provider);
         VillageCollection villagecollection = (VillageCollection)this.perWorldStorage.getOrLoadData(VillageCollection.class, s);
 
