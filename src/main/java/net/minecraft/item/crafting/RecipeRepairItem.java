@@ -95,7 +95,7 @@ public class RecipeRepairItem extends ShapelessRecipes implements IRecipe
                 ShapelessRecipes recipe = new ShapelessRecipes("", result.copy(), ingredients);
                 recipe.key = new ResourceLocation("repairitem");
                 inv.currentRecipe = recipe;
-                result = org.bukkit.craftbukkit.event.CraftEventFactory.callPreCraftEvent(inv, result, inv.eventHandler.getBukkitView(), true);
+                if (inv.eventHandler.getBukkitView() != null) result = org.bukkit.craftbukkit.event.CraftEventFactory.callPreCraftEvent(inv, result, inv.eventHandler.getBukkitView(), true); // CatServer - mods bypass
                 return result;
                 // return new ItemStack(itemstack2.getItem(), 1, i1);
                 // CraftBukkit end

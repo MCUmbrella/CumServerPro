@@ -1904,13 +1904,6 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 }
 
                 InventoryView inventory = this.player.openContainer.getBukkitView();
-                InventoryType.SlotType type = CraftInventoryView.getSlotType(inventory, packetIn.getSlotId());
-
-                InventoryClickEvent event;
-                ClickType click = ClickType.UNKNOWN;
-                InventoryAction action = InventoryAction.UNKNOWN;
-
-                ItemStack itemstack = ItemStack.EMPTY;
 
                 // CatServer start - some containers such as NEI's Creative Container does not have a view at this point so we need to create one
                 if (inventory == null)
@@ -1919,6 +1912,14 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                     this.player.openContainer.setBukkitView(inventory);
                 }
                 // CatServer end
+
+                InventoryType.SlotType type = CraftInventoryView.getSlotType(inventory, packetIn.getSlotId());
+
+                InventoryClickEvent event;
+                ClickType click = ClickType.UNKNOWN;
+                InventoryAction action = InventoryAction.UNKNOWN;
+
+                ItemStack itemstack = ItemStack.EMPTY;
 
                 switch (packetIn.getClickType()) {
                     case PICKUP:
