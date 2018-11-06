@@ -44,7 +44,7 @@ public class FunctionManager implements ITickable
         }
         public World getEntityWorld()
         {
-            return FunctionManager.this.server.worldServerList.get(0);
+            return FunctionManager.this.server.worlds[0];
         }
         public MinecraftServer getServer()
         {
@@ -72,7 +72,7 @@ public class FunctionManager implements ITickable
 
     public int getMaxCommandChainLength()
     {
-        return this.server.worldServerList.get(0).getGameRules().getInt("maxCommandChainLength");
+        return this.server.worlds[0].getGameRules().getInt("maxCommandChainLength");
     }
 
     public Map<ResourceLocation, FunctionObject> getFunctions()
@@ -82,7 +82,7 @@ public class FunctionManager implements ITickable
 
     public void update()
     {
-        String s = this.server.worldServerList.get(0).getGameRules().getString("gameLoopFunction");
+        String s = this.server.worlds[0].getGameRules().getString("gameLoopFunction");
 
         if (!s.equals(this.currentGameLoopFunctionId))
         {

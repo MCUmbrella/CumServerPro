@@ -331,7 +331,7 @@ public class DedicatedServer extends MinecraftServer implements IServer
 
                 if (this.settings.hasProperty("announce-player-achievements"))
                 {
-                    this.worldServerList.get(0).getGameRules().setOrCreateGameRule("announceAdvancements", this.settings.getBooleanProperty("announce-player-achievements", true) ? "true" : "false");
+                    this.worlds[0].getGameRules().setOrCreateGameRule("announceAdvancements", this.settings.getBooleanProperty("announce-player-achievements", true) ? "true" : "false");
                     this.settings.removeProperty("announce-player-achievements");
                     this.settings.saveProperties();
                 }

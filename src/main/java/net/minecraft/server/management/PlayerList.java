@@ -392,7 +392,7 @@ public abstract class PlayerList
     @Nullable
     public NBTTagCompound readPlayerDataFromFile(EntityPlayerMP playerIn)
     {
-        NBTTagCompound nbttagcompound = this.mcServer.worldServerList.get(0).getWorldInfo().getPlayerNBTTagCompound();
+        NBTTagCompound nbttagcompound = this.mcServer.worlds[0].getWorldInfo().getPlayerNBTTagCompound();
         NBTTagCompound nbttagcompound1;
 
         if (playerIn.getName().equals(this.mcServer.getServerOwner()) && nbttagcompound != null)
@@ -1189,7 +1189,7 @@ public abstract class PlayerList
 
             if (i == 1) {
                 // use default NORMAL world spawn instead of target
-                worldserver1 = this.mcServer.worldServerList.get(0);
+                worldserver1 = this.mcServer.worlds[0];
                 blockposition = worldserver1.getSpawnPoint();
             } else {
                 blockposition = worldserver1.getSpawnCoordinate();
@@ -1504,7 +1504,7 @@ public abstract class PlayerList
 
     public boolean canSendCommands(GameProfile profile)
     {
-        return this.ops.hasEntry(profile) || this.mcServer.isSinglePlayer() && this.mcServer.worldServerList.get(0).getWorldInfo().areCommandsAllowed() && this.mcServer.getServerOwner().equalsIgnoreCase(profile.getName()) || this.commandsAllowedForAll;
+        return this.ops.hasEntry(profile) || this.mcServer.isSinglePlayer() && this.mcServer.worlds[0].getWorldInfo().areCommandsAllowed() && this.mcServer.getServerOwner().equalsIgnoreCase(profile.getName()) || this.commandsAllowedForAll;
     }
 
     @Nullable
@@ -1591,7 +1591,7 @@ public abstract class PlayerList
 
     public void updateTimeAndWeatherForPlayer(EntityPlayerMP playerIn, WorldServer worldIn)
     {
-        WorldBorder worldborder = this.mcServer.worldServerList.get(0).getWorldBorder();
+        WorldBorder worldborder = this.mcServer.worlds[0].getWorldBorder();
         playerIn.connection.sendPacket(new SPacketWorldBorder(worldborder, SPacketWorldBorder.Action.INITIALIZE));
         playerIn.connection.sendPacket(new SPacketTimeUpdate(worldIn.getTotalWorldTime(), worldIn.getWorldTime(), worldIn.getGameRules().getBoolean("doDaylightCycle")));
         BlockPos blockpos = worldIn.getSpawnPoint();
@@ -1629,7 +1629,7 @@ public abstract class PlayerList
 
     public String[] getAvailablePlayerDat()
     {
-        return this.mcServer.worldServerList.get(0).getSaveHandler().getPlayerNBTManager().getAvailablePlayerDat();
+        return this.mcServer.worlds[0].getSaveHandler().getPlayerNBTManager().getAvailablePlayerDat();
     }
 
     public void setWhiteListEnabled(boolean whitelistEnabled)
