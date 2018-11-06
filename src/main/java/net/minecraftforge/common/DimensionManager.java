@@ -277,7 +277,7 @@ public class DimensionManager
         }
         catch (Exception e)
         {
-            FMLLog.log.error("Cannot Hotload Dim: {}", dim, e);
+            FMLLog.log.error("Cannot Hotload Dim: {}", dim); // CatServer - no output exception
             return; // If a provider hasn't been registered then we can't hotload the dim
         }
         MinecraftServer mcServer = overworld.getMinecraftServer();

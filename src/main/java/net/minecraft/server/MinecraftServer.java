@@ -975,7 +975,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         LOGGER.warn(msg);
     }
 
-    // TODO: Should we replace this for getWorldServer from below?
     public WorldServer getWorld(int dimension)
     {
         WorldServer ret = net.minecraftforge.common.DimensionManager.getWorld(dimension, true);

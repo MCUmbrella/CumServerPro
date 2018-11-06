@@ -1009,8 +1009,19 @@ public final class CraftServer implements Server {
     @Override
     public World getWorld(String name) {
         Validate.notNull(name, "Name cannot be null");
+        // CatServer start - if the world does not exist, try load it from Forge
+        World world = worlds.get(name.toLowerCase(java.util.Locale.ENGLISH));
+        if (world == null && name.toUpperCase().startsWith("DIM")) {
+            int dimension;
+            try {
+                dimension = Integer.valueOf(name.substring(3));
+                WorldServer worldserver = console.getWorld(dimension);
+                if (worldserver != null) world = worldserver.getWorld();
+            } catch (NumberFormatException e) {}
+        }
 
-        return worlds.get(name.toLowerCase(java.util.Locale.ENGLISH));
+        return world;
+        // CatServer end
     }
 
     @Override
