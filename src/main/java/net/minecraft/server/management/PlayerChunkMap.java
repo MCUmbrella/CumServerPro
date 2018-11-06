@@ -489,7 +489,7 @@ public class PlayerChunkMap
         this.entriesWithoutChunks.remove(entry);
         Chunk chunk = entry.getChunk();
 
-        if (chunk != null)
+        if (false && chunk != null) // CatServer - use craftbukkit timing unload chunk
         {
             this.getWorldServer().getChunkProvider().queueUnload(chunk);
         }
