@@ -315,6 +315,12 @@ public class PlayerInteractionManager
             // CraftBukkit start - Force block reset to client
             this.player.connection.sendPacket(new SPacketBlockChange(this.world, pos));
             // CraftBukkit end
+            // CatServer start - update TE for this block
+            TileEntity tileentity = this.world.getTileEntity(pos);
+            if (tileentity != null) {
+                this.player.connection.sendPacket(tileentity.getUpdatePacket());
+            }
+            // CraftBukkit end
         }
     }
 
