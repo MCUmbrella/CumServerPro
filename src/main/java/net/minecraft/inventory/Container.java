@@ -486,7 +486,7 @@ public abstract class Container
                     if (player instanceof EntityPlayerMP && slot6.getSlotStackLimit() != 64) {
                         ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetSlot(this.windowId, slot6.slotNumber, slot6.getStack()));
                         // Updating a crafting inventory makes the client reset the result slot, have to send it again
-                        if (getBukkitView() != null && (bukkitView.getType() == InventoryType.WORKBENCH || this.getBukkitView().getType() == InventoryType.CRAFTING)) {  // CatServer - mods bypass
+                        if (getBukkitView() != null && (this.getBukkitView().getType() == InventoryType.WORKBENCH || this.getBukkitView().getType() == InventoryType.CRAFTING)) {  // CatServer - mods bypass
                             ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetSlot(this.windowId, 0, this.getSlot(0).getStack()));
                         }
                     }
