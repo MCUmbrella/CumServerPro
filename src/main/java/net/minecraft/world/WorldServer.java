@@ -201,7 +201,14 @@ public class WorldServer extends World implements IThreadListener
         }
 
         this.lootTable = new LootTableManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "loot_tables"));
-        this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
+        // CraftBukkit start
+        if (this.dimension != 0) { // SPIGOT-3899 multiple worlds of advancements not supported
+            this.advancementManager = this.mcServer.getAdvancementManager();
+        }
+        if (this.advancementManager == null) {
+            this.advancementManager = new AdvancementManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "advancements"));
+        }
+        // CraftBukkit end
         this.functionManager = new FunctionManager(new File(new File(this.saveHandler.getWorldDirectory(), "data"), "functions"), this.mcServer);
         this.getWorldBorder().setCenter(this.worldInfo.getBorderCenterX(), this.worldInfo.getBorderCenterZ());
         this.getWorldBorder().setDamageAmount(this.worldInfo.getBorderDamagePerBlock());
