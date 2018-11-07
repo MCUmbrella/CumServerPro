@@ -320,7 +320,7 @@ public class PlayerInteractionManager
             if (tileentity != null) {
                 this.player.connection.sendPacket(tileentity.getUpdatePacket());
             }
-            // CraftBukkit end
+            // CatServer end
         }
     }
 
