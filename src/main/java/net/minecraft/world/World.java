@@ -164,7 +164,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public static String blockLocation;
     private org.spigotmc.TickLimiter entityLimiter;
     private org.spigotmc.TickLimiter tileLimiter;
-    private int tileTickPosition;
     public final Map<Explosion.CacheKey, Float> explosionDensityCache = new HashMap<>(); // Paper - Optimize explosions
 
     public CraftWorld getWorld() {
@@ -2090,17 +2089,15 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             this.tileEntitiesToBeRemoved.clear();
         }
 
-        int tilesThisCycle = 0;
-        for (tileLimiter.initTick();
-             tilesThisCycle < this.tickableTileEntities.size() && (tilesThisCycle % 10 != 0 || tileLimiter.shouldContinue());
-             tileTickPosition++, tilesThisCycle++) {
-            tileTickPosition = (tileTickPosition < tickableTileEntities.size()) ? tileTickPosition : 0;
-            TileEntity tileentity = (TileEntity) this.tickableTileEntities.get(tileTickPosition);
+        Iterator<TileEntity> iterator = this.tickableTileEntities.iterator();
+
+        while (iterator.hasNext())
+        {
+            TileEntity tileentity = iterator.next();
             // Spigot start
             if (tileentity == null) {
                 getServer().getLogger().severe("Spigot has detected a null entity and has removed it, preventing a crash");
-                tilesThisCycle--;
-                this.tickableTileEntities.remove(tileTickPosition--);
+                iterator.remove();
                 continue;
             }
             // Spigot end
@@ -2147,8 +2144,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
             if (tileentity.isInvalid())
             {
-                tilesThisCycle--;
-                this.tickableTileEntities.remove(tileTickPosition--);
+                iterator.remove();
                 this.loadedTileEntityList.remove(tileentity);
 
                 if (this.isBlockLoaded(tileentity.getPos()))
