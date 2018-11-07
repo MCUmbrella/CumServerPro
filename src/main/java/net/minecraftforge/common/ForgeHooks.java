@@ -975,6 +975,8 @@ public class ForgeHooks
                     blocksnapshot.restore(true, false);
                     world.restoringBlockSnapshots = false;
                 }
+
+                ((org.bukkit.craftbukkit.entity.CraftPlayer) player.getBukkitEntity()).updateInventory(); // CatServer - update inventory
             }
             else
             {

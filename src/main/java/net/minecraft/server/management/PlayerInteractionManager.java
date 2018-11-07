@@ -495,6 +495,7 @@ public class PlayerInteractionManager
                 } else if (blockdata.getBlock() instanceof BlockCake) {
                     ((EntityPlayerMP) player).getBukkitEntity().sendHealthUpdate(); // SPIGOT-1341 - reset health for cake
                 }
+                ((EntityPlayerMP) player).getBukkitEntity().updateInventory(); // SPIGOT-2867
                 return (cbEvent.useItemInHand() != Event.Result.ALLOW) ? EnumActionResult.SUCCESS : EnumActionResult.PASS;
             }
             else if (this.gameType == GameType.SPECTATOR)

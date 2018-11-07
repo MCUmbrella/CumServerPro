@@ -173,7 +173,7 @@ public abstract class Container
             ItemStack itemstack = ((Slot)this.inventorySlots.get(i)).getStack();
             ItemStack itemstack1 = this.inventoryItemStacks.get(i);
 
-            if (!ItemStack.fastMatches(itemstack1, itemstack) || (tickCount % org.spigotmc.SpigotConfig.itemDirtyTicks == 0 && !ItemStack.fastMatches(itemstack1, itemstack))) // Spigot
+            if (!ItemStack.fastMatches(itemstack1, itemstack) || (tickCount % org.spigotmc.SpigotConfig.itemDirtyTicks == 0 && !ItemStack.areItemStacksEqual(itemstack1, itemstack))) // Spigot
             {
                 boolean clientStackChanged = !ItemStack.areItemStacksEqualUsingNBTShareTag(itemstack1, itemstack);
                 itemstack1 = itemstack.isEmpty() ? ItemStack.EMPTY : itemstack.copy();
