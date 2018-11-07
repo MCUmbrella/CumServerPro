@@ -860,69 +860,66 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         SpigotTimings.timeUpdateTimer.stopTiming(); // Spigot
         net.minecraftforge.common.chunkio.ChunkIOExecutor.tick();
 
-        // TODO: Check if it's OK to replace ids for worldServerList.size()
-        // Integer[] ids = net.minecraftforge.common.DimensionManager.getIDs(this.tickCounter % 200 == 0);
         for (int x = 0; x < worldServerList.size(); x++)
         {
-            // int id = ids[x];
             long i = System.nanoTime();
 
-            // if (id == 0 || this.getAllowNether()) {
-                WorldServer worldserver = worldServerList.get(x);
-                this.profiler.func_194340_a(() ->
-                {
-                    return worldserver.getWorldInfo().getWorldName();
-                });
+            WorldServer worldserver = worldServerList.get(x);
+            int id = worldserver.dimension;
 
-                /* Drop global time updates
+            this.profiler.func_194340_a(() ->
+            {
+                return worldserver.getWorldInfo().getWorldName();
+            });
+
+            /* Drop global time updates
                 if (this.tickCounter % 20 == 0)
                 {
                     this.profiler.startSection("timeSync");
                     this.playerList.sendPacketToAllPlayersInDimension(new SPacketTimeUpdate(worldserver.getTotalWorldTime(), worldserver.getWorldTime(), worldserver.getGameRules().getBoolean("doDaylightCycle")), worldserver.provider.getDimension());
                     this.profiler.endSection();
                 }
-                */
-                this.profiler.startSection("tick");
-                net.minecraftforge.fml.common.FMLCommonHandler.instance().onPreWorldTick(worldserver);
+             */
+            this.profiler.startSection("tick");
+            net.minecraftforge.fml.common.FMLCommonHandler.instance().onPreWorldTick(worldserver);
 
-                try
-                {
-                    worldserver.timings.doTick.startTiming(); // Spigot
-                    worldserver.tick();
-                    worldserver.timings.doTick.stopTiming(); // Spigot
-                }
-                catch (Throwable throwable1)
-                {
-                    CrashReport crashreport = CrashReport.makeCrashReport(throwable1, "Exception ticking world");
-                    worldserver.addWorldInfoToCrashReport(crashreport);
-                    throw new ReportedException(crashreport);
-                }
+            try
+            {
+                worldserver.timings.doTick.startTiming(); // Spigot
+                worldserver.tick();
+                worldserver.timings.doTick.stopTiming(); // Spigot
+            }
+            catch (Throwable throwable1)
+            {
+                CrashReport crashreport = CrashReport.makeCrashReport(throwable1, "Exception ticking world");
+                worldserver.addWorldInfoToCrashReport(crashreport);
+                throw new ReportedException(crashreport);
+            }
 
-                try
-                {
-                    worldserver.timings.tickEntities.startTiming(); // Spigot
-                    worldserver.updateEntities();
-                    worldserver.timings.tickEntities.stopTiming(); // Spigot
-                }
-                catch (Throwable throwable)
-                {
-                    CrashReport crashreport1 = CrashReport.makeCrashReport(throwable, "Exception ticking world entities");
-                    worldserver.addWorldInfoToCrashReport(crashreport1);
-                    throw new ReportedException(crashreport1);
-                }
+            try
+            {
+                worldserver.timings.tickEntities.startTiming(); // Spigot
+                worldserver.updateEntities();
+                worldserver.timings.tickEntities.stopTiming(); // Spigot
+            }
+            catch (Throwable throwable)
+            {
+                CrashReport crashreport1 = CrashReport.makeCrashReport(throwable, "Exception ticking world entities");
+                worldserver.addWorldInfoToCrashReport(crashreport1);
+                throw new ReportedException(crashreport1);
+            }
 
-                net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostWorldTick(worldserver);
-                this.profiler.endSection();
-                this.profiler.startSection("tracker");
-                worldserver.timings.tracker.startTiming(); // Spigot
-                worldserver.getEntityTracker().tick();
-                worldserver.timings.tracker.stopTiming(); // Spigot
-                this.profiler.endSection();
-                this.profiler.endSection();
-                worldserver.explosionDensityCache.clear(); // Paper - Optimize explosions
-            // }
+            net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostWorldTick(worldserver);
+            this.profiler.endSection();
+            this.profiler.startSection("tracker");
+            worldserver.timings.tracker.startTiming(); // Spigot
+            worldserver.getEntityTracker().tick();
+            worldserver.timings.tracker.stopTiming(); // Spigot
+            this.profiler.endSection();
+            this.profiler.endSection();
+            worldserver.explosionDensityCache.clear(); // Paper - Optimize explosions
 
-            // worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
+            worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
         }
 
         this.profiler.endStartSection("dim_unloading");
