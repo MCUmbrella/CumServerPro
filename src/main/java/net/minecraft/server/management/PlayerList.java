@@ -893,7 +893,6 @@ public abstract class PlayerList
         }
 
         WorldServer worldserver = ((CraftWorld) location.getWorld()).getHandle();
-        this.setPlayerGameTypeBasedOnOther(entityplayermp, playerIn, worldserver);
         entityplayermp.forceSetPositionRotation(location.getX(), location.getY(), location.getZ(), location.getYaw(), location.getPitch());
 
         worldserver.getChunkProvider().provideChunk((int)entityplayermp.posX >> 4, (int)entityplayermp.posZ >> 4);
