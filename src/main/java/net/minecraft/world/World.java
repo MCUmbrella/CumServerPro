@@ -1976,7 +1976,12 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         }
 
         this.profiler.endStartSection("remove");
-        this.loadedEntityList.removeAll(this.unloadedEntityList);
+        //this.loadedEntityList.removeAll(this.unloadedEntityList);
+        // Paper start - Use alternate implementation with faster contains
+        java.util.Set<Entity> toRemove = java.util.Collections.newSetFromMap(new java.util.IdentityHashMap<>());
+        toRemove.addAll(this.unloadedEntityList);
+        this.loadedEntityList.removeAll(toRemove);
+        // Paper end
 
         for (int k = 0; k < this.unloadedEntityList.size(); ++k)
         {
