@@ -1431,10 +1431,6 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
         {
             getEntityData().setTag(PERSISTED_NBT_TAG, old.getCompoundTag(PERSISTED_NBT_TAG));
         }
-        // CatServer start - clone bukkitEntity
-        this.bukkitEntity = that.bukkitEntity;
-        this.bukkitEntity.setHandle(this);
-        // CatServer end
         net.minecraftforge.event.ForgeEventFactory.onPlayerClone(this, that, !keepEverything);
     }
 
