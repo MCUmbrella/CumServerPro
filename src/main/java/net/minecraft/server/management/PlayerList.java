@@ -815,7 +815,7 @@ public abstract class PlayerList
         if (mcServer.getWorld(dimension) == null) dimension = 0;
 
         playerIn.getServerWorld().getEntityTracker().removePlayerFromTrackers(playerIn);
-        // playerIn.getServerWorld().getEntityTracker().untrack(playerIn);
+        playerIn.getServerWorld().getEntityTracker().untrack(playerIn);
         playerIn.getServerWorld().getPlayerChunkMap().removePlayer(playerIn);
         this.playerEntityList.remove(playerIn);
         this.mcServer.getWorld(playerIn.dimension).removeEntityDangerously(playerIn);
@@ -834,9 +834,10 @@ public abstract class PlayerList
             playerinteractionmanager = new PlayerInteractionManager(this.mcServer.getWorld(playerIn.dimension));
         }
 
-        EntityPlayerMP entityplayermp = new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(playerIn.dimension), playerIn.getGameProfile(), playerinteractionmanager);
+        EntityPlayerMP entityplayermp = new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(playerIn.dimension), playerIn.getGameProfile(), new PlayerInteractionManager(this.mcServer.getWorld(playerIn.dimension)));
         */
-        EntityPlayerMP entityplayermp = playerIn;
+        EntityPlayerMP entityplayermp = new EntityPlayerMP(this.mcServer, this.mcServer.getWorld(playerIn.dimension), playerIn.getGameProfile(), playerIn.interactionManager);
+
         org.bukkit.World fromWorld = playerIn.getBukkitEntity().getWorld();
         playerIn.queuedEndExit = false;
 
@@ -923,17 +924,17 @@ public abstract class PlayerList
         entityplayermp.connection.sendPacket(new SPacketSetExperience(entityplayermp.experience, entityplayermp.experienceTotal, entityplayermp.experienceLevel));
         this.updateTimeAndWeatherForPlayer(entityplayermp, worldserver);
         this.updatePermissionLevel(entityplayermp);
-        if (!playerIn.connection.isDisconnected()) {
+        if (!entityplayermp.connection.isDisconnected()) {
             worldserver.getPlayerChunkMap().addPlayer(entityplayermp);
             worldserver.spawnEntity(entityplayermp);
             this.playerEntityList.add(entityplayermp);
             this.uuidToPlayerMap.put(entityplayermp.getUniqueID(), entityplayermp);
         }
-        // entityplayermp.addSelfToInternalCraftingInventory();
+        entityplayermp.addSelfToInternalCraftingInventory();
         entityplayermp.setHealth(entityplayermp.getHealth());
         // Added from changeDimension
-        syncPlayerInventory(playerIn); // Update health, etc...
-        playerIn.sendPlayerAbilities();
+        syncPlayerInventory(entityplayermp); // Update health, etc...
+        entityplayermp.sendPlayerAbilities();
         for (Object o1 : playerIn.getActivePotionEffects()) {
             PotionEffect mobEffect = (PotionEffect) o1;
             playerIn.connection.sendPacket(new SPacketEntityEffect(playerIn.getEntityId(), mobEffect));
@@ -947,13 +948,13 @@ public abstract class PlayerList
 
         // Don't fire on respawn
         if (fromWorld != location.getWorld()) {
-            PlayerChangedWorldEvent event = new PlayerChangedWorldEvent(playerIn.getBukkitEntity(), fromWorld);
+            PlayerChangedWorldEvent event = new PlayerChangedWorldEvent(entityplayermp.getBukkitEntity(), fromWorld);
             mcServer.server.getPluginManager().callEvent(event);
         }
 
         // Save player file again if they were disconnected
-        if (playerIn.connection.isDisconnected()) {
-            this.writePlayerData(playerIn);
+        if (entityplayermp.connection.isDisconnected()) {
+            this.writePlayerData(entityplayermp);
         }
         // CraftBukkit end
         net.minecraftforge.fml.common.FMLCommonHandler.instance().firePlayerRespawnEvent(entityplayermp, conqueredEnd);
