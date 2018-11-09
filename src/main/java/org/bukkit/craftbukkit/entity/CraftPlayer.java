@@ -528,6 +528,10 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
 
     @Override
     public boolean teleport(Location location, PlayerTeleportEvent.TeleportCause cause) {
+        Preconditions.checkArgument(location != null, "location");
+        Preconditions.checkArgument(location.getWorld() != null, "location.world");
+        location.checkFinite();
+
         EntityPlayerMP entity = getHandle();
 
         if (getHealth() == 0 || entity.isDead) {

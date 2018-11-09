@@ -1047,6 +1047,15 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
 
     public void setRepairCost(int cost)
     {
+        // CraftBukkit start - remove RepairCost tag when 0 (SPIGOT-3945)
+        if (cost == 0) {
+            if (this.hasTagCompound()) {
+                this.stackTagCompound.removeTag("RepairCost");
+            }
+            return;
+        }
+        // CraftBukkit end
+
         if (!this.hasTagCompound())
         {
             this.stackTagCompound = new NBTTagCompound();

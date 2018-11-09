@@ -52,9 +52,9 @@ public abstract class EntityArrow extends Entity implements IProjectile
         }
     });
     private static final DataParameter<Byte> CRITICAL = EntityDataManager.<Byte>createKey(EntityArrow.class, DataSerializers.BYTE);
-    public int xTile;
-    public int yTile;
-    public int zTile;
+    public int xTile; // PAIL: private->public
+    public int yTile; // PAIL: private->public
+    public int zTile; // PAIL: private->public
     private Block inTile;
     private int inData;
     public boolean inGround; // Spigot

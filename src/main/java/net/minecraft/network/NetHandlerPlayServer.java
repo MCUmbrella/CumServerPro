@@ -2486,7 +2486,6 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
                 if (itemstack.getItem() == Items.WRITABLE_BOOK && itemstack.getItem() == itemstack1.getItem())
                 {
-                    itemstack1 = new ItemStack(Items.WRITABLE_BOOK);
                     itemstack1.setTagInfo("pages", itemstack.getTagCompound().getTagList("pages", 8));
                     CraftEventFactory.handleEditBookEvent(player, itemstack1);
                 }
