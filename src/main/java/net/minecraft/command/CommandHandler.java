@@ -32,7 +32,7 @@ public abstract class CommandHandler implements ICommandManager
     {
         rawCommand = rawCommand.trim();
 
-        if (rawCommand.startsWith("/"))
+        if (rawCommand.startsWith("/") && !rawCommand.startsWith("//")) // CatServer - WorldEdit commands compatible
         {
             rawCommand = rawCommand.substring(1);
         }
