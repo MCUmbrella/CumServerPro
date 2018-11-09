@@ -32,6 +32,6 @@ public class CraftCreature extends CraftLivingEntity implements Creature {
 
     @Override
     public String toString() {
-        return "CraftCreature";
+        return "CraftCreature{name=" + this.entityName + "}"; // CatServer
     }
 }

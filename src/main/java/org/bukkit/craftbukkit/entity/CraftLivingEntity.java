@@ -78,7 +78,7 @@ import org.bukkit.util.Vector;
 
 public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     private CraftEntityEquipment equipment;
-    private String entityName; // CatServer
+    public String entityName; // CatServer
 
     public CraftLivingEntity(final CraftServer server, final EntityLivingBase entity) {
         super(server, entity);
@@ -248,7 +248,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public String toString() {
-        return "CraftLivingEntity{" + "id=" + getEntityId() + '}';
+        return "CraftLivingEntity{" + "id=" + getEntityId() + ", name=" + this.entityName + "}"; // CatServer
     }
 
     public Player getKiller() {
@@ -387,11 +387,9 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         EntityType type = EntityType.fromName(this.entityName);
         if (type != null) {
             return type;
-        } else if (EntityRegistry.entityTypeMap.containsKey(this.entity.getClass())) {
-            return EntityType.MOD_CUSTOM;
         }
+        return EntityType.MOD_CUSTOM;
         // CatServer end
-        return EntityType.UNKNOWN;
     }
 
     public boolean hasLineOfSight(Entity other) {

@@ -17,6 +17,6 @@ public class CraftWaterMob extends CraftLivingEntity implements WaterMob {
 
     @Override
     public String toString() {
-        return "CraftWaterMob";
+        return "CraftWaterMob{name=" + this.entityName + "}"; // CatServer
     }
 }

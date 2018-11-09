@@ -4,6 +4,7 @@ import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.registry.EntityRegistry;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.entity.CraftEntity;
+import org.bukkit.craftbukkit.entity.CraftLivingEntity;
 import org.bukkit.entity.EntityType;
 
 public class CraftCustomEntity extends CraftEntity {
@@ -31,5 +32,15 @@ public class CraftCustomEntity extends CraftEntity {
         if (type != null)
             return type;
         else return EntityType.MOD_CUSTOM;
+    }
+
+    public String getCustomName() {
+        String name = getHandle().getCustomNameTag();
+
+        if (name == null || name.length() == 0) {
+            return entityName;
+        }
+
+        return name;
     }
 }

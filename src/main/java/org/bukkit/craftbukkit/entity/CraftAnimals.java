@@ -17,6 +17,6 @@ public class CraftAnimals extends CraftAgeable implements Animals {
 
     @Override
     public String toString() {
-        return "CraftAnimals";
+        return "CraftAnimals{name=" + this.entityName + "}"; // CatServer
     }
 }
