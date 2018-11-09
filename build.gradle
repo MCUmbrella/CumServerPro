@@ -130,8 +130,8 @@ task jar_server(type: Jar) {
     classifier = 'server'
     manifest {
         attributes(
-                "Implementation-Title": "CraftBukkit",
-                "Implementation-Version": "CraftBukkit-1.12.2",
+                "Implementation-Title": rootProject.name,
+                "Implementation-Version": rootProject.name + "-1.12.2",
                 "Main-Class": "net.minecraftforge.fml.relauncher.ServerLaunchWrapper",
                 "TweakClass": "net.minecraftforge.fml.common.launcher.FMLTweaker",
                 "Class-Path": configurations.compile.collect { 'libraries/' + it.getName() }.join(' '),
