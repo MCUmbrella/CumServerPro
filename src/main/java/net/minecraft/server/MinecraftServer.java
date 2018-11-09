@@ -336,6 +336,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                     BukkitInjector.injectBlockBukkitMaterials();
                     BukkitInjector.injectItemBukkitMaterials();
                     BukkitInjector.injectBiomes();
+                    BukkitInjector.injectEntityType();
                     BukkitInjector.registerEnchantments();
                     BukkitInjector.registerPotions();
                     BukkitInjector.initializedBukkit = true;

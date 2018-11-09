@@ -5,16 +5,22 @@ import java.util.Map;
 import org.apache.logging.log4j.Level;
 import org.bukkit.Material;
 import org.bukkit.block.Biome;
+import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffectType;
 
+import luohuayu.CatServer.entity.CraftCustomEntity;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
+import net.minecraft.entity.Entity;
 import net.minecraft.item.Item;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.ResourceLocation;
 import net.minecraftforge.common.util.EnumHelper;
 import net.minecraftforge.fml.common.FMLLog;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import net.minecraftforge.registries.GameData;
 
 public class BukkitInjector {
     public static boolean initializedBukkit = false;
@@ -65,6 +71,21 @@ public class BukkitInjector {
                 if (biome.toString().equals(biomeName)) continue for1;
             }
             EnumHelper.addEnum(Biome.class, biomeName, new Class[]{}, new Object[]{});
+        }
+    }
+
+    public static void injectEntityType() {
+        Map<String, EntityType> NAME_MAP = ReflectionHelper.getPrivateValue(EntityType.class, null, "NAME_MAP");
+        Map<Short, EntityType> ID_MAP = ReflectionHelper.getPrivateValue(EntityType.class, null, "ID_MAP");
+
+        for (Map.Entry<String, Class<? extends Entity>> entity : EntityRegistry.entityClassMap.entrySet()) {
+            String name = entity.getKey();
+            String entityType = name.replace("-", "_").toUpperCase();
+            int typeId = GameData.getEntityRegistry().getID(EntityRegistry.getEntry(entity.getValue()));
+            EntityType bukkitType = EnumHelper.addEnum(EntityType.class, entityType, new Class[] { String.class, Class.class, Integer.TYPE, Boolean.TYPE }, new Object[] { name, CraftCustomEntity.class, typeId, false });
+
+            NAME_MAP.put(name.toLowerCase(), bukkitType);
+            ID_MAP.put((short)typeId, bukkitType);
         }
     }
 

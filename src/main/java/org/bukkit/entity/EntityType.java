@@ -269,7 +269,7 @@ public enum EntityType {
     /**
      * Mods custom entity
      */
-    MOD_CUSTOM("mod_custom", null, -1);
+    MOD_CUSTOM("mod_custom", null, -1, false);
 
     private String name;
     private Class<? extends Entity> clazz;
