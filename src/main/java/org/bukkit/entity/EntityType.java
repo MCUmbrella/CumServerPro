@@ -15,6 +15,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.potion.PotionEffectType;
 
+import luohuayu.CatServer.entity.CraftCustomEntity;
+
 public enum EntityType {
 
     // These strings MUST match the strings in nms.EntityTypes and are case sensitive.
@@ -269,7 +271,7 @@ public enum EntityType {
     /**
      * Mods custom entity
      */
-    MOD_CUSTOM("mod_custom", null, -1, false);
+    MOD_CUSTOM("mod_custom", CraftCustomEntity.class, -1, false);
 
     private String name;
     private Class<? extends Entity> clazz;
