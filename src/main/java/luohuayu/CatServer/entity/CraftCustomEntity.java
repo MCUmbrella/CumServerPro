@@ -38,7 +38,7 @@ public class CraftCustomEntity extends CraftEntity {
         String name = getHandle().getCustomNameTag();
 
         if (name == null || name.length() == 0) {
-            return entityName;
+            return this.entity.getName();
         }
 
         return name;

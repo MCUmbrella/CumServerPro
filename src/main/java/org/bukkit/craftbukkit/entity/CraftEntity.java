@@ -621,7 +621,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         String name = getHandle().getCustomNameTag();
 
         if (name == null || name.length() == 0) {
-            if (getType() == EntityType.MOD_CUSTOM && this instanceof CraftLivingEntity) return ((CraftLivingEntity) this).entityName; // CatServer
+            if (getType() == EntityType.MOD_CUSTOM && this instanceof CraftLivingEntity) return ((CraftLivingEntity) this).entity.getName(); // CatServer
             return null;
         }
 
