@@ -43,6 +43,7 @@ import javax.imageio.ImageIO;
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
 import luohuayu.CatServer.BukkitInjector;
+import luohuayu.CatServer.Metrics;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.command.CommandBase;
@@ -468,6 +469,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.currentTask = null;
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
+        Metrics.CatMetrics.startMetrics();
     }
 
     public void saveAllWorlds(boolean isSilent)
