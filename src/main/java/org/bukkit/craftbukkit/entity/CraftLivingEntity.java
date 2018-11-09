@@ -31,6 +31,8 @@ import net.minecraft.entity.projectile.EntityTippedArrow;
 import net.minecraft.entity.projectile.EntityWitherSkull;
 import net.minecraft.potion.Potion;
 import net.minecraft.util.DamageSource;
+import net.minecraftforge.fml.common.registry.EntityRegistry;
+
 import org.apache.commons.lang3.Validate;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -76,6 +78,7 @@ import org.bukkit.util.Vector;
 
 public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     private CraftEntityEquipment equipment;
+    private String entityName; // CatServer
 
     public CraftLivingEntity(final CraftServer server, final EntityLivingBase entity) {
         super(server, entity);
@@ -83,6 +86,11 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         if (entity instanceof EntityLiving || entity instanceof EntityArmorStand) {
             equipment = new CraftEntityEquipment(this);
         }
+        // CatServer start
+        this.entityName = EntityRegistry.entityTypeMap.get(entity.getClass());
+        if (entityName == null)
+            entityName = entity.getCommandSenderEntity().getName();
+        // CatServer end
     }
 
     public double getHealth() {
@@ -375,6 +383,14 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     }
 
     public EntityType getType() {
+        // CatServer start
+        EntityType type = EntityType.fromName(this.entityName);
+        if (type != null) {
+            return type;
+        } else if (EntityRegistry.entityTypeMap.containsKey(this.entity.getClass())) {
+            return EntityType.MOD_CUSTOM;
+        }
+        // CatServer end
         return EntityType.UNKNOWN;
     }
 
