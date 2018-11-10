@@ -469,7 +469,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.currentTask = null;
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
-        Metrics.CatMetrics.startMetrics();
+        new Metrics();
     }
 
     public void saveAllWorlds(boolean isSilent)

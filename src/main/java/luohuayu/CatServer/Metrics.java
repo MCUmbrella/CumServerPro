@@ -1,23 +1,25 @@
 package luohuayu.CatServer;
 
-import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
+import org.bukkit.plugin.ServicePriority;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 
+import net.minecraft.server.MinecraftServer;
+
 import javax.net.ssl.HttpsURLConnection;
-import java.io.ByteArrayOutputStream;
-import java.io.DataOutputStream;
-import java.io.File;
-import java.io.IOException;
+import java.io.*;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.Callable;
 import java.util.logging.Level;
-import java.util.logging.Logger;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 import java.util.zip.GZIPOutputStream;
 
 /**
@@ -31,39 +33,85 @@ public class Metrics {
     public static final int B_STATS_VERSION = 1;
 
     // The url to which the data is sent
-    private static final String URL = "https://bStats.org/submitData/server-implementation";
+    private static final String URL = "https://bStats.org/submitData/bukkit";
+
+    // Is bStats enabled on this server?
+    private boolean enabled;
 
     // Should failed requests be logged?
-    private static boolean logFailedRequests = false;
+    private static boolean logFailedRequests;
 
-    // The logger for the failed requests
-    private static Logger logger = Logger.getLogger("bStats");
+    // Should the sent data be logged?
+    private static boolean logSentData;
 
-    // The name of the server software
-    private final String name;
+    // Should the response text be logged?
+    private static boolean logResponseStatusText;
 
     // The uuid of the server
-    private final String serverUUID;
+    private static String serverUUID;
 
     // A list with all custom charts
     private final List<CustomChart> charts = new ArrayList<>();
 
+    private final String pluginName = "CatServer";
+    private final String pluginVersion = "1.12.2";
+
     /**
      * Class constructor.
      *
-     * @param name              The name of the server software.
-     * @param serverUUID        The uuid of the server.
-     * @param logFailedRequests Whether failed requests should be logged or not.
-     * @param logger            The logger for the failed requests.
+     * @param plugin The plugin which stats should be submitted.
      */
-    public Metrics(String name, String serverUUID, boolean logFailedRequests, Logger logger) {
-        this.name = name;
-        this.serverUUID = serverUUID;
-        Metrics.logFailedRequests = logFailedRequests;
-        Metrics.logger = logger;
+    public Metrics() {
+        // Get the config file
+        File bStatsFolder = new File(new File((File) MinecraftServer.getServerInst().options.valueOf("plugins"), "bStats"), "config.yml");
+        File configFile = new File(bStatsFolder, "config.yml");
+        YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
 
-        // Start submitting the data
-        startSubmitting();
+        // Check if the config file exists
+        if (!config.isSet("serverUuid")) {
+
+            // Add default values
+            config.addDefault("enabled", true);
+            // Every server gets it's unique random id.
+            config.addDefault("serverUuid", UUID.randomUUID().toString());
+            // Should failed request be logged?
+            config.addDefault("logFailedRequests", false);
+            // Should the sent data be logged?
+            config.addDefault("logSentData", false);
+            // Should the response text be logged?
+            config.addDefault("logResponseStatusText", false);
+
+            // Inform the server owners about bStats
+            config.options().header(
+                    "bStats collects some data for plugin authors like how many servers are using their plugins.\n" +
+                            "To honor their work, you should not disable it.\n" +
+                            "This has nearly no effect on the server performance!\n" +
+                            "Check out https://bStats.org/ to learn more :)"
+            ).copyDefaults(true);
+            try {
+                config.save(configFile);
+            } catch (IOException ignored) { }
+        }
+
+        // Load the data
+        enabled = config.getBoolean("enabled", true);
+        serverUUID = config.getString("serverUuid");
+        logFailedRequests = config.getBoolean("logFailedRequests", false);
+        logSentData = config.getBoolean("logSentData", false);
+        logResponseStatusText = config.getBoolean("logResponseStatusText", false);
+
+        if (enabled) {
+            startSubmitting();
+        }
+    }
+
+    /**
+     * Checks if bStats is enabled.
+     *
+     * @return Whether bStats is enabled or not.
+     */
+    public boolean isEnabled() {
+        return enabled;
     }
 
     /**
@@ -82,7 +130,7 @@ public class Metrics {
      * Starts the Scheduler which submits our data every 30 minutes.
      */
     private void startSubmitting() {
-        final Timer timer = new Timer(true);
+        final Timer timer = new Timer(true); // We use a timer cause the Bukkit scheduler is affected by server lags
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
@@ -96,13 +144,15 @@ public class Metrics {
 
     /**
      * Gets the plugin specific data.
+     * This method is called using Reflection.
      *
      * @return The plugin specific data.
      */
-    private JSONObject getPluginData() {
+    public JSONObject getPluginData() {
         JSONObject data = new JSONObject();
 
-        data.put("pluginName", name); // Append the name of the server software
+        data.put("pluginName", pluginName); // Append the name of the plugin
+        data.put("pluginVersion", pluginVersion); // Append the version of the plugin
         JSONArray customCharts = new JSONArray();
         for (CustomChart customChart : charts) {
             // Add the data of the custom charts
@@ -123,7 +173,23 @@ public class Metrics {
      * @return The server specific data.
      */
     private JSONObject getServerData() {
-        // OS specific data
+        // Minecraft specific data
+        int playerAmount;
+        try {
+            // Around MC 1.8 the return type was changed to a collection from an array,
+            // This fixes java.lang.NoSuchMethodError: org.bukkit.Bukkit.getOnlinePlayers()Ljava/util/Collection;
+            Method onlinePlayersMethod = Class.forName("org.bukkit.Server").getMethod("getOnlinePlayers");
+            playerAmount = onlinePlayersMethod.getReturnType().equals(Collection.class)
+                    ? ((Collection<?>) onlinePlayersMethod.invoke(Bukkit.getServer())).size()
+                    : ((Player[]) onlinePlayersMethod.invoke(Bukkit.getServer())).length;
+        } catch (Exception e) {
+            playerAmount = Bukkit.getOnlinePlayers().size(); // Just use the new method if the Reflection failed
+        }
+        int onlineMode = Bukkit.getOnlineMode() ? 1 : 0;
+        String bukkitVersion = Bukkit.getVersion();
+
+        // OS/Java specific data
+        String javaVersion = System.getProperty("java.version");
         String osName = System.getProperty("os.name");
         String osArch = System.getProperty("os.arch");
         String osVersion = System.getProperty("os.version");
@@ -133,6 +199,11 @@ public class Metrics {
 
         data.put("serverUUID", serverUUID);
 
+        data.put("playerAmount", playerAmount);
+        data.put("onlineMode", onlineMode);
+        data.put("bukkitVersion", bukkitVersion);
+
+        data.put("javaVersion", javaVersion);
         data.put("osName", osName);
         data.put("osArch", osArch);
         data.put("osVersion", osVersion);
@@ -146,31 +217,43 @@ public class Metrics {
      */
     private void submitData() {
         final JSONObject data = getServerData();
-
         JSONArray pluginData = new JSONArray();
         pluginData.add(getPluginData());
         data.put("plugins", pluginData);
 
-        try {
-            // We are still in the Thread of the timer, so nothing get blocked :)
-            sendData(data);
-        } catch (Exception e) {
-            // Something went wrong! :(
-            if (logFailedRequests) {
-                logger.log(Level.WARNING, "Could not submit stats of " + name, e);
+        // Create a new thread for the connection to the bStats server
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    // Send the data
+                    sendData(data);
+                } catch (Exception e) {
+                    // Something went wrong! :(
+                    if (logFailedRequests) {
+                        Bukkit.getLogger().log(Level.WARNING, "Could not submit plugin stats of " + pluginName, e);
+                    }
+                }
             }
-        }
+        }).start();
     }
 
     /**
      * Sends the data to the bStats server.
      *
+     * @param plugin Any plugin. It's just used to get a logger instance.
      * @param data The data to send.
      * @throws Exception If the request failed.
      */
     private static void sendData(JSONObject data) throws Exception {
         if (data == null) {
             throw new IllegalArgumentException("Data cannot be null!");
+        }
+        if (Bukkit.isPrimaryThread()) {
+            throw new IllegalAccessException("This method must not be called from the main thread!");
+        }
+        if (logSentData) {
+            Bukkit.getLogger().info("Sending data to bStats: " + data.toString());
         }
         HttpsURLConnection connection = (HttpsURLConnection) new URL(URL).openConnection();
 
@@ -193,7 +276,18 @@ public class Metrics {
         outputStream.flush();
         outputStream.close();
 
-        connection.getInputStream().close(); // We don't care about the response - Just send our data :)
+        InputStream inputStream = connection.getInputStream();
+        BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+
+        StringBuilder builder = new StringBuilder();
+        String line;
+        while ((line = bufferedReader.readLine()) != null) {
+            builder.append(line);
+        }
+        bufferedReader.close();
+        if (logResponseStatusText) {
+            Bukkit.getLogger().info("Sent data to bStats and received response: " + builder.toString());
+        }
     }
 
     /**
@@ -209,7 +303,7 @@ public class Metrics {
         }
         ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         GZIPOutputStream gzip = new GZIPOutputStream(outputStream);
-        gzip.write(str.getBytes("UTF-8"));
+        gzip.write(str.getBytes(StandardCharsets.UTF_8));
         gzip.close();
         return outputStream.toByteArray();
     }
@@ -246,7 +340,7 @@ public class Metrics {
                 chart.put("data", data);
             } catch (Throwable t) {
                 if (logFailedRequests) {
-                    logger.log(Level.WARNING, "Failed to get data for custom chart with id " + chartId, t);
+                    Bukkit.getLogger().log(Level.WARNING, "Failed to get data for custom chart with id " + chartId, t);
                 }
                 return null;
             }
@@ -267,7 +361,7 @@ public class Metrics {
         /**
          * Class constructor.
          *
-         * @param chartId  The id of the chart.
+         * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
         public SimplePie(String chartId, Callable<String> callable) {
@@ -298,7 +392,7 @@ public class Metrics {
         /**
          * Class constructor.
          *
-         * @param chartId  The id of the chart.
+         * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
         public AdvancedPie(String chartId, Callable<Map<String, Integer>> callable) {
@@ -342,7 +436,7 @@ public class Metrics {
         /**
          * Class constructor.
          *
-         * @param chartId  The id of the chart.
+         * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
         public DrilldownPie(String chartId, Callable<Map<String, Map<String, Integer>>> callable) {
@@ -391,7 +485,7 @@ public class Metrics {
         /**
          * Class constructor.
          *
-         * @param chartId  The id of the chart.
+         * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
         public SingleLineChart(String chartId, Callable<Integer> callable) {
@@ -423,7 +517,7 @@ public class Metrics {
         /**
          * Class constructor.
          *
-         * @param chartId  The id of the chart.
+         * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
         public MultiLineChart(String chartId, Callable<Map<String, Integer>> callable) {
@@ -468,7 +562,7 @@ public class Metrics {
         /**
          * Class constructor.
          *
-         * @param chartId  The id of the chart.
+         * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
         public SimpleBarChart(String chartId, Callable<Map<String, Integer>> callable) {
@@ -506,7 +600,7 @@ public class Metrics {
         /**
          * Class constructor.
          *
-         * @param chartId  The id of the chart.
+         * @param chartId The id of the chart.
          * @param callable The callable which is used to request the chart data.
          */
         public AdvancedBarChart(String chartId, Callable<Map<String, int[]>> callable) {
@@ -542,85 +636,6 @@ public class Metrics {
             data.put("values", values);
             return data;
         }
-
     }
 
-    public static class CatMetrics {
-        public static void startMetrics() {
-            // Get the config file
-            File configFile = new File(new File((File) MinecraftServer.getServerInst().options.valueOf("plugins"), "bStats"), "config.yml");
-            YamlConfiguration config = YamlConfiguration.loadConfiguration(configFile);
-
-            // Check if the config file exists
-            if (!config.isSet("serverUuid")) {
-
-                // Add default values
-                config.addDefault("enabled", true);
-                // Every server gets it's unique random id.
-                config.addDefault("serverUuid", UUID.randomUUID().toString());
-                // Should failed request be logged?
-                config.addDefault("logFailedRequests", false);
-
-                // Inform the server owners about bStats
-                config.options().header(
-                        "bStats collects some data for plugin authors like how many servers are using their plugins.\n" +
-                                "To honor their work, you should not disable it.\n" +
-                                "This has nearly no effect on the server performance!\n" +
-                                "Check out https://bStats.org/ to learn more :)"
-                ).copyDefaults(true);
-                try {
-                    config.save(configFile);
-                } catch (IOException ignored) {
-                }
-            }
-            // Load the data
-            String serverUUID = config.getString("serverUuid");
-            boolean logFailedRequests = config.getBoolean("logFailedRequests", false);
-            // Only start Metrics, if it's enabled in the config
-            if (config.getBoolean("enabled", true)) {
-                Metrics metrics = new Metrics("CatServer", serverUUID, logFailedRequests, Bukkit.getLogger());
-
-                metrics.addCustomChart(new Metrics.SimplePie("minecraft_version", () -> {
-                    String minecraftVersion = Bukkit.getVersion();
-                    minecraftVersion = minecraftVersion.substring(minecraftVersion.indexOf("MC: ") + 4, minecraftVersion.length() - 1);
-                    return minecraftVersion;
-                }));
-
-                metrics.addCustomChart(new Metrics.SingleLineChart("players", () -> Bukkit.getOnlinePlayers().size()));
-                metrics.addCustomChart(new Metrics.SimplePie("online_mode", () -> Bukkit.getOnlineMode() ? "online" : "offline"));
-
-                metrics.addCustomChart(new Metrics.DrilldownPie("java_version", () -> {
-                    Map<String, Map<String, Integer>> map = new HashMap<>();
-                    String javaVersion = System.getProperty("java.version");
-                    Map<String, Integer> entry = new HashMap<>();
-                    entry.put(javaVersion, 1);
-
-                    // http://openjdk.java.net/jeps/223
-                    // Java decided to change their versioning scheme and in doing so modified the java.version system
-                    // property to return $major[.$minor][.$secuity][-ea], as opposed to 1.$major.0_$identifier
-                    // we can handle pre-9 by checking if the "major" is equal to "1", otherwise, 9+
-                    String majorVersion = javaVersion.split("\\.")[0];
-                    String release;
-
-                    int indexOf = javaVersion.lastIndexOf('.');
-
-                    if (majorVersion.equals("1")) {
-                        release = "Java " + javaVersion.substring(0, indexOf);
-                    } else {
-                        // of course, it really wouldn't be all that simple if they didn't add a quirk, now would it
-                        // valid strings for the major may potentially include values such as -ea to deannotate a pre release
-                        Matcher versionMatcher = Pattern.compile("\\d+").matcher(majorVersion);
-                        if (versionMatcher.find()) {
-                            majorVersion = versionMatcher.group(0);
-                        }
-                        release = "Java " + majorVersion;
-                    }
-                    map.put(release, entry);
-
-                    return map;
-                }));
-            }
-
-        }
-    }
 }
