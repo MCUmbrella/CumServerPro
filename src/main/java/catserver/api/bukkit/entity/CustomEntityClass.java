@@ -18,7 +18,7 @@ public class CustomEntityClass {
         return this.entityName;
     }
 
-    public org.bukkit.entity.Entity spawn(org.bukkit.World world, int x, int y, int z) {
+    public org.bukkit.entity.Entity spawn(org.bukkit.World world, double x, double y, double z) {
         WorldServer worldserver = NMSUtils.toNMS(world);
         Entity entity = null;
         try {
