@@ -4,6 +4,9 @@ import java.util.Iterator;
 
 import javax.annotation.Nullable;
 
+import org.bukkit.NamespacedKey;
+import org.bukkit.craftbukkit.util.CraftNamespacedKey;
+
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.registry.RegistryNamespaced;
@@ -11,6 +14,7 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 
 public class CatEntityRegistry<K, V> extends RegistryNamespaced<K, V> {
     public void register(int id, K key, V value) {
+        if (key == null) key = (K) CraftNamespacedKey.toMinecraft(NamespacedKey.randomKey());
         net.minecraftforge.registries.GameData.registerEntity(id, (ResourceLocation) key, (Class<? extends Entity>) value, ((ResourceLocation) key).getResourcePath());
     }
 
