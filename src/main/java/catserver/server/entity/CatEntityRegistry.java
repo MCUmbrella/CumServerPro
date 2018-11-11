@@ -15,7 +15,11 @@ import net.minecraftforge.fml.common.registry.EntityEntry;
 public class CatEntityRegistry<K, V> extends RegistryNamespaced<K, V> {
     public void register(int id, K key, V value) {
         if (key == null) key = (K) CraftNamespacedKey.toMinecraft(NamespacedKey.randomKey());
-        net.minecraftforge.registries.GameData.registerEntity(id, (ResourceLocation) key, (Class<? extends Entity>) value, ((ResourceLocation) key).getResourcePath());
+        try {
+            net.minecraftforge.registries.GameData.registerEntity(id, (ResourceLocation) key, (Class<? extends Entity>) value, ((ResourceLocation) key).getResourcePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Nullable
