@@ -45,7 +45,7 @@ public class ChannelRegistrationHandler extends SimpleChannelInboundHandler<FMLP
             msg.payload().readBytes(data);
             String channels = new String(data, StandardCharsets.UTF_8);
             String[] split = channels.split("\0");
-            final Set<String> channelSet = ImmutableSet.copyOf(split);
+            Set<String> channelSet = ImmutableSet.copyOf(split);
             FMLCommonHandler.instance().fireNetRegistrationEvent(manager, channelSet, msg.channel(), side);
             msg.payload().release();
             // CatServer start - handle REGISTER/UNREGISTER channel in Bukkit
