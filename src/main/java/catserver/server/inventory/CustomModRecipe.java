@@ -1,4 +1,4 @@
-package luohuayu.CatServer.inventory;
+package catserver.server.inventory;
 
 import org.bukkit.Keyed;
 import org.bukkit.NamespacedKey;

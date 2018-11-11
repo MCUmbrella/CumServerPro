@@ -1,4 +1,4 @@
-package luohuayu.CatServer.inventory;
+package catserver.server.inventory;
 
 import javax.annotation.Nullable;
 

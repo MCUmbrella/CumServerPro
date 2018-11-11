@@ -39,7 +39,7 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 
-import luohuayu.CatServer.inventory.CatCustomInventory;
+import catserver.server.inventory.CatCustomInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;

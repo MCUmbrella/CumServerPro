@@ -1,6 +1,6 @@
-package luohuayu.CatServer.remapper;
+package catserver.server.remapper;
 
-import static luohuayu.CatServer.remapper.RemapUtils.reverseMap;
+import static catserver.server.remapper.RemapUtils.reverseMap;
 
 import java.util.Collection;
 import java.util.HashSet;

@@ -1,4 +1,4 @@
-package luohuayu.CatServer;
+package catserver.server;
 
 import java.util.Map;
 
@@ -8,7 +8,7 @@ import org.bukkit.block.Biome;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffectType;
 
-import luohuayu.CatServer.entity.CraftCustomEntity;
+import catserver.server.entity.CraftCustomEntity;
 import net.minecraft.block.Block;
 import net.minecraft.enchantment.Enchantment;
 import net.minecraft.entity.Entity;

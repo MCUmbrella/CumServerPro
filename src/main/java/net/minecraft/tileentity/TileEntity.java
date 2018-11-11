@@ -25,7 +25,7 @@ import org.bukkit.craftbukkit.block.CraftBlockEntityState;
 import org.bukkit.inventory.InventoryHolder;
 import org.spigotmc.CustomTimingsHandler;
 
-import luohuayu.CatServer.inventory.CatCustomInventory;
+import catserver.server.inventory.CatCustomInventory;
 
 public abstract class TileEntity implements net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound>
 {

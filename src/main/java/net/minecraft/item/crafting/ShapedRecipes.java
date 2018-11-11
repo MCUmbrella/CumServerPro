@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
-import luohuayu.CatServer.inventory.CustomModRecipe;
+import catserver.server.inventory.CustomModRecipe;
 
 import java.util.Map;
 import java.util.Set;

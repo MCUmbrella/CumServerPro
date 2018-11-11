@@ -1,14 +1,15 @@
-package luohuayu.CatServer;
+package catserver.server;
 
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
-import luohuayu.CatServer.remapper.NetworkTransformer;
-import luohuayu.CatServer.remapper.SideTransformer;
-
 import javax.annotation.Nullable;
+
+import catserver.server.remapper.NetworkTransformer;
+import catserver.server.remapper.SideTransformer;
+
 import java.util.Map;
 
-public class CorePlugin implements IFMLLoadingPlugin {
+public class CatCorePlugin implements IFMLLoadingPlugin {
     @Override
     public String[] getASMTransformerClass() {
         return !CatServer.isDev() ? new String[] {

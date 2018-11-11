@@ -1,4 +1,4 @@
-package luohuayu.CatServer.command;
+package catserver.server.command;
 
 import java.util.List;
 

@@ -4,8 +4,8 @@ import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-import luohuayu.CatServer.entity.CraftCustomEntity;
-import luohuayu.CatServer.entity.CraftCustomProjectile;
+import catserver.server.entity.CraftCustomEntity;
+import catserver.server.entity.CraftCustomProjectile;
 
 import java.util.List;
 import java.util.Set;

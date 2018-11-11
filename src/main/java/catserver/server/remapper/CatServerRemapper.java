@@ -1,4 +1,4 @@
-package luohuayu.CatServer.remapper;
+package catserver.server.remapper;
 
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;

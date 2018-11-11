@@ -1,4 +1,4 @@
-package luohuayu.CatServer;
+package catserver.server;
 
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLLog;

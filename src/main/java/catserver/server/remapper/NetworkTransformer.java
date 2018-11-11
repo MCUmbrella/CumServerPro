@@ -1,4 +1,4 @@
-package luohuayu.CatServer.remapper;
+package catserver.server.remapper;
 
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;

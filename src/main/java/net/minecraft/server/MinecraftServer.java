@@ -10,6 +10,9 @@ import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
+
+import catserver.server.BukkitInjector;
+import catserver.server.Metrics;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
@@ -42,8 +45,6 @@ import javax.imageio.ImageIO;
 
 import jline.console.ConsoleReader;
 import joptsimple.OptionSet;
-import luohuayu.CatServer.BukkitInjector;
-import luohuayu.CatServer.Metrics;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.command.CommandBase;
@@ -160,7 +161,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     private final GameProfileRepository profileRepo;
     private final PlayerProfileCache profileCache;
     private long nanoTimeSinceStatusRefresh;
-    public final Queue < FutureTask<? >> futureTaskQueue = new luohuayu.CatServer.utils.CachedSizeConcurrentLinkedQueue<>(); // Paper - Make size() constant-time
+    public final Queue < FutureTask<? >> futureTaskQueue = new catserver.server.utils.CachedSizeConcurrentLinkedQueue<>(); // Paper - Make size() constant-time
     private Thread serverThread;
     private long currentTime = getCurrentTimeMillis();
     @SideOnly(Side.CLIENT)

@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import luohuayu.CatServer.command.BukkitCommandWrapper;
-import luohuayu.CatServer.command.CraftSimpleCommandMap;
-import luohuayu.CatServer.command.ModCustomCommand;
+import catserver.server.command.BukkitCommandWrapper;
+import catserver.server.command.CraftSimpleCommandMap;
+import catserver.server.command.ModCustomCommand;
 
 import java.util.Collections;
 import java.util.List;

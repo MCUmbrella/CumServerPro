@@ -10,7 +10,7 @@ import org.bukkit.inventory.CraftingInventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.Recipe;
 
-import luohuayu.CatServer.inventory.CustomModRecipe;
+import catserver.server.inventory.CustomModRecipe;
 
 public class CraftInventoryCrafting extends CraftInventory implements CraftingInventory {
     private final IInventory resultInventory;

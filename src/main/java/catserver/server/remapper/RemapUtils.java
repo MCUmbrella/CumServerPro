@@ -1,4 +1,4 @@
-package luohuayu.CatServer.remapper;
+package catserver.server.remapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -8,7 +8,7 @@ import java.util.Collection;
 
 import org.objectweb.asm.Type;
 
-import luohuayu.CatServer.CatServer;
+import catserver.server.CatServer;
 import net.md_5.specialsource.JarRemapper;
 
 public class RemapUtils {

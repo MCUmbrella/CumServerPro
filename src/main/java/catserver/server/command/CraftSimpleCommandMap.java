@@ -1,4 +1,4 @@
-package luohuayu.CatServer.command;
+package catserver.server.command;
 
 import java.util.Arrays;
 import java.util.regex.Pattern;
@@ -17,7 +17,7 @@ import org.bukkit.craftbukkit.entity.CraftPlayer;
 public class CraftSimpleCommandMap extends SimpleCommandMap {
 
     private static final Pattern PATTERN_ON_SPACE = Pattern.compile(" ", Pattern.LITERAL);
-    private ICommandSender vanillaConsoleSender; // Cauldron
+    private ICommandSender vanillaConsoleSender;
 
     public CraftSimpleCommandMap(Server server) {
         super(server);
@@ -40,7 +40,7 @@ public class CraftSimpleCommandMap extends SimpleCommandMap {
             return false;
         }
         try {
-            // Cauldron start - if command is a mod command, check permissions and route through vanilla
+            // CatServer start - if command is a mod command, check permissions and route through vanilla
             if (target instanceof ModCustomCommand)
             {
                 if (!target.testPermission(sender)) return true;
@@ -51,7 +51,7 @@ public class CraftSimpleCommandMap extends SimpleCommandMap {
                 else FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager().executeCommand(((CraftPlayer)sender).getHandle(), commandLine);
             }
             else {
-            // Cauldron end
+            // CatServer end
                 // Note: we don't return the result of target.execute as thats success / failure, we return handled (true) or not handled (false)
                 target.execute(sender, sentCommandLabel, Arrays.copyOfRange(args, 1, args.length));
             }
@@ -65,10 +65,10 @@ public class CraftSimpleCommandMap extends SimpleCommandMap {
         return true;
     }
 
-    // Cauldron start - sets the vanilla console sender
+    // CatServer start - sets the vanilla console sender
     public void setVanillaConsoleSender(ICommandSender console)
     {
         this.vanillaConsoleSender = console;
     }
-    // Cauldron end
+    // CatServer end
 }

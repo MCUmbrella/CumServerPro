@@ -37,7 +37,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 
-import luohuayu.CatServer.inventory.CatCustomInventory;
+import catserver.server.inventory.CatCustomInventory;
 
 public class TileEntityHopper extends TileEntityLockableLoot implements IHopper, ITickable
 {

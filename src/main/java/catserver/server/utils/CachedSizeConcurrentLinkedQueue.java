@@ -1,4 +1,4 @@
-package luohuayu.CatServer.utils;
+package catserver.server.utils;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.atomic.LongAdder;

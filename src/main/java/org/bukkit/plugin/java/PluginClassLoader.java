@@ -19,11 +19,11 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import luohuayu.CatServer.CatServer;
-import luohuayu.CatServer.remapper.CatServerRemapper;
-import luohuayu.CatServer.remapper.ClassInheritanceProvider;
-import luohuayu.CatServer.remapper.MappingLoader;
-import luohuayu.CatServer.remapper.ReflectionTransformer;
+import catserver.server.CatServer;
+import catserver.server.remapper.CatServerRemapper;
+import catserver.server.remapper.ClassInheritanceProvider;
+import catserver.server.remapper.MappingLoader;
+import catserver.server.remapper.ReflectionTransformer;
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;
 import net.md_5.specialsource.provider.ClassLoaderProvider;

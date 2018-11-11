@@ -1,4 +1,4 @@
-package luohuayu.CatServer.entity;
+package catserver.server.entity;
 
 import net.minecraft.entity.Entity;
 import net.minecraftforge.fml.common.registry.EntityRegistry;

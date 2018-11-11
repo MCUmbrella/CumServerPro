@@ -1,11 +1,11 @@
-package luohuayu.CatServer.remapper;
+package catserver.server.remapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.concurrent.ConcurrentHashMap;
 
-import luohuayu.CatServer.CatServer;
+import catserver.server.CatServer;
 
 public class ReflectionMethods {
 

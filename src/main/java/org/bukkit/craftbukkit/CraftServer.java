@@ -170,13 +170,13 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
 
+import catserver.server.command.CraftSimpleCommandMap;
+import catserver.server.remapper.ReflectionTransformer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
 import io.netty.handler.codec.base64.Base64;
 import jline.console.ConsoleReader;
-import luohuayu.CatServer.command.CraftSimpleCommandMap;
-import luohuayu.CatServer.remapper.ReflectionTransformer;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;

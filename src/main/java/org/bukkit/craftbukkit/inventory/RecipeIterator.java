@@ -7,7 +7,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import org.bukkit.inventory.Recipe;
 
-import luohuayu.CatServer.inventory.CustomModRecipe;
+import catserver.server.inventory.CustomModRecipe;
 
 public class RecipeIterator implements Iterator<Recipe> {
     private final Iterator<IRecipe> recipes;

@@ -1,4 +1,4 @@
-package luohuayu.CatServer.entity;
+package catserver.server.entity;
 
 import java.util.Iterator;
 

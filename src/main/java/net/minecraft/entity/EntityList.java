@@ -4,7 +4,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import luohuayu.CatServer.entity.CatEntityRegistry;
+import catserver.server.entity.CatEntityRegistry;
 
 import java.util.List;
 import java.util.Map;
