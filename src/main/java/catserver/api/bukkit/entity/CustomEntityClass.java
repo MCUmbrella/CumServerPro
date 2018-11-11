@@ -1,7 +1,13 @@
 package catserver.api.bukkit.entity;
 
+import javax.annotation.Nullable;
+
 import catserver.api.bukkit.NMSUtils;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityCreature;
+import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.monster.EntityMob;
+import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.world.World;
 import net.minecraft.world.WorldServer;
 
@@ -18,6 +24,7 @@ public class CustomEntityClass {
         return this.entityName;
     }
 
+    @Nullable
     public org.bukkit.entity.Entity spawn(org.bukkit.World world, double x, double y, double z) {
         WorldServer worldserver = NMSUtils.toNMS(world);
         Entity entity = null;
@@ -30,6 +37,21 @@ public class CustomEntityClass {
         entity.setPosition(x, y, z);
         worldserver.spawnEntity(entity);
         return entity.getBukkitEntity();
-        
+    }
+
+    public boolean isLivingbase() {
+        return EntityLivingBase.class.isAssignableFrom(this.entityClass);
+    }
+    
+    public boolean isCreature() {
+        return EntityCreature.class.isAssignableFrom(this.entityClass);
+    }
+
+    public boolean isAnimal() {
+        return EntityAnimal.class.isAssignableFrom(this.entityClass);
+    }
+
+    public boolean isMonster() {
+        return EntityMob.class.isAssignableFrom(this.entityClass);
     }
 }
