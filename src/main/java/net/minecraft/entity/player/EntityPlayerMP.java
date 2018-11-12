@@ -1890,7 +1890,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
             this.addExperience(this.newExp);
         }
         this.keepLevel = false;
-        getEntityData().getKeySet().clear(); // CatServer - reset custom data
+        getEntityData().getKeySet().removeIf(tag -> !PERSISTED_NBT_TAG.equals(tag)); // CatServer - reset custom data
     }
 
     @Override
