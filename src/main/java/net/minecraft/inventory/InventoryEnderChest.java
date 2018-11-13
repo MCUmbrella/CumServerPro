@@ -14,6 +14,11 @@ public class InventoryEnderChest extends InventoryBasic
 
     private final EntityPlayer owner;
 
+    public InventoryEnderChest()
+    {
+        this(null);
+    }
+
     public InventoryEnderChest(EntityPlayer owner)
     {
         super("container.enderchest", false, 27);
@@ -91,7 +96,7 @@ public class InventoryEnderChest extends InventoryBasic
     }
 
     public InventoryHolder getBukkitOwner() {
-        return owner.getBukkitEntity();
+        return owner != null ? owner.getBukkitEntity() : null;
     }
 
     @Override
