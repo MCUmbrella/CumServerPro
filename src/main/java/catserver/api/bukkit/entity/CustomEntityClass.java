@@ -24,15 +24,30 @@ public class CustomEntityClass {
         return this.entityName;
     }
 
+    public Class<? extends Entity> getEntityClass() {
+        return this.entityClass;
+    }
+
     @Nullable
-    public org.bukkit.entity.Entity spawn(org.bukkit.World world, double x, double y, double z) {
-        WorldServer worldserver = NMSUtils.toNMS(world);
+    public Entity newInstance(WorldServer world) {
         Entity entity = null;
         try {
-            entity = entityClass.getConstructor(World.class).newInstance(worldserver);
+            entity = entityClass.getConstructor(World.class).newInstance(world);
         } catch (Throwable e) {
             e.printStackTrace();
         }
+        return entity;
+    }
+
+    @Nullable
+    public Entity newInstance(org.bukkit.World world) {
+        return newInstance(NMSUtils.toNMS(world));
+    }
+
+    @Nullable
+    public org.bukkit.entity.Entity spawn(org.bukkit.World world, double x, double y, double z) {
+        WorldServer worldserver = NMSUtils.toNMS(world);
+        Entity entity = newInstance(worldserver);
         if (entity == null) return null;
         entity.setPosition(x, y, z);
         worldserver.spawnEntity(entity);
