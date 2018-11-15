@@ -5,7 +5,17 @@ Minecraft 1.10.2/1.12.2 Forge+Bukkit服务端<br>
 
 开发/反馈QQ群: 801482055<br>
 Telegram group: @CatServer
+- - -
+### About
+Support for high version of Forge MOD and Spigot plugin<br>
+Support for NMS remap<br>
+Good performance and stable<br>
 
+### Build
+1.Clone: git clone https://gitee.com/CatServer/CatServer.git<br>
+2.Build: gradlew build<br>
+3.Dump libraries: gradlew dumpLibs
+- - -
 ### 特点
 支持高版本MOD/Bukkit插件<br>
 支持spigot插件<br>
