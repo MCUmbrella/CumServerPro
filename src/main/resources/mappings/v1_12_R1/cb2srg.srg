@@ -17064,7 +17064,6 @@ MD: net/minecraft/server/EntityHuman/c (Lnet/minecraft/server/Entity;)V net/mine
 MD: net/minecraft/server/EntityHuman/c (Lnet/minecraft/server/EntityLiving;)V net/minecraft/entity/player/EntityPlayer/func_190629_c (Lnet/minecraft/entity/EntityLivingBase;)V
 MD: net/minecraft/server/EntityHuman/c (Lnet/minecraft/server/ItemStack;)Z net/minecraft/entity/player/EntityPlayer/func_191521_c (Lnet/minecraft/item/ItemStack;)Z
 MD: net/minecraft/server/EntityHuman/cA ()V net/minecraft/entity/player/EntityPlayer/func_70626_be ()V
-MD: net/minecraft/server/EntityHuman/cD ()F net/minecraft/entity/player/EntityPlayer/func_110139_bj ()F
 MD: net/minecraft/server/EntityHuman/cF ()Lnet/minecraft/server/EnumMainHand; net/minecraft/entity/player/EntityPlayer/func_184591_cq ()Lnet/minecraft/util/EnumHandSide;
 MD: net/minecraft/server/EntityHuman/cT ()V net/minecraft/entity/player/EntityPlayer/func_184808_cD ()V
 MD: net/minecraft/server/EntityHuman/cV ()V net/minecraft/entity/player/EntityPlayer/func_190776_cN ()V
@@ -17098,6 +17097,7 @@ MD: net/minecraft/server/EntityHuman/e (Lnet/minecraft/server/EntityHuman;)Z net
 MD: net/minecraft/server/EntityHuman/enchantDone (Lnet/minecraft/server/ItemStack;I)V net/minecraft/entity/player/EntityPlayer/func_192024_a (Lnet/minecraft/item/ItemStack;I)V
 MD: net/minecraft/server/EntityHuman/g ()Z net/minecraft/entity/player/EntityPlayer/func_174792_t_ ()Z
 MD: net/minecraft/server/EntityHuman/g (Lnet/minecraft/server/NBTTagCompound;)Z net/minecraft/entity/player/EntityPlayer/func_192027_g (Lnet/minecraft/nbt/NBTTagCompound;)Z
+MD: net/minecraft/server/EntityHuman/getAbsorptionHearts ()F net/minecraft/entity/player/EntityPlayer/func_110139_bj ()F
 MD: net/minecraft/server/EntityHuman/getBed ()Lnet/minecraft/server/BlockPosition; net/minecraft/entity/player/EntityPlayer/func_180470_cg ()Lnet/minecraft/util/math/BlockPos;
 MD: net/minecraft/server/EntityHuman/getBed (Lnet/minecraft/server/World;Lnet/minecraft/server/BlockPosition;Z)Lnet/minecraft/server/BlockPosition; net/minecraft/entity/player/EntityPlayer/func_180467_a (Lnet/minecraft/world/World;Lnet/minecraft/util/math/BlockPos;Z)Lnet/minecraft/util/math/BlockPos;
 MD: net/minecraft/server/EntityHuman/getCooldownTracker ()Lnet/minecraft/server/ItemCooldown; net/minecraft/entity/player/EntityPlayer/func_184811_cZ ()Lnet/minecraft/util/CooldownTracker;
@@ -17125,7 +17125,6 @@ MD: net/minecraft/server/EntityHuman/j (Lnet/minecraft/server/NBTTagCompound;)V 
 MD: net/minecraft/server/EntityHuman/l ()Lnet/minecraft/server/ItemCooldown; net/minecraft/entity/player/EntityPlayer/func_184815_l ()Lnet/minecraft/util/CooldownTracker;
 MD: net/minecraft/server/EntityHuman/l (DDD)V net/minecraft/entity/player/EntityPlayer/func_71015_k (DDD)V
 MD: net/minecraft/server/EntityHuman/levelDown (I)V net/minecraft/entity/player/EntityPlayer/func_82242_a (I)V
-MD: net/minecraft/server/EntityHuman/m (F)V net/minecraft/entity/player/EntityPlayer/func_110149_m (F)V
 MD: net/minecraft/server/EntityHuman/m (Z)V net/minecraft/entity/player/EntityPlayer/func_190777_m (Z)V
 MD: net/minecraft/server/EntityHuman/n ()V net/minecraft/entity/player/EntityPlayer/func_70636_d ()V
 MD: net/minecraft/server/EntityHuman/n (F)F net/minecraft/entity/player/EntityPlayer/func_184825_o (F)F
@@ -17140,6 +17139,7 @@ MD: net/minecraft/server/EntityHuman/openTrade (Lnet/minecraft/server/IMerchant;
 MD: net/minecraft/server/EntityHuman/r ()V net/minecraft/entity/player/EntityPlayer/func_184820_o ()V
 MD: net/minecraft/server/EntityHuman/releaseShoulderEntities ()V net/minecraft/entity/player/EntityPlayer/func_192030_dh ()V
 MD: net/minecraft/server/EntityHuman/s ()Z net/minecraft/entity/player/EntityPlayer/func_175143_p ()Z
+MD: net/minecraft/server/EntityHuman/setAbsorptionHearts (F)V net/minecraft/entity/player/EntityPlayer/func_110149_m (F)V
 MD: net/minecraft/server/EntityHuman/setRespawnPosition (Lnet/minecraft/server/BlockPosition;Z)V net/minecraft/entity/player/EntityPlayer/func_180473_a (Lnet/minecraft/util/math/BlockPos;Z)V
 MD: net/minecraft/server/EntityHuman/setScore (I)V net/minecraft/entity/player/EntityPlayer/func_85040_s (I)V
 MD: net/minecraft/server/EntityHuman/setShoulderEntityLeft (Lnet/minecraft/server/NBTTagCompound;)V net/minecraft/entity/player/EntityPlayer/func_192029_h (Lnet/minecraft/nbt/NBTTagCompound;)V
