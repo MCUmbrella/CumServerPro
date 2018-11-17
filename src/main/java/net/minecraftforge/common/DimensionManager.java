@@ -311,10 +311,7 @@ public class DimensionManager
         }
         WorldInfo worldInfo = new WorldInfo(worldSettings, name);
         WorldServer world = (dim == 0 ? overworld : (WorldServer)(new WorldServerMulti(mcServer, new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true, mcServer.getDataFixer()), dim, overworld, mcServer.profiler, worldInfo, env, gen).init()));
-        if (gen != null)
-        {
-            world.getWorld().getPopulators().addAll(gen.getDefaultPopulators(world.getWorld()));
-        }
+
         mcServer.getPlayerList().setPlayerManager(mcServer.worldServerList.toArray(new WorldServer[mcServer.worldServerList.size()]));
         world.addEventListener(new ServerWorldEventHandler(mcServer, world));
         MinecraftForge.EVENT_BUS.post(new WorldEvent.Load(world));
@@ -596,10 +593,6 @@ public class DimensionManager
         WorldServer world = (WorldServer) new WorldServerMulti(mcServer, saveHandler, dim, overworld, mcServer.profiler, worldinfo, env, gen).init();
         world.initialize(worldSettings);
 
-        if (gen != null)
-        {
-            world.getWorld().getPopulators().addAll(gen.getDefaultPopulators(world.getWorld()));
-        }
         world.provider.setDimension(dim); // Fix for TerrainControl injecting their own WorldProvider
         mcServer.getPlayerList().setPlayerManager(mcServer.worldServerList.toArray(new WorldServer[mcServer.worldServerList.size()]));
 

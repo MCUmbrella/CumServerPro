@@ -328,10 +328,10 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 worldType = worldEnvironment.toString().toLowerCase();
             }
             String name = (dim == 0) ? saveName : "DIM" + dim;
-            org.bukkit.generator.ChunkGenerator gen = this.server.getGenerator(name);
+            org.bukkit.generator.ChunkGenerator gen = null;
 
             if (dim == 0) {
-                ISaveHandler  idatamanager = new AnvilSaveHandler(server.getWorldContainer(), worldNameIn, true, this.dataFixer);
+                ISaveHandler idatamanager = new AnvilSaveHandler(server.getWorldContainer(), worldNameIn, true, this.dataFixer);
                 WorldInfo worlddata = idatamanager.loadWorldInfo();
                 // CatServer start
                 if (!BukkitInjector.initializedBukkit) { // CatServer - inject bukkit materials before plugins load
@@ -359,6 +359,8 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 world.initialize(worldsettings);
                 this.server.scoreboardManager = new org.bukkit.craftbukkit.scoreboard.CraftScoreboardManager(this, world.getScoreboard());
             } else {
+                gen = this.server.getGenerator(name);
+
                 ISaveHandler idatamanager = new AnvilSaveHandler(server.getWorldContainer(), name, true, this.dataFixer);
                 // world =, b0 to dimension, s1 to name, added Environment and gen
                 WorldInfo worlddata = idatamanager.loadWorldInfo();
