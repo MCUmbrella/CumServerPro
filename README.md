@@ -2,6 +2,7 @@
 Minecraft 1.10.2/1.12.2 Forge+Bukkit服务端<br>
 [![Build Status](http://ci.komi.moe:2333/job/CatServer-1.12/badge/icon)](http://ci.komi.moe:2333/job/CatServer-1.12)
 [![bStats](https://img.shields.io/badge/bStats-CatServer-green.svg?style=flat)](https://bstats.org/plugin/bukkit/CatServer)
+[![discord](https://img.shields.io/badge/discord-CatServer-green.svg?style=flat)](https://discord.gg/uY5WJph)
 
 开发/反馈QQ群: 801482055<br>
 Telegram group: @CatServer
