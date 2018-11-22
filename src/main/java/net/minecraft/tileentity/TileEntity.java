@@ -29,7 +29,7 @@ import catserver.server.inventory.CatCustomInventory;
 
 public abstract class TileEntity implements net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound>
 {
-    public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getTileEntityTimings(this); // Spigot
+
     private static final Logger LOGGER = LogManager.getLogger();
     private static final RegistryNamespaced < ResourceLocation, Class <? extends TileEntity >> REGISTRY = new RegistryNamespaced < ResourceLocation, Class <? extends TileEntity >> ();
     public World world;
@@ -37,6 +37,7 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
     protected boolean tileEntityInvalid;
     private int blockMetadata = -1;
     protected Block blockType;
+    public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getTileEntityTimings(this); // Spigot
 
     public static void register(String id, Class <? extends TileEntity > clazz)
     {
