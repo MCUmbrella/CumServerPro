@@ -17,6 +17,7 @@ import org.objectweb.asm.tree.AbstractInsnNode;
 import org.objectweb.asm.tree.ClassNode;
 import org.objectweb.asm.tree.MethodInsnNode;
 import org.objectweb.asm.tree.MethodNode;
+import org.objectweb.asm.tree.TypeInsnNode;
 
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.provider.JointProvider;
@@ -65,6 +66,13 @@ public class ReflectionTransformer {
             ListIterator<AbstractInsnNode> insnIterator = method.instructions.iterator();
             while (insnIterator.hasNext()) {
                 AbstractInsnNode next = insnIterator.next();
+                if (next instanceof TypeInsnNode) {
+                    TypeInsnNode insn = (TypeInsnNode) next;
+                    if (insn.getOpcode() == Opcodes.NEW && insn.desc.equals("java/net/URLClassLoader")) { // remap new URLClassLoader
+                        insn.desc = "catserver/server/remapper/CatURLClassLoader";
+                    }
+                }
+
                 if (!(next instanceof MethodInsnNode)) continue;
                 MethodInsnNode insn = (MethodInsnNode) next;
                 switch (insn.getOpcode()) {
@@ -73,6 +81,9 @@ public class ReflectionTransformer {
                         break;
                     case Opcodes.INVOKESTATIC:
                         remapForName(insn);
+                        break;
+                    case Opcodes.INVOKESPECIAL:
+                        remapURLClassLoader(insn);
                         break;
                 }
 
@@ -134,5 +145,10 @@ public class ReflectionTransformer {
         method.setOpcode(Opcodes.INVOKESTATIC);
         method.owner = DESC_ReflectionMethods;
         method.desc = Type.getMethodDescriptor(returnType, args.toArray(new Type[args.size()]));
+    }
+
+    public static void remapURLClassLoader(MethodInsnNode method) {
+        if (!(method.owner.equals("java/net/URLClassLoader") && method.name.equals("<init>"))) return;
+        method.owner = "catserver/server/remapper/CatURLClassLoader";
     }
 }
