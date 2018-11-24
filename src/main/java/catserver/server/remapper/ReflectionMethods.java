@@ -9,10 +9,6 @@ import catserver.server.CatServer;
 
 public class ReflectionMethods {
 
-    private final static ConcurrentHashMap<String, Method> methodCache = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<String, Method> declaredMethodCache = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<String, Field> fieldCache = new ConcurrentHashMap<>();
-    private final static ConcurrentHashMap<String, Field> declaredFieldCache = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, String> fieldGetNameCache = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, String> methodGetNameCache = new ConcurrentHashMap<>();
     private final static ConcurrentHashMap<String, String> simpleNameGetNameCache = new ConcurrentHashMap<>();
@@ -31,43 +27,23 @@ public class ReflectionMethods {
     // Get Fields
     public static Field getField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
         if (!inst.getName().startsWith("net.minecraft.")) return inst.getField(name);
-        String hash = inst.hashCode() + "|" + name.hashCode();
-        Field cache = fieldCache.get(hash);
-        if (cache != null) return cache;
-        Field retn = inst.getField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
-        fieldCache.put(hash, retn);
-        return retn;
+        return inst.getField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
     }
 
     public static Field getDeclaredField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
         if (!inst.getName().startsWith("net.minecraft.")) return inst.getDeclaredField(name);
-        String hash = inst.hashCode() + "|" + name.hashCode();
-        Field cache = declaredFieldCache.get(hash);
-        if (cache != null) return cache;
-        Field retn = inst.getDeclaredField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
-        declaredFieldCache.put(hash, retn);
-        return retn;
+        return inst.getDeclaredField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
     }
 
     // Get Methods
     public static Method getMethod(Class<?> inst, String name, Class<?>...parameterTypes) throws NoSuchMethodException, SecurityException {
         if (!inst.getName().startsWith("net.minecraft.")) return inst.getMethod(name, parameterTypes);
-        String hash = inst.hashCode() + "|" + name.hashCode() + "|" + Arrays.hashCode(parameterTypes);
-        Method cache = methodCache.get(hash);
-        if (cache != null) return cache;
-        Method retn = inst.getMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
-        methodCache.put(hash, retn);
-        return retn;
+        return inst.getMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
     }
 
     public static Method getDeclaredMethod(Class<?> inst, String name, Class<?>...parameterTypes) throws NoSuchMethodException, SecurityException {
         if (!inst.getName().startsWith("net.minecraft.")) return inst.getDeclaredMethod(name, parameterTypes);
-        String hash = inst.hashCode() + "|" + name.hashCode() + "|" + Arrays.hashCode(parameterTypes);
-        Method cache = declaredMethodCache.get(hash);
-        if (cache != null) return cache;
-        Method retn = inst.getDeclaredMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
-        declaredMethodCache.put(hash, retn);
-        return retn;
+        return inst.getDeclaredMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
     }
 
     // getName
