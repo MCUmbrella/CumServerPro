@@ -8,7 +8,7 @@ import net.minecraftforge.fml.relauncher.SideOnly;
 
 public class Slot
 {
-    private final int slotIndex;
+    public final int slotIndex; // CatServer - private -> public
     public final IInventory inventory;
     public int slotNumber;
     public int xPos;
