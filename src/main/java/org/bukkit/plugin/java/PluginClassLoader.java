@@ -98,7 +98,7 @@ final class PluginClassLoader extends URLClassLoader {
     }
 
     Class<?> findClass(String name, boolean checkGlobal) throws ClassNotFoundException {
-        if (name.startsWith("net.minecraft.server."+CatServer.getNativeVersion())) {
+        if (name.startsWith("net.minecraft.server." + CatServer.getNativeVersion())) {
             String remappedClass = jarMapping.classes.get(name.replaceAll("\\.", "\\/"));
             Class<?> clazz = ((net.minecraft.launchwrapper.LaunchClassLoader)MinecraftServer.getServerInst().getClass().getClassLoader()).findClass(remappedClass);
             return clazz;

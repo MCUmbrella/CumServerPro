@@ -76,27 +76,6 @@ public class ReflectionTransformer {
                         break;
                 }
 
-                if (insn.name.equals("getName") && insn.getOpcode() >= 182 && insn.getOpcode() <= 186) {
-                    if (insn.owner.equals("java/lang/reflect/Field")) {
-                        insn.owner = DESC_ReflectionMethods;
-                        insn.name = "getName";
-                        insn.setOpcode(Opcodes.INVOKESTATIC);
-                        insn.desc = "(Ljava/lang/reflect/Field;)Ljava/lang/String;";
-                    } else if (insn.owner.equals("java/lang/reflect/Method")) {
-                        insn.owner = DESC_ReflectionMethods;
-                        insn.name = "getName";
-                        insn.setOpcode(Opcodes.INVOKESTATIC);
-                        insn.desc = "(Ljava/lang/reflect/Method;)Ljava/lang/String;";
-                    }
-                }
-
-                if (insn.owner.equals("java/lang/ClassLoader") && insn.name.equals("loadClass")) {
-                    insn.owner = DESC_ReflectionMethods;
-                    insn.name = "loadClass";
-                    insn.desc = "(Ljava/lang/ClassLoader;Ljava/lang/String;)Ljava/lang/Class;";
-                    insn.setOpcode(Opcodes.INVOKESTATIC);
-                }
-
                 if(insn.owner.equals("javax/script/ScriptEngineManager") && insn.desc.equals("()V") && insn.name.equals("<init>")){
                     insn.desc="(Ljava/lang/ClassLoader;)V";
                     method.instructions.insertBefore(insn, new MethodInsnNode(Opcodes.INVOKESTATIC, "java/lang/ClassLoader", "getSystemClassLoader", "()Ljava/lang/ClassLoader;"));
@@ -119,11 +98,22 @@ public class ReflectionTransformer {
     public static void remapVirtual(AbstractInsnNode insn) {
         MethodInsnNode method = (MethodInsnNode) insn;
 
-        if (!method.owner.equals("java/lang/Class") ||
-                !(method.name.equals("getField") || method.name.equals("getDeclaredField") ||
-                        method.name.equals("getMethod") || method.name.equals("getDeclaredMethod") ||
-                        method.name.equals("getSimpleName")))
-            return;
+        if (!(
+                (method.owner.equals("java/lang/Class") && (
+                    method.name.equals("getField") ||
+                    method.name.equals("getDeclaredField") ||
+                    method.name.equals("getMethod") ||
+                    method.name.equals("getDeclaredMethod") ||
+                    method.name.equals("getSimpleName"))
+                )
+            ||
+                (method.name.equals("getName") && (
+                    method.owner.equals("java/lang/reflect/Field") ||
+                    method.owner.equals("java/lang/reflect/Method"))
+                )
+            ||
+                (method.owner.equals("java/lang/ClassLoader") && method.name.equals("loadClass"))
+            )) return;
 
         Type returnType = Type.getReturnType(method.desc);
 

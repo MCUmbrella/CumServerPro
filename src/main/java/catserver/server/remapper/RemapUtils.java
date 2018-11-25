@@ -2,8 +2,6 @@ package catserver.server.remapper;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 
 import org.objectweb.asm.Type;
@@ -70,22 +68,13 @@ public class RemapUtils {
     public static final String NMS_PREFIX = "net/minecraft/server/";
     public static final String NMS_VERSION = CatServer.getNativeVersion();
 
-    public static String mapClass(String pBukkitClass) {
-        String tRemapped = JarRemapper.mapTypeName(pBukkitClass, ReflectionTransformer.jarMapping.packages, ReflectionTransformer.jarMapping.classes, pBukkitClass);
-        if (tRemapped.equals(pBukkitClass) && pBukkitClass.startsWith(NMS_PREFIX) && !pBukkitClass.contains(NMS_VERSION)) {
-            String tNewClassStr = NMS_PREFIX + NMS_VERSION + "/" + pBukkitClass.substring(NMS_PREFIX.length());
-            return JarRemapper.mapTypeName(tNewClassStr, ReflectionTransformer.jarMapping.packages, ReflectionTransformer.jarMapping.classes, pBukkitClass);
+    public static String mapClass(String className) {
+        String tRemapped = JarRemapper.mapTypeName(className, ReflectionTransformer.jarMapping.packages, ReflectionTransformer.jarMapping.classes, className);
+        if (tRemapped.equals(className) && className.startsWith(NMS_PREFIX) && !className.contains(NMS_VERSION)) {
+            String tNewClassStr = NMS_PREFIX + NMS_VERSION + "/" + className.substring(NMS_PREFIX.length());
+            return JarRemapper.mapTypeName(tNewClassStr, ReflectionTransformer.jarMapping.packages, ReflectionTransformer.jarMapping.classes, className);
         }
         return tRemapped;
-    }
-
-    public static String getTypeDesc(Type pType) {
-        try {
-            return pType.getInternalName();
-        } catch (NullPointerException ignore) {
-            return pType.toString();
-            // TODO: handle exception
-        }
     }
 
     public static String demapFieldName(Field field) {
