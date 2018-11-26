@@ -28,15 +28,18 @@ public class CatURLClassLoader extends URLClassLoader
     private JarRemapper remapper;
     private final Map<String, Class<?>> classes;
 
-    public CatURLClassLoader(final URL[] urls, final ClassLoader parent) {
-        super(urls, parent);
-        this.classes = new HashMap<>();
+    {
         this.jarMapping = MappingLoader.loadMapping();
         final JointProvider provider = new JointProvider();
         provider.add(new ClassInheritanceProvider());
         provider.add(new ClassLoaderProvider(this));
         this.jarMapping.setFallbackInheritanceProvider(provider);
         this.remapper = new CatServerRemapper(this.jarMapping);
+    }
+
+    public CatURLClassLoader(final URL[] urls, final ClassLoader parent) {
+        super(urls, parent);
+        this.classes = new HashMap<>();
     }
 
     public CatURLClassLoader(final URL[] urls) {
