@@ -173,6 +173,11 @@ public class EventBus implements IEventExceptionHandler
     {
         if (shutdown) return false;
 
+        // CatServer start - CatAPI implement
+        if (org.bukkit.Bukkit.getServer() != null)
+            org.bukkit.Bukkit.getPluginManager().callEvent(new catserver.api.bukkit.event.ForgeEvent(event));
+        // CatServer end
+
         IEventListener[] listeners = event.getListenerList().getListeners(busID);
         int index = 0;
         try
