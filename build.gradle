@@ -25,10 +25,6 @@ repositories {
         url = 'https://libraries.minecraft.net/'
     }
     maven {
-        name = 'sponge'
-        url = 'https://repo.spongepowered.org/maven'
-    }
-    maven {
         name = 'spigotmc-public'
         url = 'https://hub.spigotmc.org/nexus/content/groups/public/'
     }
