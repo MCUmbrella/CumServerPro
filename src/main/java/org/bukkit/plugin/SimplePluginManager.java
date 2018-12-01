@@ -19,6 +19,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import org.apache.commons.lang.Validate;
+import org.bukkit.Bukkit;
 import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommandYamlParser;
@@ -33,8 +34,6 @@ import org.bukkit.permissions.PermissionDefault;
 import org.bukkit.util.FileUtil;
 
 import com.google.common.collect.ImmutableSet;
-
-import catserver.server.CatServer;
 
 /**
  * Handles all plugin management from the Server
@@ -473,7 +472,7 @@ public final class SimplePluginManager implements PluginManager {
      * @param event Event details
      */
     public void callEvent(Event event) {
-        if (event.isAsynchronous()) {
+        if (event.isAsynchronous() || !Bukkit.isPrimaryThread()) { // CatServer
             if (Thread.holdsLock(this)) {
                 throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from inside synchronized code.");
             }
@@ -482,7 +481,6 @@ public final class SimplePluginManager implements PluginManager {
             }
             fireEvent(event);
         } else {
-            if (CatServer.asyncCatch("call " + event.getEventName())) return;
             synchronized (this) {
                 fireEvent(event);
             }
