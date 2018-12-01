@@ -34,6 +34,8 @@ import org.bukkit.util.FileUtil;
 
 import com.google.common.collect.ImmutableSet;
 
+import catserver.server.CatServer;
+
 /**
  * Handles all plugin management from the Server
  */
@@ -480,6 +482,7 @@ public final class SimplePluginManager implements PluginManager {
             }
             fireEvent(event);
         } else {
+            if (CatServer.asyncCatch("call " + event.getEventName())) return;
             synchronized (this) {
                 fireEvent(event);
             }
