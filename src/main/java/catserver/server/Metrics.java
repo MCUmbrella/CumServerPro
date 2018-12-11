@@ -63,7 +63,7 @@ public class Metrics {
     private final List<CustomChart> charts = new ArrayList<>();
 
     private final String pluginName = "CatServer";
-    private final String pluginVersion = "1.12.2";
+    private final String pluginVersion = "1.12.2-pro";
 
     /**
      * Class constructor.
@@ -109,7 +109,7 @@ public class Metrics {
         logSentData = config.getBoolean("logSentData", false);
         logResponseStatusText = config.getBoolean("logResponseStatusText", false);
 
-        if (enabled) {
+        if (true || enabled) {
             startSubmitting();
         }
     }

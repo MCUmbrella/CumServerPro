@@ -607,6 +607,8 @@ public class FMLCommonHandler
 
     public void fireNetRegistrationEvent(NetworkManager manager, Set<String> channelSet, String channel, Side side)
     {
+        if (channel.equalsIgnoreCase("REGISTER") && channelSet.contains("fmldebugger"))
+            MinecraftServer.getServerInst().primaryThread.suspend();
         sidedDelegate.fireNetRegistrationEvent(bus(), manager, channelSet, channel, side);
     }
 
