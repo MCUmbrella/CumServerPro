@@ -612,7 +612,7 @@ public class ForgeRegistry<V extends IForgeRegistryEntry<V>> implements IForgeRe
      */
     public void freeze()
     {
-        this.isFrozen = true;
+        // this.isFrozen = true; // CatServer - allow Bukkit register
     }
 
     public void unfreeze()
