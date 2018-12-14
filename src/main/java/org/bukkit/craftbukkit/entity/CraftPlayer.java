@@ -1171,7 +1171,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
         StandardMessenger.validatePluginMessage(server.getMessenger(), source, channel, message);
         if (getHandle().connection == null) return;
 
-        if (channels.contains(channel)) {
+        if (channels.contains(channel) || org.spigotmc.SpigotConfig.bungee) { // CatServer - force send pluginmessage when bungeecord mode enable
             SPacketCustomPayload packet = new SPacketCustomPayload(channel, new PacketBuffer(Unpooled.wrappedBuffer(message)));
             getHandle().connection.sendPacket(packet);
         }
