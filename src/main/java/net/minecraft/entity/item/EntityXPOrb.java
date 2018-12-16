@@ -232,13 +232,14 @@ public class EntityXPOrb extends Entity
 
                 if (!itemstack.isEmpty() && itemstack.isItemDamaged())
                 {
-                    int i = Math.min(this.xpToDurability(this.xpValue), itemstack.getItemDamage());
-//                    this.xpValue -= this.durabilityToXp(i);
+                    float ratio = itemstack.getItem().getXpRepairRatio(itemstack);
+                    int i = Math.min(roundAverage(this.xpValue * ratio), itemstack.getItemDamage());
+//                    this.xpValue -= roundAverage(i / ratio);
 //                    itemstack.setItemDamage(itemstack.getItemDamage() - i);
                     org.bukkit.event.player.PlayerItemMendEvent event = CraftEventFactory.callPlayerItemMendEvent(entityIn, this, itemstack, i);
                     i = event.getRepairAmount();
                     if (!event.isCancelled()) {
-                        this.xpValue -= this.durabilityToXp(i);
+                        this.xpValue -= roundAverage(i / ratio);
                         itemstack.setItemDamage(itemstack.getItemDamage() - i);
                     }
                 }
@@ -378,5 +379,11 @@ public class EntityXPOrb extends Entity
     public boolean canBeAttackedWithItem()
     {
         return false;
+    }
+
+    private static int roundAverage(float value)
+    {
+        double floor = Math.floor(value);
+        return (int) floor + (Math.random() < value - floor ? 1 : 0);
     }
 }
