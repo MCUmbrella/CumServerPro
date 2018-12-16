@@ -507,7 +507,6 @@ public abstract class EntityLivingBase extends Entity
     {
         this.revengeTarget = livingBase;
         this.revengeTimer = this.ticksExisted;
-        net.minecraftforge.common.ForgeHooks.onLivingSetAttackTarget(this, livingBase);
     }
 
     public EntityLivingBase getLastAttackedEntity()
