@@ -433,7 +433,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
                 // CraftBukkit end
                 return true;
             }
-            itemstack1.stackSize -= origCount - itemstack2.stackSize; // Spigot
+            itemstack1.shrink(origCount - itemstack2.getCount()); // Spigot
             inventoryIn.setInventorySlotContents(index, itemstack1);
         }
 

@@ -906,7 +906,7 @@ public class ForgeHooks
         }
 
         // CraftBukkit start
-        int newCount = itemstack.stackSize;
+        int newCount = itemstack.getCount();
         if (ret == EnumActionResult.SUCCESS && world.captureTreeGeneration && world.capturedBlockSnapshots.size() > 0) {
             world.captureTreeGeneration = false;
             Location location = new Location(world.getWorld(), pos.getX(), pos.getY(), pos.getZ());
@@ -921,8 +921,8 @@ public class ForgeHooks
             }
             if (event == null || !event.isCancelled()) {
                 // Change the stack to its new contents if it hasn't been tampered with.
-                if (itemstack.stackSize == size && itemstack.getMetadata() == data) {
-                    itemstack.stackSize = newCount;
+                if (itemstack.getCount() == size && itemstack.getMetadata() == data) {
+                    itemstack.setCount(newCount);
                 }
                 for (BlockState blockstate : blocks) {
                     blockstate.update(true);

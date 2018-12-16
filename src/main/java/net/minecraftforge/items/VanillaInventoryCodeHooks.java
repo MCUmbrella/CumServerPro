@@ -187,7 +187,7 @@ public class VanillaInventoryCodeHooks
                             // CatServer end
                             return true;
                         }
-                        originalSlotContents.stackSize -= origCount - itemstack1.stackSize; // Spigot
+                        originalSlotContents.shrink(origCount - itemstack1.getCount()); // Spigot
                         hopper.setInventorySlotContents(i, originalSlotContents);
                     }
                 }
