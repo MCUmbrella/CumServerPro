@@ -1,4 +1,4 @@
-package catserver.api.bukkit;
+package catserver.server.utils;
 
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.entity.CraftEntity;
