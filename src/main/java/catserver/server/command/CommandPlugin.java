@@ -100,24 +100,27 @@ public class CommandPlugin extends Command {
             return;
         }
 
-        sender.sendMessage(ChatColor.GREEN + "Can't find loaded plugin: " + pluginName);
+        sender.sendMessage(ChatColor.GREEN + "Can't found loaded plugin: " + pluginName);
     }
 
 
     private void loadPlugin(String pluginName, CommandSender sender) {
         try {
             PluginManager manager = Bukkit.getServer().getPluginManager();
-            Plugin plugin = manager.loadPlugin(new File("plugins", pluginName + ".jar"));
-            if (plugin == null) {
+            File pluginFile = new File("plugins", pluginName + ".jar");
+
+            if (!pluginFile.exists() || !pluginFile.isFile()) {
                 sender.sendMessage(ChatColor.GREEN + "Error loading " + pluginName + ".jar, no plugin with that name was found.");
                 return;
             }
+
+            Plugin plugin = manager.loadPlugin(pluginFile);
             plugin.onLoad();
             manager.enablePlugin(plugin);
 
             sender.sendMessage(ChatColor.GREEN + "Loaded " + pluginName + " successfully!");
         } catch (Exception e) {
-            sender.sendMessage(ChatColor.GREEN + "Error loading " + pluginName + ", this plugin must be reloaded by restarting the server.");
+            sender.sendMessage(ChatColor.GREEN + "Error loading " + pluginName + ".jar, this plugin must be reloaded by restarting the server.");
         }
     }
 }
