@@ -29,6 +29,7 @@ public class CommandPlugin extends Command {
 
     @Override
     public boolean execute(CommandSender sender, String commandLabel, String[] args) {
+        if (!testPermission(sender)) return true;
         if (args.length < 2) {
             sender.sendMessage(ChatColor.GOLD + "Usage: " + usageMessage);
             return false;
