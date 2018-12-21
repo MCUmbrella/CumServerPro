@@ -619,6 +619,7 @@ public class CraftPlayer extends CraftHumanEntity implements Player {
     @Deprecated
     @Override
     public void updateInventory() {
+        if (getHandle().connection == null) return;
         getHandle().sendContainerToPlayer(getHandle().openContainer);
     }
 
