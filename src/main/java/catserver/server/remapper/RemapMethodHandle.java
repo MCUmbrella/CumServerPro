@@ -21,14 +21,14 @@ public class RemapMethodHandle {
     public static MethodHandle findVirtual(MethodHandles.Lookup lookup, Class<?> refc, String name, MethodType type) throws NoSuchMethodException, IllegalAccessException {
         if (refc.getName().startsWith("net.minecraft.")) {
             name = RemapUtils.mapMethod(refc, name, type.parameterArray());
-        }else if (refc.getName().equals("java/lang/Class")) {
+        }else if (refc.getName().equals("java.lang.Class")) {
             switch (name) {
                 case "getField":
                 case "getDeclaredField":
                 case "getMethod":
                 case "getDeclaredMethod":
                 case "getSimpleName":
-                    MethodHandle handle = lookup.findVirtual(ReflectionVirtualMethod.class, name, type);
+                    MethodHandle handle = lookup.findStatic(ReflectionVirtualMethod.class, name, type);
                     MethodHandleBinder.handles.add(handle);
                     return handle;
             }
