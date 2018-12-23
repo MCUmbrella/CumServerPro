@@ -121,7 +121,7 @@ public class ReflectionTransformer {
     public static void remapVirtual(AbstractInsnNode insn) {
         MethodInsnNode method = (MethodInsnNode) insn;
 
-        if (!(
+        if (
                 (method.owner.equals("java/lang/Class") && (
                     method.name.equals("getField") ||
                     method.name.equals("getDeclaredField") ||
@@ -136,17 +136,13 @@ public class ReflectionTransformer {
                 )
             ||
                 (method.owner.equals("java/lang/ClassLoader") && method.name.equals("loadClass"))
-            )) {
-            if (method.owner.equals("java/lang/invoke/MethodHandles$Lookup") && (method.name.equals("findVirtual") || method.name.equals("findStatic") || method.name.equals("findSpecial") || method.name.equals("unreflect"))) {
-                remapMethodLookup(method);
-            }else if (method.owner.equals("java/lang/invoke/MethodHandle")) {
-                if (method.name.equals("bindTo"))
-                    remapMethodBind(method);
-            }
-            return;
+            ) {
+            virtualToStatic(method, DESC_ReflectionMethods);
+        } else if (method.owner.equals("java/lang/invoke/MethodHandles$Lookup") && (method.name.equals("findVirtual") || method.name.equals("findStatic") || method.name.equals("findSpecial") || method.name.equals("unreflect"))) {
+            remapMethodLookup(method);
+        } else if (method.owner.equals("java/lang/invoke/MethodHandle") && method.name.equals("bindTo")) {
+            remapMethodBind(method);
         }
-
-        virtualToStatic(method, DESC_ReflectionMethods);
     }
 
     private static void remapURLClassLoader(MethodInsnNode method) {

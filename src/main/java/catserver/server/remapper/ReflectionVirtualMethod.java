@@ -4,9 +4,9 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 public class ReflectionVirtualMethod {
-    private final Class cls;
+    private final Class<?> cls;
 
-    public ReflectionVirtualMethod(Class cls) {
+    public ReflectionVirtualMethod(Class<?> cls) {
         this.cls = cls;
     }
 
