@@ -79,7 +79,7 @@ public class RemapUtils {
 
     public static String demapFieldName(Field field) {
         String name = field.getName();
-        String match = reverseMap(field.getDeclaringClass());
+        String match = reverseMap(field.getDeclaringClass()) + "/";
 
         Collection<String> colls = ReflectionTransformer.fieldDeMapping.get(name);
 
@@ -96,7 +96,7 @@ public class RemapUtils {
 
     public static String demapMethodName(Method method) {
         String name = method.getName();
-        String match = reverseMap(method.getDeclaringClass());
+        String match = reverseMap(method.getDeclaringClass()) + "/";
 
         Collection<String> colls = ReflectionTransformer.methodDeMapping.get(name);
 
