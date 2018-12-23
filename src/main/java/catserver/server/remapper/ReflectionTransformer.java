@@ -24,7 +24,8 @@ import org.objectweb.asm.tree.TypeInsnNode;
 
 public class ReflectionTransformer {
     public static final String DESC_ReflectionMethods = Type.getInternalName(ReflectionMethods.class);
-
+    public static final String DESC_RemapMethodHandle = Type.getInternalName(RemapMethodHandle.class);
+    public static final String DESC_MethodHandleBinder = Type.getInternalName(MethodHandleBinder.class);
     public static JarMapping jarMapping;
     public static CatServerRemapper remapper;
 
@@ -109,6 +110,10 @@ public class ReflectionTransformer {
 
     public static void remapForName(AbstractInsnNode insn) {
         MethodInsnNode method = (MethodInsnNode) insn;
+        if (method.owner.equals("java/lang/invoke/MethodType") && method.name.equals("fromMethodDescriptorString")) {
+            method.owner = DESC_RemapMethodHandle;
+        }
+
         if (disable || !method.owner.equals("java/lang/Class") || !method.name.equals("forName")) return;
         method.owner = DESC_ReflectionMethods;
     }
@@ -131,21 +136,40 @@ public class ReflectionTransformer {
                 )
             ||
                 (method.owner.equals("java/lang/ClassLoader") && method.name.equals("loadClass"))
-            )) return;
+            )) {
+            if (method.owner.equals("java/lang/invoke/MethodHandles$Lookup") && (method.name.equals("findVirtual") || method.name.equals("findStatic") || method.name.equals("findSpecial") || method.name.equals("unreflect"))) {
+                remapMethodLookup(method);
+            }else if (method.owner.equals("java/lang/invoke/MethodHandle")) {
+                if (method.name.equals("bindTo"))
+                    remapMethodBind(method);
+            }
+            return;
+        }
 
+        virtualToStatic(method, DESC_ReflectionMethods);
+    }
+
+    private static void remapURLClassLoader(MethodInsnNode method) {
+        if (!(method.owner.equals("java/net/URLClassLoader") && method.name.equals("<init>"))) return;
+        method.owner = "catserver/server/remapper/CatURLClassLoader";
+    }
+
+    private static void remapMethodBind(MethodInsnNode method) {
+        virtualToStatic(method, DESC_MethodHandleBinder);
+    }
+
+    private static void remapMethodLookup(MethodInsnNode method) {
+        virtualToStatic(method, DESC_RemapMethodHandle);
+    }
+
+    private static void virtualToStatic(MethodInsnNode method, String desc) {
         Type returnType = Type.getReturnType(method.desc);
-
         ArrayList<Type> args = new ArrayList<Type>();
         args.add(Type.getObjectType(method.owner));
         args.addAll(Arrays.asList(Type.getArgumentTypes(method.desc)));
 
         method.setOpcode(Opcodes.INVOKESTATIC);
-        method.owner = DESC_ReflectionMethods;
+        method.owner = desc;
         method.desc = Type.getMethodDescriptor(returnType, args.toArray(new Type[args.size()]));
-    }
-
-    public static void remapURLClassLoader(MethodInsnNode method) {
-        if (!(method.owner.equals("java/net/URLClassLoader") && method.name.equals("<init>"))) return;
-        method.owner = "catserver/server/remapper/CatURLClassLoader";
     }
 }
