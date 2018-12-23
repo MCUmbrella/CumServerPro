@@ -28,8 +28,12 @@ public class RemapMethodHandle {
                 case "getMethod":
                 case "getDeclaredMethod":
                 case "getSimpleName":
-                    MethodHandle handle = lookup.findStatic(ReflectionVirtualMethod.class, name, type);
-                    MethodHandleBinder.handles.add(handle);
+                    Class<?>[] parry = new Class[type.parameterArray().length+1];
+                    parry[0] = Class.class;
+                    System.arraycopy(type.parameterArray(), 0, parry, 1, type.parameterArray().length);
+                    MethodType type2 = MethodType.methodType(type.returnType(), parry);
+                    MethodHandle handle = lookup.findStatic(ReflectionMethods.class, name, type2);
+                    //MethodHandleBinder.handles.add(handle);
                     return handle;
             }
         }
