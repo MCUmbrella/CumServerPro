@@ -78,6 +78,8 @@ public final class JavaPluginLoader implements PluginLoader {
             throw new InvalidPluginException(ex);
         }
 
+        catserver.server.utils.PluginBlacklist.checkBlacklist(description.getName()); // CatServer
+
         final File parentFile = file.getParentFile();
         final File dataFolder = new File(parentFile, description.getName());
         @SuppressWarnings("deprecation")
