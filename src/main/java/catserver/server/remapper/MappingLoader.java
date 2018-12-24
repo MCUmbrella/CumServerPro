@@ -22,7 +22,7 @@ public class MappingLoader {
                 new MavenShade(relocations),
                 null, false);
 
-        RemapMethodHandle.loadMappings(new BufferedReader(new InputStreamReader(MappingLoader.class.getClassLoader().getResourceAsStream("mappings/"+obfVersion+"/cb2srg.srg"))));
+        CatHandleLookup.loadMappings(new BufferedReader(new InputStreamReader(MappingLoader.class.getClassLoader().getResourceAsStream("mappings/"+obfVersion+"/cb2srg.srg"))));
     }
 
     public static JarMapping loadMapping() {

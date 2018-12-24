@@ -24,8 +24,7 @@ import org.objectweb.asm.tree.TypeInsnNode;
 
 public class ReflectionTransformer {
     public static final String DESC_ReflectionMethods = Type.getInternalName(ReflectionMethods.class);
-    public static final String DESC_RemapMethodHandle = Type.getInternalName(RemapMethodHandle.class);
-    public static final String DESC_MethodHandleBinder = Type.getInternalName(MethodHandleBinder.class);
+    public static final String DESC_RemapMethodHandle = Type.getInternalName(CatHandleLookup.class);
     public static JarMapping jarMapping;
     public static CatServerRemapper remapper;
 
@@ -120,29 +119,35 @@ public class ReflectionTransformer {
 
     public static void remapVirtual(AbstractInsnNode insn) {
         MethodInsnNode method = (MethodInsnNode) insn;
-
-        if (
-                (method.owner.equals("java/lang/Class") && (
-                    method.name.equals("getField") ||
-                    method.name.equals("getDeclaredField") ||
-                    method.name.equals("getMethod") ||
-                    method.name.equals("getDeclaredMethod") ||
-                    method.name.equals("getSimpleName"))
-                )
-            ||
-                (method.name.equals("getName") && (
-                    method.owner.equals("java/lang/reflect/Field") ||
-                    method.owner.equals("java/lang/reflect/Method"))
-                )
-            ||
-                (method.owner.equals("java/lang/ClassLoader") && method.name.equals("loadClass"))
-            ) {
-            virtualToStatic(method, DESC_ReflectionMethods);
-        } else if (method.owner.equals("java/lang/invoke/MethodHandles$Lookup") && (method.name.equals("findVirtual") || method.name.equals("findStatic") || method.name.equals("findSpecial") || method.name.equals("unreflect"))) {
-            remapMethodLookup(method);
-        } else if (method.owner.equals("java/lang/invoke/MethodHandle") && method.name.equals("bindTo")) {
-            remapMethodBind(method);
+        boolean remapFlag = false;
+        if (method.owner.equals("java/lang/Class")) {
+            switch (method.name) {
+                case "getField":
+                case "getDeclaredField":
+                case "getMethod":
+                case "getDeclaredMethod":
+                case "getSimpleName":
+                    remapFlag = true;
+            }
+        } else if (method.name.equals("getName")) {
+            switch (method.owner) {
+                case "java/lang/reflect/Field":
+                case "java/lang/reflect/Method":
+                    remapFlag = true;
+            }
+        } else if (method.owner.equals("java/lang/ClassLoader") && method.name.equals("loadClass")) {
+            remapFlag = true;
+        } else if (method.owner.equals("java/lang/invoke/MethodHandles$Lookup")) {
+            switch (method.name) {
+                case "findVirtual":
+                case "findStatic":
+                case "findSpecial":
+                case "unreflect":
+                    virtualToStatic(method, DESC_RemapMethodHandle); // remapMethodLookup
+            }
         }
+
+        if (remapFlag) virtualToStatic(method, DESC_ReflectionMethods);
     }
 
     private static void remapURLClassLoader(MethodInsnNode method) {
@@ -150,22 +155,14 @@ public class ReflectionTransformer {
         method.owner = "catserver/server/remapper/CatURLClassLoader";
     }
 
-    private static void remapMethodBind(MethodInsnNode method) {
-        virtualToStatic(method, DESC_MethodHandleBinder);
-    }
-
-    private static void remapMethodLookup(MethodInsnNode method) {
-        virtualToStatic(method, DESC_RemapMethodHandle);
-    }
-
     private static void virtualToStatic(MethodInsnNode method, String desc) {
         Type returnType = Type.getReturnType(method.desc);
-        ArrayList<Type> args = new ArrayList<Type>();
+        ArrayList<Type> args = new ArrayList<>();
         args.add(Type.getObjectType(method.owner));
         args.addAll(Arrays.asList(Type.getArgumentTypes(method.desc)));
 
         method.setOpcode(Opcodes.INVOKESTATIC);
         method.owner = desc;
-        method.desc = Type.getMethodDescriptor(returnType, args.toArray(new Type[args.size()]));
+        method.desc = Type.getMethodDescriptor(returnType, args.toArray(new Type[0]));
     }
 }
