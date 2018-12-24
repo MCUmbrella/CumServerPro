@@ -43,8 +43,7 @@ public class ReflectionMethods {
         try {
             return inst.getMethod(name, parameterTypes);
         } catch (NoClassDefFoundError e) {
-            e.printStackTrace();
-            throw new NoSuchMethodException();
+            throw new NoSuchMethodException(e.toString());
         }
         
     }
@@ -55,8 +54,7 @@ public class ReflectionMethods {
         try {
             return inst.getDeclaredMethod(name, parameterTypes);
         } catch (NoClassDefFoundError e) {
-            e.printStackTrace();
-            throw new NoSuchMethodException();
+            throw new NoSuchMethodException(e.toString());
         }
     }
 
