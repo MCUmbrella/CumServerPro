@@ -25,20 +25,20 @@ public class ReflectionMethods {
 
     // Get Fields
     public static Field getField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
-        if (inst.getName().startsWith("net.minecraft."))
+        if (RemapUtils.isClassNeedRemap(inst, false))
             name = ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null);
         return inst.getField(name);
     }
 
     public static Field getDeclaredField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
-        if (inst.getName().startsWith("net.minecraft."))
+        if (RemapUtils.isClassNeedRemap(inst, false))
             name = ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null);
         return inst.getDeclaredField(name);
     }
 
     // Get Methods
     public static Method getMethod(Class<?> inst, String name, Class<?>...parameterTypes) throws NoSuchMethodException, SecurityException {
-        if (inst.getName().startsWith("net.minecraft."))
+        if (RemapUtils.isClassNeedRemap(inst, true))
             name = RemapUtils.mapMethod(inst, name, parameterTypes);
         try {
             return inst.getMethod(name, parameterTypes);
@@ -50,7 +50,7 @@ public class ReflectionMethods {
     }
 
     public static Method getDeclaredMethod(Class<?> inst, String name, Class<?>...parameterTypes) throws NoSuchMethodException, SecurityException {
-        if (inst.getName().startsWith("net.minecraft."))
+        if (RemapUtils.isClassNeedRemap(inst, true))
             name = RemapUtils.mapMethod(inst, name, parameterTypes);
         try {
             return inst.getDeclaredMethod(name, parameterTypes);
@@ -62,7 +62,7 @@ public class ReflectionMethods {
 
     // getName
     public static String getName(Field field) {
-        if (!field.getDeclaringClass().getName().startsWith("net.minecraft.")) return field.getName();
+        if (!RemapUtils.isClassNeedRemap(field.getDeclaringClass(), false)) return field.getName();
         String hash = String.valueOf(field.hashCode());
         String cache = fieldGetNameCache.get(hash);
         if (cache != null) return cache;
@@ -72,7 +72,7 @@ public class ReflectionMethods {
     }
 
     public static String getName(Method method) {
-        if (!method.getDeclaringClass().getName().startsWith("net.minecraft.")) return method.getName();
+        if (!RemapUtils.isClassNeedRemap(method.getDeclaringClass(), true)) return method.getName();
         String hash = String.valueOf(method.hashCode());
         String cache = methodGetNameCache.get(hash);
         if (cache != null) return cache;
@@ -83,7 +83,7 @@ public class ReflectionMethods {
 
     // getSimpleName
     public static String getSimpleName(Class<?> inst) {
-        if (!inst.getName().startsWith("net.minecraft.")) return inst.getSimpleName();
+        if (!RemapUtils.isClassNeedRemap(inst, false)) return inst.getSimpleName();
         String hash = String.valueOf(inst.hashCode());
         String cache = simpleNameGetNameCache.get(hash);
         if (cache != null) return cache;

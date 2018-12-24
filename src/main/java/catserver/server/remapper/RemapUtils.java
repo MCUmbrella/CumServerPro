@@ -110,4 +110,21 @@ public class RemapUtils {
 
         return name;
     }
+
+    public static boolean isClassNeedRemap(Class<?> clazz, boolean checkSuperClass) {
+        while (clazz != null && clazz.getClassLoader() != null) {
+            if (clazz.getName().startsWith("net.minecraft."))
+                return true;
+            if (checkSuperClass) {
+                for (Class<?> interfaceClass : clazz.getInterfaces()) {
+                    if (isClassNeedRemap(interfaceClass, true))
+                        return true;
+                }
+                clazz = clazz.getSuperclass();
+            } else {
+                return false;
+            }
+        }
+        return false;
+    }
 }
