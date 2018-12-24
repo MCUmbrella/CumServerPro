@@ -18,31 +18,46 @@ public class ReflectionMethods {
     }
 
     public static Class<?> forName(String className, boolean initialize, ClassLoader classLoader) throws ClassNotFoundException {
-        if (!className.startsWith("net.minecraft.server." + CatServer.getNativeVersion())) return Class.forName(className, initialize, classLoader);
-        className = ReflectionTransformer.jarMapping.classes.getOrDefault(className.replace('.', '/'), className).replace('/', '.');
+        if (className.startsWith("net.minecraft.server." + CatServer.getNativeVersion()))
+            className = ReflectionTransformer.jarMapping.classes.getOrDefault(className.replace('.', '/'), className).replace('/', '.');
         return Class.forName(className, initialize, classLoader);
     }
 
     // Get Fields
     public static Field getField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
-        if (!inst.getName().startsWith("net.minecraft.")) return inst.getField(name);
-        return inst.getField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
+        if (inst.getName().startsWith("net.minecraft."))
+            name = ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null);
+        return inst.getField(name);
     }
 
     public static Field getDeclaredField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
-        if (!inst.getName().startsWith("net.minecraft.")) return inst.getDeclaredField(name);
-        return inst.getDeclaredField(ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null));
+        if (inst.getName().startsWith("net.minecraft."))
+            name = ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null);
+        return inst.getDeclaredField(name);
     }
 
     // Get Methods
     public static Method getMethod(Class<?> inst, String name, Class<?>...parameterTypes) throws NoSuchMethodException, SecurityException {
-        if (!inst.getName().startsWith("net.minecraft.")) return inst.getMethod(name, parameterTypes);
-        return inst.getMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
+        if (inst.getName().startsWith("net.minecraft."))
+            name = RemapUtils.mapMethod(inst, name, parameterTypes);
+        try {
+            return inst.getMethod(name, parameterTypes);
+        } catch (NoClassDefFoundError e) {
+            e.printStackTrace();
+            throw new NoSuchMethodException();
+        }
+        
     }
 
     public static Method getDeclaredMethod(Class<?> inst, String name, Class<?>...parameterTypes) throws NoSuchMethodException, SecurityException {
-        if (!inst.getName().startsWith("net.minecraft.")) return inst.getDeclaredMethod(name, parameterTypes);
-        return inst.getDeclaredMethod(RemapUtils.mapMethod(inst, name, parameterTypes), parameterTypes);
+        if (inst.getName().startsWith("net.minecraft."))
+            name = RemapUtils.mapMethod(inst, name, parameterTypes);
+        try {
+            return inst.getDeclaredMethod(name, parameterTypes);
+        } catch (NoClassDefFoundError e) {
+            e.printStackTrace();
+            throw new NoSuchMethodException();
+        }
     }
 
     // getName
