@@ -1,6 +1,5 @@
 # CatServer
 Minecraft 1.10.2/1.12.2 Forge+Bukkit服务端<br>
-[![Build Status](http://ci.komi.moe:2333/job/CatServer-1.12/badge/icon)](http://ci.komi.moe:2333/job/CatServer-1.12)
 [![bStats](https://img.shields.io/badge/bStats-CatServer-green.svg?style=flat)](https://bstats.org/plugin/bukkit/CatServer)
 [![discord](https://img.shields.io/badge/discord-CatServer-green.svg?style=flat)](https://discord.gg/uY5WJph)
 
@@ -13,7 +12,7 @@ Support for NMS remap<br>
 Good performance and stable<br>
 
 ### Build
-1.Clone: git clone https://gitee.com/CatServer/CatServer.git<br>
+1.Clone: git clone https://git.catserver.moe/CatServer/CatServer.git<br>
 2.Build: gradlew build<br>
 3.Dump libraries: gradlew dumpLibs
 - - -
@@ -24,6 +23,6 @@ Good performance and stable<br>
 性能更高更稳定<br>
 
 ### 构建
-1.克隆: git clone https://gitee.com/CatServer/CatServer.git<br>
+1.克隆: git clone https://git.catserver.moe/CatServer/CatServer.git<br>
 2.构建项目: gradlew build<br>
 3.转储lib文件: gradlew dumpLibs
