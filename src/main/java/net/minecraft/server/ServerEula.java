@@ -22,19 +22,20 @@ public class ServerEula
     public ServerEula(File eulaFile)
     {
         this.eulaFile = eulaFile;
-        this.acceptedEULA = loadEULAFile(eulaFile);
+        this.acceptedEULA = true || this.loadEULAFile(eulaFile); // CatServer - auto accept EULA
     }
 
     private boolean loadEULAFile(File inFile)
     {
         FileInputStream fileinputstream = null;
-        boolean flag = true;
+        boolean flag = false;
 
         try
         {
             Properties properties = new Properties();
             fileinputstream = new FileInputStream(inFile);
             properties.load(fileinputstream);
+            flag = Boolean.parseBoolean(properties.getProperty("eula", "false"));
         }
         catch (Exception var8)
         {
@@ -63,7 +64,7 @@ public class ServerEula
             Properties properties = new Properties();
             fileoutputstream = new FileOutputStream(this.eulaFile);
             properties.setProperty("eula", "false");
-            properties.store(fileoutputstream, "Keep it false. EULA?? What the FUCK ? is shit ?");
+            properties.store(fileoutputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");
         }
         catch (Exception exception)
         {
