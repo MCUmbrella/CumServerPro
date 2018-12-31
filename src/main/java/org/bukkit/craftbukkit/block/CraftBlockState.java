@@ -208,7 +208,10 @@ public class CraftBlockState implements BlockState {
             TileEntity te = world.getHandle().getTileEntity(new BlockPos(this.x, this.y, this.z));
             if (te != null)
             {
-                te.readFromNBT(nbt);
+                NBTTagCompound nbt2 = new NBTTagCompound();
+                te.writeToNBT(nbt2);
+                if (!nbt2.equals(nbt)) // no update nbt when no change
+                    te.readFromNBT(nbt);
             }
         }
         // CatServer end
