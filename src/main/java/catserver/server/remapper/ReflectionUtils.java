@@ -1,5 +1,9 @@
 package catserver.server.remapper;
 
+import java.lang.reflect.Field;
+
+import sun.misc.Unsafe;
+
 public class ReflectionUtils {
     private static SecurityManager sm = new SecurityManager();
 
@@ -15,5 +19,16 @@ public class ReflectionUtils {
         public Class<?> getCallerClass(int skip) {
             return getClassContext()[skip + 1];
         }
+    }
+
+    public static Unsafe getUnsafe() {
+        try {
+            Field field = Unsafe.class.getDeclaredField("theUnsafe");
+            field.setAccessible(true);
+            return (Unsafe) field.get(null);
+        } catch (ReflectiveOperationException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 }
