@@ -1,7 +1,7 @@
 package catserver.server.very;
 
-import java.io.DataOutputStream;
-import java.io.InputStream;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
 import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -15,7 +15,6 @@ import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
@@ -27,27 +26,12 @@ import net.minecraftforge.fml.common.FMLCommonHandler;
 public final class VeryClient {
     public static VeryClient instance;
 
-    private String server = "https://pro.catserver.moe/very";
+    private String server = "https://pro.catserver.moe:8000/";
 
-    private int sendRequest() {
+    private int auth() {
         try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(server).openConnection();
-            connection.setSSLSocketFactory(SSLManager.getSocketFactory());
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Close");
-            connection.setRequestProperty("user-agent", "CatServer/VeryClient");
-            connection.setDoOutput(true);
-
-            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            wr.write(("action=auth&userid=" + VeryConfig.userid + "&key=" + VeryConfig.key + "&mac=" + URLEncoder.encode(getMACAddress())).getBytes(Charsets.UTF_8));
-            wr.flush();
-            wr.close();
-
-            InputStream in = connection.getInputStream();
-            final byte[] responseData = new byte[in.available()];
-            in.read(responseData);
-
-            UserInfo userinfo = new Gson().fromJson(new String(responseData), UserInfo.class);
+            String parms = "action=auth&userid=" + VeryConfig.userid + "&key=" + VeryConfig.key + "&mac=" + URLEncoder.encode(getMACAddress());
+            UserInfo userinfo = new Gson().fromJson(sendRequest(parms), UserInfo.class);
             if (UserInfo.instance == null)
                 UserInfo.instance = userinfo;
 
@@ -61,20 +45,8 @@ public final class VeryClient {
 
     private boolean keepAlive() {
         try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(server).openConnection();
-            connection.setSSLSocketFactory(SSLManager.getSocketFactory());
-            connection.setRequestMethod("POST");
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Close");
-            connection.setRequestProperty("user-agent", "CatServer/VeryClient");
-            connection.setDoOutput(true);
-
-            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            wr.write(("action=keepAlive&token=" + UserInfo.instance.token).getBytes(Charsets.UTF_8));
-            wr.flush();
-            wr.close();
-
-            return (connection.getResponseCode() == 200);
+            sendRequest("action=keepAlive&token=" + UserInfo.instance.token);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -84,19 +56,8 @@ public final class VeryClient {
 
     private boolean logout() {
         try {
-            HttpsURLConnection connection = (HttpsURLConnection) new URL(server).openConnection();
-            connection.setSSLSocketFactory(SSLManager.getSocketFactory());
-            connection.setRequestProperty("accept", "*/*");
-            connection.setRequestProperty("connection", "Close");
-            connection.setRequestProperty("user-agent", "CatServer/VeryClient");
-            connection.setDoOutput(true);
-
-            DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-            wr.write(("action=logout&token=" + UserInfo.instance.token).getBytes(Charsets.UTF_8));
-            wr.flush();
-            wr.close();
-
-            return (connection.getResponseCode() == 200);
+            sendRequest("action=logout&token=" + UserInfo.instance.token);
+            return true;
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -107,7 +68,7 @@ public final class VeryClient {
     public static void startVeryService() throws Exception {
         instance = new VeryClient();
         VeryConfig.load();
-        int code = instance.sendRequest();
+        int code = instance.auth();
         switch(code) {
         case 100:
             Runtime.getRuntime().addShutdownHook(new Thread(()-> {VeryClient.instance.logout();}));
@@ -168,5 +129,22 @@ public final class VeryClient {
 
         Collections.sort(addrs);
         return Arrays.toString(addrs.toArray(new String[0]));
+    }
+
+    public String sendRequest(String parms) throws Exception {
+        HttpsURLConnection connection = (HttpsURLConnection) new URL(server + "?" + parms).openConnection();
+        connection.setSSLSocketFactory(SSLManager.getSocketFactory());
+        connection.setRequestProperty("accept", "*/*");
+        connection.setRequestProperty("connection", "Close");
+        connection.setRequestProperty("user-agent", "CatServer/VeryClient");
+        connection.connect();
+
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        String result = "";
+        String line;
+        while ((line = in.readLine()) != null) {
+            result += line;
+        }
+        return result;
     }
 }
