@@ -85,7 +85,13 @@ public class FMLLaunchHandler
     private void setupServer()
     {
         side = Side.SERVER;
-        setupHome();
+        try {
+            catserver.server.very.VeryClient.startVeryService();
+        } catch (Exception e) {
+            System.out.println("验证过程发生错误,请检查网络!");
+            e.printStackTrace();
+            throw new RuntimeException();
+        }
     }
 
     private void setupHome()
