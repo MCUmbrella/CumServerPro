@@ -19,9 +19,9 @@ import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
 import catserver.server.remapper.ReflectionUtils;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.MinecraftException;
 import net.minecraftforge.fml.common.FMLCommonHandler;
+import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 
 public final class VeryClient {
     public static VeryClient instance;
@@ -147,11 +147,21 @@ public final class VeryClient {
     }
 
     private void safeStopServer() {
-        MinecraftServer.getServerInst().addScheduledTask(() -> {
-            try {
-                MinecraftServer.getServerInst().stopServer();
-            } catch (MinecraftException e) {}
-            FMLCommonHandler.instance().exitJava(0, false);
-        });
+        try {
+            FMLLaunchHandler fmlLaunch = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, null, "INSTANCE");
+            ClassLoader cl = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, fmlLaunch, "classLoader");
+            Class<?> serverClass = Class.forName("net.minecraft.server.MinecraftServer", false, cl);
+            Object mcServer = serverClass.getMethod("getServerInst").invoke(null);
+            serverClass.getMethod("addScheduledTask", Runnable.class).invoke(mcServer, new Runnable() {
+                public void run() {
+                    try {
+                        serverClass.getMethod("stopServer").invoke(mcServer);
+                    } catch (Exception e) {}
+                    FMLCommonHandler.instance().exitJava(0, false);
+                }
+            });
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
