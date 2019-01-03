@@ -130,30 +130,6 @@ public class BlockSkull extends BlockContainer
         return new ItemStack(Items.SKULL, 1, i);
     }
 
-    // CraftBukkit start - Special case dropping so we can get info from the tile entity
-    @Override
-    public void dropBlockAsItemWithChance(World world, BlockPos blockposition, IBlockState iblockdata, float f, int i) {
-        if (world.rand.nextFloat() < f) {
-            TileEntity tileentity = world.getTileEntity(blockposition);
-
-            if (tileentity instanceof TileEntitySkull) {
-                TileEntitySkull tileentityskull = (TileEntitySkull) tileentity;
-                ItemStack itemstack = this.getItem(world, blockposition, iblockdata);
-
-                if (tileentityskull.getSkullType() == 3 && tileentityskull.getPlayerProfile() != null) {
-                    itemstack.setTagCompound(new NBTTagCompound());
-                    NBTTagCompound nbttagcompound = new NBTTagCompound();
-
-                    NBTUtil.writeGameProfile(nbttagcompound, tileentityskull.getPlayerProfile());
-                    itemstack.getTagCompound().setTag("SkullOwner", nbttagcompound);
-                }
-
-                spawnAsEntity(world, blockposition, itemstack);
-            }
-        }
-    }
-    // CraftBukkit end
-
     public void onBlockHarvested(World worldIn, BlockPos pos, IBlockState state, EntityPlayer player)
     {
         if (player.capabilities.isCreativeMode)
@@ -161,6 +137,7 @@ public class BlockSkull extends BlockContainer
             state = state.withProperty(NODROP, Boolean.valueOf(true));
             worldIn.setBlockState(pos, state, 4);
         }
+        this.dropBlockAsItem(worldIn, pos, state, 0);
 
         super.onBlockHarvested(worldIn, pos, state, player);
     }
@@ -172,9 +149,7 @@ public class BlockSkull extends BlockContainer
     public void getDrops(net.minecraft.util.NonNullList<ItemStack> drops, IBlockAccess worldIn, BlockPos pos, IBlockState state, int fortune)
     {
         {
-            // CraftBukkit start - Drop item in code above, not here
-            // if (!((Boolean)state.getValue(NODROP)).booleanValue())
-            if (false)
+            if (!((Boolean)state.getValue(NODROP)).booleanValue())
             {
                 TileEntity tileentity = worldIn.getTileEntity(pos);
 
