@@ -45,7 +45,9 @@ public final class VeryClient {
 
     private boolean keepAlive() {
         try {
-            sendRequest("action=keepAlive&token=" + UserInfo.instance.token);
+            String ret = sendRequest("action=keepAlive&token=" + UserInfo.instance.token);
+            if (ret.contains("invalidtoken"))
+                safeStopServer();
             return true;
         } catch (Exception e) {
             e.printStackTrace();
@@ -81,12 +83,8 @@ public final class VeryClient {
                     } else {
                         failCount = 0;
                     }
-                    if (failCount >= 15) {
-                        try {
-                            MinecraftServer.getServerInst().stopServer();
-                        } catch (MinecraftException e) {}
-                        FMLCommonHandler.instance().exitJava(0, false);
-                    }
+                    if (failCount >= 15)
+                        VeryClient.instance.safeStopServer();
                 }
             }, 300*1000, 300*1000);
 
@@ -146,5 +144,14 @@ public final class VeryClient {
             result += line;
         }
         return result;
+    }
+
+    private void safeStopServer() {
+        MinecraftServer.getServerInst().addScheduledTask(() -> {
+            try {
+                MinecraftServer.getServerInst().stopServer();
+            } catch (MinecraftException e) {}
+            FMLCommonHandler.instance().exitJava(0, false);
+        });
     }
 }

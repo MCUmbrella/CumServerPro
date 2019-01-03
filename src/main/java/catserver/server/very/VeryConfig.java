@@ -6,7 +6,7 @@ import java.io.InputStreamReader;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
-public class VeryConfig {
+public final class VeryConfig {
     protected static int userid;
     protected static String key;
     

@@ -1,6 +1,6 @@
 package catserver.server.very;
 
-public class UserInfo {
+public final class UserInfo {
     public static UserInfo instance;
 
     public int userid;
