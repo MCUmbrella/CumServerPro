@@ -159,9 +159,9 @@ public class ActivationRange
     {
         for ( ClassInheritanceMultiMap<Entity> slice : chunk.entityLists )
         {
-            slice.removeIf(entity -> entity == null); // CatServer - fix NPE
             for ( Entity entity : slice )
             {
+                if (entity == null) continue; // CatServer - fix NPE
                 if ( MinecraftServer.currentTick > entity.activatedTick )
                 {
                     if ( entity.defaultActivationState )
