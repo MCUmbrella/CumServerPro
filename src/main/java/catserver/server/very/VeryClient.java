@@ -73,13 +73,13 @@ public final class VeryClient {
         int code = instance.auth();
         switch(code) {
         case 100:
-            Runtime.getRuntime().addShutdownHook(new Thread(()-> {VeryClient.instance.logout();}));
+            Runtime.getRuntime().addShutdownHook(new Thread(()-> VeryClient.instance.logout()));
             new Timer().schedule(new TimerTask() {
                 int failCount = 0;
                 public void run() {
                     if (!VeryClient.instance.keepAlive()) {
                         failCount++;
-                        System.out.println("授权服务器心跳包连接失败,重试次数: %c/15".replace("$c", String.valueOf(failCount)));
+                        System.out.println("授权服务器心跳包连接失败,重试次数: %c/15".replace("%c", String.valueOf(failCount)));
                     } else {
                         failCount = 0;
                     }
