@@ -1,8 +1,9 @@
 package net.minecraft.util;
 
 import com.google.common.collect.Iterators;
-import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
+import io.netty.util.internal.ConcurrentSet;
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
+import it.unimi.dsi.fastutil.objects.ObjectLists;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,9 +13,9 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
     // Forge: Use concurrent collection to allow creating chunks from multiple threads safely
     private static final Set < Class<? >> ALL_KNOWN = Collections.newSetFromMap(new ConcurrentHashMap<>());
     private final Map < Class<?>, List<T >> map = new ConcurrentHashMap<>();
-    private final Set < Class<? >> knownKeys = Collections.synchronizedSet(Sets.newIdentityHashSet());
+    private final Set < Class<? >> knownKeys = new ConcurrentSet<>();
     private final Class<T> baseClass;
-    private final List<T> values = Collections.synchronizedList(Lists.newArrayList());
+    private final List<T> values = ObjectLists.synchronize(new ObjectArrayList<>());
 
     public ClassInheritanceMultiMap(Class<T> baseClassIn)
     {
@@ -79,7 +80,9 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
 
         if (list == null)
         {
-            this.map.put(parentClass, Lists.newArrayList(value));
+            List<T> ll = ObjectLists.synchronize(new ObjectArrayList<>());
+            ll.add(value);
+            this.map.put(parentClass, ll);
         }
         else
         {
@@ -129,7 +132,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
         };
     }
 
-    public Iterator<T> iterator()
+    public synchronized Iterator<T> iterator()
     {
         return this.values.isEmpty() ? Collections.emptyIterator() : Iterators.unmodifiableIterator(this.values.iterator());
     }
