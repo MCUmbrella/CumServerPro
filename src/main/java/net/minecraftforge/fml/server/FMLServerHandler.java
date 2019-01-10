@@ -295,7 +295,7 @@ public class FMLServerHandler implements IFMLSidedHandler
     @Override
     public NetworkManager getClientToServerNetworkManager()
     {
-        throw new RuntimeException("Missing");
+        return null;
     }
     @Override
     public INetHandler getClientPlayHandler()
