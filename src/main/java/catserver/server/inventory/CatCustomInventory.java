@@ -15,6 +15,7 @@ import net.minecraftforge.items.IItemHandler;
 import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
+import net.minecraftforge.items.wrapper.CombinedInvWrapper;
 import net.minecraftforge.items.wrapper.InvWrapper;
 import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
 import net.minecraftforge.items.wrapper.PlayerInvWrapper;
@@ -64,7 +65,7 @@ public class CatCustomInventory implements InventoryHolder{
     }
 
     public static InventoryPlayer getPlayerInv(PlayerInvWrapper handler) {
-        IItemHandlerModifiable[] itemHandlers = ReflectionHelper.getPrivateValue(PlayerInvWrapper.class, handler, "itemHandler");
+        IItemHandlerModifiable[] itemHandlers = ReflectionHelper.getPrivateValue(CombinedInvWrapper.class, handler, "itemHandler");
         for (IItemHandlerModifiable itemHandler : itemHandlers) {
             if (itemHandler instanceof PlayerMainInvWrapper)
                 return ((PlayerMainInvWrapper) itemHandler).getInventoryPlayer();
