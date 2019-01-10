@@ -4,14 +4,21 @@ import javax.annotation.Nullable;
 
 import org.bukkit.craftbukkit.inventory.CraftInventory;
 import org.bukkit.craftbukkit.inventory.CraftInventoryCustom;
+import org.bukkit.craftbukkit.inventory.CraftInventoryPlayer;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.InventoryHolder;
 
+import net.minecraft.entity.player.InventoryPlayer;
 import net.minecraft.inventory.IInventory;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import net.minecraftforge.items.IItemHandler;
+import net.minecraftforge.items.IItemHandlerModifiable;
 import net.minecraftforge.items.ItemStackHandler;
 import net.minecraftforge.items.SlotItemHandler;
 import net.minecraftforge.items.wrapper.InvWrapper;
+import net.minecraftforge.items.wrapper.PlayerArmorInvWrapper;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+import net.minecraftforge.items.wrapper.PlayerMainInvWrapper;
 import net.minecraftforge.items.wrapper.SidedInvWrapper;
 
 public class CatCustomInventory implements InventoryHolder{
@@ -28,6 +35,11 @@ public class CatCustomInventory implements InventoryHolder{
         this.inventory = this.container.getInventory();
     }
 
+    public CatCustomInventory(InventoryPlayer playerInventory) {
+        this.container = new CraftInventoryPlayer(playerInventory);
+        this.inventory = playerInventory;
+    }
+
     @Override
     public Inventory getInventory() {
         return this.container;
@@ -40,7 +52,8 @@ public class CatCustomInventory implements InventoryHolder{
         if (handler instanceof ItemStackHandler) return new CatCustomInventory((ItemStackHandler) handler);
         if (handler instanceof SlotItemHandler) return new CatCustomInventory(((SlotItemHandler) handler).inventory);
         if (handler instanceof InvWrapper) return new CatCustomInventory(((InvWrapper) handler).getInv());
-        if (handler instanceof SidedInvWrapper) return new CatCustomInventory(((SidedInvWrapper) handler).getInv());
+        if (handler instanceof SidedInvWrapper) return new CatCustomInventory((IInventory) ReflectionHelper.getPrivateValue(SidedInvWrapper.class, (SidedInvWrapper) handler, "inv"));
+        if (handler instanceof PlayerInvWrapper)  return new CatCustomInventory(getPlayerInv((PlayerInvWrapper) handler));
         return null;
     }
 
@@ -49,5 +62,15 @@ public class CatCustomInventory implements InventoryHolder{
         InventoryHolder holder = holderFromForge(handler);
         return holder != null ? holder.getInventory() : null;
     }
-    
+
+    public static InventoryPlayer getPlayerInv(PlayerInvWrapper handler) {
+        IItemHandlerModifiable[] itemHandlers = ReflectionHelper.getPrivateValue(PlayerInvWrapper.class, handler, "itemHandler");
+        for (IItemHandlerModifiable itemHandler : itemHandlers) {
+            if (itemHandler instanceof PlayerMainInvWrapper)
+                return ((PlayerMainInvWrapper) itemHandler).getInventoryPlayer();
+            else if (itemHandler instanceof PlayerArmorInvWrapper)
+                return ((PlayerArmorInvWrapper) itemHandler).getInventoryPlayer();
+        }
+        return null;
+    }
 }

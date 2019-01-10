@@ -236,10 +236,4 @@ public class SidedInvWrapper implements IItemHandlerModifiable
     {
         return inv.isItemValidForSlot(slot, stack);
     }
-
-    // CatServer start
-    public net.minecraft.inventory.IInventory getInv() {
-        return this.inv;
-    }
-    // CatServer end
 }

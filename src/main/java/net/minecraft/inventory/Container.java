@@ -2,6 +2,8 @@ package net.minecraft.inventory;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import catserver.server.inventory.CatCustomInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -15,6 +17,8 @@ import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.World;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import net.minecraftforge.items.wrapper.PlayerInvWrapper;
+
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.entity.CraftPlayer;
 import org.bukkit.craftbukkit.inventory.CraftInventory;
@@ -80,6 +84,10 @@ public abstract class Container
             IInventory inv = it.next();
             if(inv instanceof InventoryPlayer) {
                 playerInv = (InventoryPlayer) inv;
+                it.remove();
+                break;
+            } else if (inv instanceof PlayerInvWrapper) {
+                playerInv = CatCustomInventory.getPlayerInv((PlayerInvWrapper) inv);
                 it.remove();
                 break;
             }
