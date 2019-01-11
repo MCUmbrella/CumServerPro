@@ -56,9 +56,15 @@ public class RemapUtils {
         }
 
         // Search superclass
-        Class superClass = inst.getSuperclass();
+        Class<?> superClass = inst.getSuperclass();
         if (superClass != null) {
             String superMethodName = mapMethodInternal(superClass, name, parameterTypes);
+            if (superMethodName != null) return superMethodName;
+        }
+
+        // Search interfaces
+        for (Class<?> interfaceClass : inst.getInterfaces()) {
+            String superMethodName = mapMethodInternal(interfaceClass, name, parameterTypes);
             if (superMethodName != null) return superMethodName;
         }
 
