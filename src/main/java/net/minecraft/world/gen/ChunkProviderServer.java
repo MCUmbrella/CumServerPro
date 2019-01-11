@@ -3,6 +3,7 @@ package net.minecraft.world.gen;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
+import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.io.IOException;
@@ -35,7 +36,7 @@ public class ChunkProviderServer implements IChunkProvider
     public final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
     public final IChunkGenerator chunkGenerator;
     public final IChunkLoader chunkLoader;
-    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<Chunk>(8192);
+    public final Long2ObjectMap<Chunk> id2ChunkMap = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<Chunk>(8192));
     public final WorldServer world;
     private final Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 

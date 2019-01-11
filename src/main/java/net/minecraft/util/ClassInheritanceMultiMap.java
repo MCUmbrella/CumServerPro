@@ -7,6 +7,7 @@ import it.unimi.dsi.fastutil.objects.ObjectLists;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
 {
@@ -15,7 +16,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
     private final Map < Class<?>, List<T >> map = new ConcurrentHashMap<>();
     private final Set < Class<? >> knownKeys = new ConcurrentSet<>();
     private final Class<T> baseClass;
-    private final List<T> values = ObjectLists.synchronize(new ObjectArrayList<>());
+    private final List<T> values = new CopyOnWriteArrayList<>();
 
     public ClassInheritanceMultiMap(Class<T> baseClassIn)
     {
