@@ -26,7 +26,7 @@ public class ReflectionMethods {
     // Get Fields
     public static Field getField(Class<?> inst, String name) throws NoSuchFieldException, SecurityException {
         if (RemapUtils.isClassNeedRemap(inst, true))
-            name = ReflectionTransformer.remapper.mapFieldName(RemapUtils.reverseMap(inst), name, null);
+            name = RemapUtils.mapFieldName(inst, name);
         return inst.getField(name);
     }
 

@@ -71,6 +71,18 @@ public class RemapUtils {
         return null;
     }
 
+    public static String mapFieldName(Class<?> inst, String name) {
+        String key = reverseMap(inst) + "/" + name;
+        String mapped = ReflectionTransformer.jarMapping.fields.get(key);
+        if (mapped == null) {
+            Class<?> superClass = inst.getSuperclass();
+            if (superClass != null) {
+                mapped = mapFieldName(superClass, name);
+            }
+        }
+        return mapped != null ? mapped : name;
+    }
+
     public static final String NMS_PREFIX = "net/minecraft/server/";
     public static final String NMS_VERSION = CatServer.getNativeVersion();
 
