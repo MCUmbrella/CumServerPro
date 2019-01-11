@@ -2,6 +2,9 @@ package net.minecraft.entity;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+
+import io.netty.util.internal.ConcurrentSet;
+
 import java.util.List;
 import java.util.Set;
 import net.minecraft.crash.CrashReport;
@@ -52,7 +55,7 @@ public class EntityTracker
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private final WorldServer world;
-    private final Set<EntityTrackerEntry> entries = Sets.<EntityTrackerEntry>newHashSet();
+    private final Set<EntityTrackerEntry> entries = new ConcurrentSet<EntityTrackerEntry>(); // CatServer - Set -> ConcurrentSet
     public final IntHashMap<EntityTrackerEntry> trackedEntityHashTable = new IntHashMap<EntityTrackerEntry>();
     private int maxTrackingDistanceThreshold;
 
