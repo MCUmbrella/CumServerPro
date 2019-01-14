@@ -2512,7 +2512,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         return 300;
     }
 
-    @SideOnly(Side.CLIENT)
+    //@SideOnly(Side.CLIENT) CatServer - allow mods invoke it on server
     public void setVelocity(double x, double y, double z)
     {
         this.motionX = x;
