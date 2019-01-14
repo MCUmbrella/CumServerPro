@@ -36,7 +36,7 @@ public class ChunkProviderServer implements IChunkProvider
     public final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
     public final IChunkGenerator chunkGenerator;
     public final IChunkLoader chunkLoader;
-    public final Long2ObjectMap<Chunk> id2ChunkMap = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<Chunk>(8192));
+    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<>(); //TODO: CatServer, I gave up it. F*CK Async.
     public final WorldServer world;
     private final Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 
