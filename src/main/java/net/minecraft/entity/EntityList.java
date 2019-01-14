@@ -142,7 +142,6 @@ public class EntityList
     }
 
     @Nullable
-    @SideOnly(Side.CLIENT)
     public static Class <? extends Entity > getClassFromID(int entityID)
     {
         net.minecraftforge.fml.common.registry.EntityEntry entry = net.minecraftforge.registries.GameData.getEntityRegistry().getValue(entityID);
@@ -150,7 +149,6 @@ public class EntityList
     }
 
     @Nullable
-    @SideOnly(Side.CLIENT)
     public static Class <? extends Entity > getClassFromName(String p_192839_0_)
     {
         net.minecraftforge.fml.common.registry.EntityEntry entry = net.minecraftforge.fml.common.registry.ForgeRegistries.ENTITIES.getValue(new ResourceLocation(p_192839_0_));
