@@ -41,7 +41,7 @@ import catserver.server.inventory.CatCustomInventory;
 
 public class TileEntityHopper extends TileEntityLockableLoot implements IHopper, ITickable
 {
-    private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>withSize(5, ItemStack.EMPTY);
+    private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>with(5, ItemStack.EMPTY, true);
     private int transferCooldown = -1;
     private long tickedGameTime;
     // CraftBukkit start - add fields and methods

@@ -1,9 +1,6 @@
 package net.minecraft.util;
 
-import java.util.AbstractList;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
+import java.util.*;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import org.apache.commons.lang3.Validate;
@@ -24,6 +21,13 @@ public class NonNullList<E> extends AbstractList<E>
         Object[] aobject = new Object[size];
         Arrays.fill(aobject, fill);
         return new NonNullList<E>(Arrays.asList((E[])aobject), fill);
+    }
+
+    public static <E> NonNullList<E> with(int size, E fill, boolean link) {
+        Validate.notNull(fill);
+        Object[] aobject = new Object[size];
+        Arrays.fill(aobject, fill);
+        return new NonNullList<E>(new LinkedList<E>(Arrays.asList((E[])aobject)), fill);
     }
 
     public static <E> NonNullList<E> from(E defaultElementIn, E... elements)
