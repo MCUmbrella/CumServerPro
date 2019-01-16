@@ -21,12 +21,15 @@ import net.minecraft.crash.ICrashReportDetail;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLiving;
 import net.minecraft.entity.EnumCreatureType;
+import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Biomes;
 import net.minecraft.init.Blocks;
+import net.minecraft.inventory.IInventory;
 import net.minecraft.network.PacketBuffer;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.ClassInheritanceMultiMap;
+import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.AxisAlignedBB;
@@ -75,6 +78,12 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     private final ConcurrentLinkedQueue<BlockPos> tileEntityPosQueue;
     public boolean unloadQueued;
     public gnu.trove.map.hash.TObjectIntHashMap<Class> entityCount = new gnu.trove.map.hash.TObjectIntHashMap<Class>(); // Spigot
+    // Paper start
+    // Track the number of minecarts and items
+    // Keep this synced with entitySlices.add() and entitySlices.remove()
+    private final int[] itemCounts = new int[16];
+    private final int[] inventoryEntityCounts = new int[16];
+    // Paper end
 
     // CraftBukkit start - Neighbor loaded cache for chunk lighting and entity ticking
     private int neighbors = 0x1 << 12;
@@ -785,6 +794,13 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         entityIn.chunkCoordZ = this.z;
         this.entityLists[k].add(entityIn);
         this.markDirty(); // Forge - ensure chunks are marked to save after an entity add
+
+        if (entityIn instanceof EntityItem) {
+            itemCounts[k]++;
+        } else if (entityIn instanceof IInventory) {
+            inventoryEntityCounts[k]++;
+        }
+
         // Spigot start - increment creature type count
         // Keep this synced up with World.a(Class)
         if (entityIn instanceof EntityLiving) {
@@ -822,6 +838,12 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
         this.entityLists[index].remove(entityIn);
         this.markDirty(); // Forge - ensure chunks are marked to save after entity removals
+        if (entityIn instanceof EntityItem) {
+            itemCounts[index]--;
+        } else if (entityIn instanceof IInventory) {
+            inventoryEntityCounts[index]--;
+        }
+
         // Spigot start - decrement creature type count
         // Keep this synced up with World.a(Class)
         if (entityIn instanceof EntityLiving) {
@@ -979,6 +1001,15 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         {
             if (!this.entityLists[k].isEmpty())
             {
+                // Paper start - Don't search for inventories if we have none, and that is all we want
+                /*
+                 * We check if they want inventories by seeing if it is the static `IEntitySelector.c`
+                 *
+                 * Make sure the inventory selector stays in sync.
+                 * It should be the one that checks `var1 instanceof IInventory && var1.isAlive()`
+                 */
+                if (filter == EntitySelectors.HAS_INVENTORY && inventoryEntityCounts[k] <= 0) continue;
+                // Paper end
                 for (Entity entity : this.entityLists[k])
                 {
                     if (entity.getEntityBoundingBox().intersects(aabb) && entity != entityIn)
@@ -1013,8 +1044,20 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         i = MathHelper.clamp(i, 0, this.entityLists.length - 1);
         j = MathHelper.clamp(j, 0, this.entityLists.length - 1);
 
+        // Paper start
+        int[] counts;
+        if (EntityItem.class.isAssignableFrom(entityClass)) {
+            counts = itemCounts;
+        } else if (IInventory.class.isAssignableFrom(entityClass)) {
+            counts = inventoryEntityCounts;
+        } else {
+            counts = null;
+        }
+        // Paper end
+
         for (int k = i; k <= j; ++k)
         {
+            if (counts != null && counts[k] <= 0) continue; // Paper - Don't check a chunk if it doesn't have the type we are looking for
             for (T t : this.entityLists[k].getByClass(entityClass))
             {
                 if (t.getEntityBoundingBox().intersects(aabb) && (filter == null || filter.apply(t)))

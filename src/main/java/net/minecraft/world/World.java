@@ -6,7 +6,6 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
@@ -98,7 +97,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     private int seaLevel = 63;
     protected boolean scheduledUpdatesAreImmediate;
-    public final List<Entity> loadedEntityList = new CopyOnWriteArrayList<>(); // CatServer - LinkedList -> CopyOnWriteArrayList
+    public final List<Entity> loadedEntityList = new Vector<>(); // CatServer - LinkedList -> Vector
     protected final List<Entity> unloadedEntityList = Lists.<Entity>newArrayList();
     public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
     public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();

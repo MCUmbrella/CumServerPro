@@ -7,13 +7,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Set;
-import java.util.concurrent.CopyOnWriteArrayList;
+
+import java.util.*;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -45,9 +40,9 @@ public class PlayerChunkMap
     private final List<EntityPlayerMP> players = Lists.<EntityPlayerMP>newArrayList();
     private final Long2ObjectMap<PlayerChunkMapEntry> entryMap = new Long2ObjectOpenHashMap<PlayerChunkMapEntry>(4096);
     private final Set<PlayerChunkMapEntry> dirtyEntries = Sets.<PlayerChunkMapEntry>newHashSet();
-    private final List<PlayerChunkMapEntry> pendingSendToPlayers = new CopyOnWriteArrayList<>(); // CatServer - LinkedList -> CopyOnWriteArrayList
-    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new CopyOnWriteArrayList<>(); // CatServer - LinkedList -> CopyOnWriteArrayList
-    private final List<PlayerChunkMapEntry> entries = new CopyOnWriteArrayList<>(); // CatServer - LinkedList -> CopyOnWriteArrayList
+    private final List<PlayerChunkMapEntry> pendingSendToPlayers = new Vector<>(); // CatServer - LinkedList -> Vector
+    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new Vector<>(); // CatServer - LinkedList -> Vector
+    private final List<PlayerChunkMapEntry> entries = new Vector<>(); // CatServer - LinkedList -> Vector
     private int playerViewRadius;
     private long previousTotalWorldTime;
     private boolean sortMissingChunks = true;
