@@ -6,6 +6,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
@@ -43,6 +44,7 @@ import net.minecraft.profiler.Profiler;
 import net.minecraft.scoreboard.Scoreboard;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.util.EntitySelectors;
 import net.minecraft.util.EnumFacing;
 import net.minecraft.util.EnumParticleTypes;
@@ -137,6 +139,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private boolean processingLoadedTiles;
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
+    private ConcurrentLinkedQueue<TileEntityHopper> hopperQueue = new ConcurrentLinkedQueue<>();
 
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
@@ -4370,5 +4373,14 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public BlockPos findNearestStructure(String p_190528_1_, BlockPos p_190528_2_, boolean p_190528_3_)
     {
         return null;
+    }
+
+    public void addHopperQueue(TileEntityHopper hopper)
+    {
+        this.hopperQueue.offer(hopper);
+    }
+
+    public ConcurrentLinkedQueue<TileEntityHopper> getHopperQueue() {
+        return hopperQueue;
     }
 }

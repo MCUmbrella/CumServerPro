@@ -1,5 +1,6 @@
 package net.minecraft.world;
 
+import catserver.server.threads.HopperThread;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -14,6 +15,7 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -226,7 +228,13 @@ public class WorldServer extends World implements IThreadListener
         }
 
         this.initCapabilities();
+        this.initHopperThread(super.getHopperQueue());
         return this;
+    }
+
+    private void initHopperThread(ConcurrentLinkedQueue<TileEntityHopper> queue)
+    {
+        new Thread(new HopperThread(this, queue), this.getWorld().getName() + " - HopperThread").start();
     }
 
     @Override

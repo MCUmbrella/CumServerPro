@@ -42,8 +42,8 @@ import catserver.server.inventory.CatCustomInventory;
 public class TileEntityHopper extends TileEntityLockableLoot implements IHopper, ITickable
 {
     private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>with(5, ItemStack.EMPTY, true);
-    private int transferCooldown = -1;
-    private long tickedGameTime;
+    public int transferCooldown = -1;
+    public long tickedGameTime;
     // CraftBukkit start - add fields and methods
     public List<HumanEntity> transaction = new java.util.ArrayList<HumanEntity>();
     private int maxStack = MAX_STACK;
@@ -145,20 +145,10 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
 
     public void update()
     {
-        if (this.world != null && !this.world.isRemote)
-        {
-            --this.transferCooldown;
-            this.tickedGameTime = this.world.getTotalWorldTime();
-
-            if (!this.isOnTransferCooldown())
-            {
-                this.setTransferCooldown(0);
-                this.updateHopper();
-            }
-        }
+        this.world.addHopperQueue(this);
     }
 
-    protected boolean updateHopper()
+    public boolean updateHopper()
     {
         if (this.world != null && !this.world.isRemote)
         {
@@ -670,7 +660,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
         this.transferCooldown = ticks;
     }
 
-    private boolean isOnTransferCooldown()
+    public boolean isOnTransferCooldown()
     {
         return this.transferCooldown > 0;
     }

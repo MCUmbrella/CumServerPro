@@ -2,8 +2,6 @@ package net.minecraft.util;
 
 import com.google.common.collect.Iterators;
 import io.netty.util.internal.ConcurrentSet;
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
-import it.unimi.dsi.fastutil.objects.ObjectLists;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
@@ -81,7 +79,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
 
         if (list == null)
         {
-            List<T> ll = ObjectLists.synchronize(new ObjectArrayList<>());
+            List<T> ll = new CopyOnWriteArrayList<>();
             ll.add(value);
             this.map.put(parentClass, ll);
         }
