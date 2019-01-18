@@ -237,7 +237,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
     }
 
     public CraftPlayer getPlayer() {
-        return (this.player == null) ? null : (CraftPlayer) this.player.getBukkitEntity();
+        return (this.player == null) ? null : this.player.getBukkitEntity();
     }
 
     public void update()
@@ -252,8 +252,8 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         {
             if (++this.floatingTickCount > 80)
             {
-                LOGGER.warn("{} was kicked for floating too long!", (Object)this.player.getName());
-                this.disconnect(new TextComponentTranslation("multiplayer.disconnect.flying", new Object[0]));
+                LOGGER.warn("{} was kicked for floating too long!", this.player.getName());
+                this.disconnect(new TextComponentTranslation("multiplayer.disconnect.flying"));
                 return;
             }
         }
@@ -278,8 +278,8 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             {
                 if (++this.vehicleFloatingTickCount > 80)
                 {
-                    LOGGER.warn("{} was kicked for floating a vehicle too long!", (Object)this.player.getName());
-                    this.disconnect(new TextComponentTranslation("multiplayer.disconnect.flying", new Object[0]));
+                    LOGGER.warn("{} was kicked for floating a vehicle too long!", this.player.getName());
+                    this.disconnect(new TextComponentTranslation("multiplayer.disconnect.flying"));
                     return;
                 }
             }
@@ -336,7 +336,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         if (this.player.getLastActiveTime() > 0L && this.serverController.getMaxPlayerIdleMinutes() > 0 && MinecraftServer.getCurrentTimeMillis() - this.player.getLastActiveTime() > (long)(this.serverController.getMaxPlayerIdleMinutes() * 1000 * 60))
         {
             this.player.markPlayerActive(); // CraftBukkit - SPIGOT-854
-            this.disconnect(new TextComponentTranslation("multiplayer.disconnect.idling", new Object[0]));
+            this.disconnect(new TextComponentTranslation("multiplayer.disconnect.idling"));
         }
     }
 
@@ -441,7 +441,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
         if (isMoveVehiclePacketInvalid(packetIn))
         {
-            this.disconnect(new TextComponentTranslation("multiplayer.disconnect.invalid_vehicle_movement", new Object[0]));
+            this.disconnect(new TextComponentTranslation("multiplayer.disconnect.invalid_vehicle_movement"));
         }
         else
         {
@@ -490,7 +490,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 }
                 speed *= 2f; // TODO: Get the speed of the vehicle instead of the player
 
-                if (d10 - d9 > Math.max(100.0D, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(entity.getName()))) { // Spigot
+                if (d10 - d9 > Math.max(100.0D, Math.pow((org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(entity.getName()))) { // Spigot
                     // CraftBukkit end
                     LOGGER.warn("{} (vehicle of {}) moved too quickly! {},{},{}", entity.getName(), this.player.getName(), Double.valueOf(d6), Double.valueOf(d7), Double.valueOf(d8));
                     this.netManager.sendPacket(new SPacketMoveVehicle(entity));
@@ -518,7 +518,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) // Spigot
                 {
                     flag1 = true;
-                    LOGGER.warn("{} moved wrongly!", (Object)entity.getName());
+                    LOGGER.warn("{} moved wrongly!", entity.getName());
                 }
 
                 entity.setPositionAndRotation(d3, d4, d5, f, f1);
@@ -656,7 +656,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
         if (isMovePlayerPacketInvalid(packetIn))
         {
-            this.disconnect(new TextComponentTranslation("multiplayer.disconnect.invalid_player_movement", new Object[0]));
+            this.disconnect(new TextComponentTranslation("multiplayer.disconnect.invalid_player_movement"));
         }
         else
         {
@@ -750,7 +750,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                             {
                                 float f2 = this.player.isElytraFlying() ? 300.0F : 100.0F;
 
-                                if (d11 - d10 > Math.max(f2, Math.pow((double) (org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(this.player.getName()))) // Spigot
+                                if (d11 - d10 > Math.max(f2, Math.pow((org.spigotmc.SpigotConfig.movedTooQuicklyMultiplier * (float) i * speed), 2)) && (!this.serverController.isSinglePlayer() || !this.serverController.getServerOwner().equals(this.player.getName()))) // Spigot
                                 {
                                     LOGGER.warn("{} moved too quickly! {},{},{}", this.player.getName(), Double.valueOf(d7), Double.valueOf(d8), Double.valueOf(d9));
                                     this.setPlayerLocation(this.player.posX, this.player.posY, this.player.posZ, this.player.rotationYaw, this.player.rotationPitch);
@@ -786,7 +786,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                             if (!this.player.isInvulnerableDimensionChange() && d11 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !this.player.isPlayerSleeping() && !this.player.interactionManager.isCreative() && this.player.interactionManager.getGameType() != GameType.SPECTATOR)  // Spigot
                             {
                                 flag = true;
-                                LOGGER.warn("{} moved wrongly!", (Object)this.player.getName());
+                                LOGGER.warn("{} moved wrongly!", this.player.getName());
                             }
 
                             this.player.setPositionAndRotation(d4, d5, d6, f, f1);
@@ -1146,7 +1146,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         }
         else
         {
-            TextComponentTranslation textcomponenttranslation = new TextComponentTranslation("build.tooHigh", new Object[] {this.serverController.getBuildLimit()});
+            TextComponentTranslation textcomponenttranslation = new TextComponentTranslation("build.tooHigh", this.serverController.getBuildLimit());
             textcomponenttranslation.getStyle().setColor(TextFormatting.RED);
             this.player.connection.sendPacket(new SPacketChat(textcomponenttranslation, ChatType.GAME_INFO));
         }
@@ -1382,7 +1382,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         }
         else
         {
-            LOGGER.warn("{} tried to set an invalid carried item", (Object)this.player.getName());
+            LOGGER.warn("{} tried to set an invalid carried item", this.player.getName());
             this.disconnect("Nope!"); // CraftBukkit
         }
     }
@@ -1404,7 +1404,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
         if (this.player.isDead || this.player.getChatVisibility() == EntityPlayer.EnumChatVisibility.HIDDEN) // CraftBukkit - dead men tell no tales
         {
-            TextComponentTranslation textcomponenttranslation = new TextComponentTranslation("chat.cannotSend", new Object[0]);
+            TextComponentTranslation textcomponenttranslation = new TextComponentTranslation("chat.cannotSend");
             textcomponenttranslation.getStyle().setColor(TextFormatting.RED);
             this.sendPacket(new SPacketChat(textcomponenttranslation));
         }
@@ -1424,7 +1424,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                         Waitable waitable = new Waitable() {
                             @Override
                             protected Object evaluate() {
-                                NetHandlerPlayServer.this.disconnect(new TextComponentTranslation("multiplayer.disconnect.illegal_characters", new Object[0]));
+                                NetHandlerPlayServer.this.disconnect(new TextComponentTranslation("multiplayer.disconnect.illegal_characters"));
                                 return null;
                             }
                         };
@@ -1439,7 +1439,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                             throw new RuntimeException(e);
                         }
                     } else {
-                        this.disconnect(new TextComponentTranslation("multiplayer.disconnect.illegal_characters", new Object[0]));
+                        this.disconnect(new TextComponentTranslation("multiplayer.disconnect.illegal_characters"));
                     }
                     // CraftBukkit end
                     return;
@@ -1459,7 +1459,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             } else if (getPlayer().isConversing()) {
                 getPlayer().acceptConversationInput(s);
             } else if (this.player.getChatVisibility() == EntityPlayer.EnumChatVisibility.SYSTEM) { // Re-add "Command Only" flag check
-                TextComponentTranslation chatmessage = new TextComponentTranslation("chat.cannotSend", new Object[0]);
+                TextComponentTranslation chatmessage = new TextComponentTranslation("chat.cannotSend");
 
                 chatmessage.getStyle().setColor(TextFormatting.RED);
                 this.sendPacket(new SPacketChat(chatmessage));
@@ -1493,7 +1493,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                     Waitable waitable = new Waitable() {
                         @Override
                         protected Object evaluate() {
-                            NetHandlerPlayServer.this.disconnect(new TextComponentTranslation("disconnect.spam", new Object[0]));
+                            NetHandlerPlayServer.this.disconnect(new TextComponentTranslation("disconnect.spam"));
                             return null;
                         }
                     };
@@ -1508,7 +1508,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                         throw new RuntimeException(e);
                     }
                 } else {
-                    this.disconnect(new TextComponentTranslation("disconnect.spam", new Object[0]));
+                    this.disconnect(new TextComponentTranslation("disconnect.spam"));
                 }
                 // CraftBukkit end
             }
@@ -1592,7 +1592,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         // CraftBukkit start - whole method
         org.bukkit.craftbukkit.SpigotTimings.playerCommandTimer.startTiming(); // Spigot
         if (org.spigotmc.SpigotConfig.logCommands) // Spigot
-        this.LOGGER.info(this.player.getName() + " issued server command: " + command);
+        LOGGER.info(this.player.getName() + " issued server command: " + command);
 
         CraftPlayer player = this.getPlayer();
 
@@ -1785,10 +1785,10 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                     Item origItem = this.player.inventory.getCurrentItem() == null ? null : this.player.inventory.getCurrentItem().getItem();
                     PlayerInteractEntityEvent event;
                     if (packetIn.getAction() == CPacketUseEntity.Action.INTERACT) {
-                        event = new PlayerInteractEntityEvent((Player) this.getPlayer(), entity.getBukkitEntity(), (packetIn.getHand() == EnumHand.OFF_HAND) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
+                        event = new PlayerInteractEntityEvent(this.getPlayer(), entity.getBukkitEntity(), (packetIn.getHand() == EnumHand.OFF_HAND) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
                     } else {
                         Vec3d target = packetIn.getHitVec();
-                        event = new PlayerInteractAtEntityEvent((Player) this.getPlayer(), entity.getBukkitEntity(), new org.bukkit.util.Vector(target.x, target.y, target.z), (packetIn.getHand() == EnumHand.OFF_HAND) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
+                        event = new PlayerInteractAtEntityEvent(this.getPlayer(), entity.getBukkitEntity(), new org.bukkit.util.Vector(target.x, target.y, target.z), (packetIn.getHand() == EnumHand.OFF_HAND) ? EquipmentSlot.OFF_HAND : EquipmentSlot.HAND);
                     }
                     this.server.getPluginManager().callEvent(event);
 
@@ -1829,7 +1829,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 {
                     if (entity instanceof EntityItem || entity instanceof EntityXPOrb || entity instanceof EntityArrow || (entity == this.player && !player.isSpectator()))
                     {
-                        this.disconnect(new TextComponentTranslation("multiplayer.disconnect.invalid_entity_attacked", new Object[0]));
+                        this.disconnect(new TextComponentTranslation("multiplayer.disconnect.invalid_entity_attacked"));
                         this.serverController.logWarning("Player " + this.player.getName() + " tried to attack an invalid entity");
                         return;
                     }
@@ -1902,11 +1902,11 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             boolean cancelled = this.player.isSpectator(); // CraftBukkit - see below if
             if (false/*this.player.isSpectator()*/)
             {
-                NonNullList<ItemStack> nonnulllist = NonNullList.<ItemStack>create();
+                NonNullList<ItemStack> nonnulllist = NonNullList.create();
 
                 for (int i = 0; i < this.player.openContainer.inventorySlots.size(); ++i)
                 {
-                    nonnulllist.add(((Slot)this.player.openContainer.inventorySlots.get(i)).getStack());
+                    nonnulllist.add(this.player.openContainer.inventorySlots.get(i).getStack());
                 }
 
                 this.player.sendAllContents(this.player.openContainer, nonnulllist);
@@ -2206,11 +2206,11 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                     this.pendingTransactions.addKey(this.player.openContainer.windowId, Short.valueOf(packetIn.getActionNumber()));
                     this.player.connection.sendPacket(new SPacketConfirmTransaction(packetIn.getWindowId(), packetIn.getActionNumber(), false));
                     this.player.openContainer.setCanCraft(this.player, false);
-                    NonNullList<ItemStack> nonnulllist1 = NonNullList.<ItemStack>create();
+                    NonNullList<ItemStack> nonnulllist1 = NonNullList.create();
 
                     for (int j = 0; j < this.player.openContainer.inventorySlots.size(); ++j)
                     {
-                        ItemStack itemstack2 = ((Slot)this.player.openContainer.inventorySlots.get(j)).getStack();
+                        ItemStack itemstack2 = this.player.openContainer.inventorySlots.get(j).getStack();
                         ItemStack itemstack1 = itemstack2.isEmpty() ? ItemStack.EMPTY : itemstack2;
                         nonnulllist1.add(itemstack1);
                     }
@@ -2395,7 +2395,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 lines[i] = TextFormatting.getTextWithoutFormattingCodes(new TextComponentString(TextFormatting.getTextWithoutFormattingCodes(astring[i])).getUnformattedText());
             }
 
-            SignChangeEvent event = new SignChangeEvent((org.bukkit.craftbukkit.block.CraftBlock) player.getWorld().getBlockAt(x, y, z), this.server.getPlayer(this.player), lines);
+            SignChangeEvent event = new SignChangeEvent(player.getWorld().getBlockAt(x, y, z), this.server.getPlayer(this.player), lines);
             this.server.getPluginManager().callEvent(event);
 
             if (!event.isCancelled()) {
@@ -2420,7 +2420,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         }
         else if (!this.player.getName().equals(this.serverController.getServerOwner()))
         {
-            this.asyncDisconnect(new TextComponentTranslation("disconnect.timeout", new Object[0]));
+            this.asyncDisconnect(new TextComponentTranslation("disconnect.timeout"));
         }
         // CatServer end
     }
@@ -2449,17 +2449,17 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
     {
         PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.player.getServerWorld());
         if (chatSpamField.addAndGet(this, 10) > 500 && !this.serverController.getPlayerList().canSendCommands(this.player.getGameProfile())) {
-            this.disconnect(new TextComponentTranslation("disconnect.spam", new Object[0]));
+            this.disconnect(new TextComponentTranslation("disconnect.spam"));
             return;
         }
-        List<String> list = Lists.<String>newArrayList();
+        List<String> list = Lists.newArrayList();
 
         for (String s : this.serverController.getTabCompletions(this.player, packetIn.getMessage(), packetIn.getTargetBlock(), packetIn.hasTargetBlock()))
         {
             list.add(s);
         }
 
-        this.player.connection.sendPacket(new SPacketTabComplete((String[])list.toArray(new String[list.size()])));
+        this.player.connection.sendPacket(new SPacketTabComplete(list.toArray(new String[list.size()])));
     }
 
     public void processClientSettings(CPacketClientSettings packetIn)
@@ -2511,7 +2511,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             }
             catch (Exception exception6)
             {
-                LOGGER.error("Couldn't handle book info", (Throwable)exception6);
+                LOGGER.error("Couldn't handle book info", exception6);
                 this.disconnect("Invalid book data!");
             }
         }
@@ -2567,7 +2567,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             }
             catch (Exception exception7)
             {
-                LOGGER.error("Couldn't sign book", (Throwable)exception7);
+                LOGGER.error("Couldn't sign book", exception7);
                 this.disconnect("Invalid book data!");
             }
         }
@@ -2585,7 +2585,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             }
             catch (Exception exception5)
             {
-                LOGGER.error("Couldn't select trade", (Throwable)exception5);
+                LOGGER.error("Couldn't select trade", exception5);
                 this.disconnect("Invalid trade data!");
             }
         }
@@ -2593,13 +2593,13 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         {
             if (!this.serverController.isCommandBlockEnabled())
             {
-                this.player.sendMessage(new TextComponentTranslation("advMode.notEnabled", new Object[0]));
+                this.player.sendMessage(new TextComponentTranslation("advMode.notEnabled"));
                 return;
             }
 
             if (!this.player.canUseCommandBlock())
             {
-                this.player.sendMessage(new TextComponentTranslation("advMode.notAllowed", new Object[0]));
+                this.player.sendMessage(new TextComponentTranslation("advMode.notAllowed"));
                 return;
             }
 
@@ -2639,16 +2639,16 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
                     if (!flag2)
                     {
-                        commandblockbaselogic1.setLastOutput((ITextComponent)null);
+                        commandblockbaselogic1.setLastOutput(null);
                     }
 
                     commandblockbaselogic1.updateCommand();
-                    this.player.sendMessage(new TextComponentTranslation("advMode.setCommand.success", new Object[] {s6}));
+                    this.player.sendMessage(new TextComponentTranslation("advMode.setCommand.success", s6));
                 }
             }
             catch (Exception exception4)
             {
-                LOGGER.error("Couldn't set command block", (Throwable)exception4);
+                LOGGER.error("Couldn't set command block", exception4);
                 this.disconnect("Invalid command data!");
             }
         }
@@ -2656,13 +2656,13 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         {
             if (!this.serverController.isCommandBlockEnabled())
             {
-                this.player.sendMessage(new TextComponentTranslation("advMode.notEnabled", new Object[0]));
+                this.player.sendMessage(new TextComponentTranslation("advMode.notEnabled"));
                 return;
             }
 
             if (!this.player.canUseCommandBlock())
             {
-                this.player.sendMessage(new TextComponentTranslation("advMode.notAllowed", new Object[0]));
+                this.player.sendMessage(new TextComponentTranslation("advMode.notAllowed"));
                 return;
             }
 
@@ -2689,7 +2689,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
                 if (commandblockbaselogic != null)
                 {
-                    EnumFacing enumfacing = (EnumFacing)this.player.world.getBlockState(blockpos1).getValue(BlockCommandBlock.FACING);
+                    EnumFacing enumfacing = this.player.world.getBlockState(blockpos1).getValue(BlockCommandBlock.FACING);
 
                     switch (tileentitycommandblock$mode)
                     {
@@ -2713,7 +2713,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
                     if (!flag3)
                     {
-                        commandblockbaselogic.setLastOutput((ITextComponent)null);
+                        commandblockbaselogic.setLastOutput(null);
                     }
 
                     tileentitycommandblock.setAuto(flag1);
@@ -2721,13 +2721,13 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
                     if (!net.minecraft.util.StringUtils.isNullOrEmpty(s7))
                     {
-                        this.player.sendMessage(new TextComponentTranslation("advMode.setCommand.success", new Object[] {s7}));
+                        this.player.sendMessage(new TextComponentTranslation("advMode.setCommand.success", s7));
                     }
                 }
             }
             catch (Exception exception3)
             {
-                LOGGER.error("Couldn't set command block", (Throwable)exception3);
+                LOGGER.error("Couldn't set command block", exception3);
                 this.disconnect("Invalid command data!");
             }
         }
@@ -2754,7 +2754,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 }
                 catch (Exception exception2)
                 {
-                    LOGGER.error("Couldn't set beacon", (Throwable)exception2);
+                    LOGGER.error("Couldn't set beacon", exception2);
                     this.disconnect("Invalid beacon data!");
                 }
             }
@@ -2826,37 +2826,37 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                     {
                         if (tileentitystructure.save())
                         {
-                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.save_success", new Object[] {s4}), false);
+                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.save_success", s4), false);
                         }
                         else
                         {
-                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.save_failure", new Object[] {s4}), false);
+                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.save_failure", s4), false);
                         }
                     }
                     else if (l1 == 3)
                     {
                         if (!tileentitystructure.isStructureLoadable())
                         {
-                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.load_not_found", new Object[] {s4}), false);
+                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.load_not_found", s4), false);
                         }
                         else if (tileentitystructure.load())
                         {
-                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.load_success", new Object[] {s4}), false);
+                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.load_success", s4), false);
                         }
                         else
                         {
-                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.load_prepare", new Object[] {s4}), false);
+                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.load_prepare", s4), false);
                         }
                     }
                     else if (l1 == 4)
                     {
                         if (tileentitystructure.detectSize())
                         {
-                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.size_success", new Object[] {s4}), false);
+                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.size_success", s4), false);
                         }
                         else
                         {
-                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.size_failure", new Object[0]), false);
+                            this.player.sendStatusMessage(new TextComponentTranslation("structure_block.size_failure"), false);
                         }
                     }
 
@@ -2866,7 +2866,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             }
             catch (Exception exception1)
             {
-                LOGGER.error("Couldn't set structure block", (Throwable)exception1);
+                LOGGER.error("Couldn't set structure block", exception1);
                 this.disconnect("Invalid structure data!");
             }
         }
@@ -2884,7 +2884,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             }
             catch (Exception exception)
             {
-                LOGGER.error("Couldn't pick item", (Throwable)exception);
+                LOGGER.error("Couldn't pick item", exception);
                 this.disconnect("Invalid pick item!");
             }
         }
@@ -2935,7 +2935,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         {
             if (this.field_194403_g)
             {
-                this.asyncDisconnect(new TextComponentTranslation("disconnect.timeout", new Object[0]));
+                this.asyncDisconnect(new TextComponentTranslation("disconnect.timeout"));
             }
             else
             {
