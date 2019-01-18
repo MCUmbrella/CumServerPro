@@ -105,7 +105,7 @@ class NamespacedWrapper<V extends IForgeRegistryEntry<V>> extends RegistryNamesp
 
     //internal
     @Override
-    public void lock(){ /* this.locked = true; */ } // CatServer - allow Bukkit register
+    public void lock(){ this.locked = true; }
 
     public static class Factory<V extends IForgeRegistryEntry<V>> implements IForgeRegistry.CreateCallback<V>
     {

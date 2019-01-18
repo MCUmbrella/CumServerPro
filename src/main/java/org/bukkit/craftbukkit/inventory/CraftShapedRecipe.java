@@ -8,6 +8,7 @@ import net.minecraft.item.crafting.Ingredient;
 import net.minecraft.item.crafting.ShapedRecipes;
 import net.minecraft.util.NonNullList;
 import net.minecraftforge.fml.common.registry.ForgeRegistries;
+import net.minecraftforge.registries.ForgeRegistry;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.craftbukkit.util.CraftNamespacedKey;
@@ -61,6 +62,8 @@ public class CraftShapedRecipe extends ShapedRecipe implements CraftRecipe {
         ShapedRecipes recipe = new ShapedRecipes("", width, shape.length, data, CraftItemStack.asNMSCopy(this.getResult()));
         recipe.setKey(CraftNamespacedKey.toMinecraft(this.getKey()));
         recipe.setRegistryName(recipe.key);
+        ((ForgeRegistry <IRecipe>) ForgeRegistries.RECIPES).unfreeze();
         ForgeRegistries.RECIPES.register(recipe);
+        ((ForgeRegistry <IRecipe>) ForgeRegistries.RECIPES).freeze();
     }
 }
