@@ -13,6 +13,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 
 import catserver.server.BukkitInjector;
 import catserver.server.Metrics;
+import catserver.server.utils.AsyncKeepaliveThread;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
@@ -472,6 +473,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.currentTask = null;
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
+        AsyncKeepaliveThread.startThread(); // CatServer
         new Metrics();
     }
 
@@ -522,6 +524,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         if (this.playerList != null)
         {
             LOGGER.info("Saving players");
+            AsyncKeepaliveThread.stopThread(); // CatServer
             this.playerList.saveAllPlayerData();
             this.playerList.removeAllPlayers();
             try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets

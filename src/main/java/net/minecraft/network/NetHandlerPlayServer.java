@@ -297,6 +297,9 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         }
 
         this.serverController.profiler.startSection("keepAlive");
+
+        // CatServer - move to asynchronous thread
+        /*
         long i = this.currentTimeMillis();
 
         if (i - this.field_194402_f >= 25000L) // CraftBukkit
@@ -313,6 +316,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 this.sendPacket(new SPacketKeepAlive(this.field_194404_h));
             }
         }
+        */
 
         this.serverController.profiler.endSection();
         // CraftBukkit start
@@ -350,6 +354,19 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
     {
         return this.netManager;
     }
+
+    // CatServer start
+    private boolean asyncProcessingDisconnect;
+    public void asyncDisconnect(ITextComponent ichatbasecomponent) {
+        if (this.asyncProcessingDisconnect)
+            return;
+        this.asyncProcessingDisconnect = true;
+        String text = CraftChatMessage.fromComponent(ichatbasecomponent, TextFormatting.WHITE);
+        this.serverController.addScheduledTask(() -> {
+            disconnect(text);
+        });
+    }
+    // CatServer end
 
     @Deprecated
     public void disconnect(ITextComponent ichatbasecomponent) {
@@ -2393,7 +2410,8 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
     public void processKeepAlive(CPacketKeepAlive packetIn)
     {
-        PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.player.getServerWorld());
+        // CatServer start - asynchronous handle
+        // PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.player.getServerWorld())
         if (this.field_194403_g && packetIn.getKey() == this.field_194404_h)
         {
             int i = (int)(this.currentTimeMillis() - this.field_194402_f);
@@ -2402,8 +2420,9 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         }
         else if (!this.player.getName().equals(this.serverController.getServerOwner()))
         {
-            this.disconnect(new TextComponentTranslation("disconnect.timeout", new Object[0]));
+            this.asyncDisconnect(new TextComponentTranslation("disconnect.timeout", new Object[0]));
         }
+        // CatServer end
     }
 
     private long currentTimeMillis()
@@ -2905,4 +2924,27 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
     public final boolean isDisconnected() {
         return !this.player.joining && !this.netManager.isChannelOpen();
     }
+
+    // CatServer start
+    public void asyncKeepalive() {
+        if (netManager == null || asyncProcessingDisconnect) return;
+
+        long i = this.currentTimeMillis();
+
+        if (i - this.field_194402_f >= 25000L) // CraftBukkit
+        {
+            if (this.field_194403_g)
+            {
+                this.asyncDisconnect(new TextComponentTranslation("disconnect.timeout", new Object[0]));
+            }
+            else
+            {
+                this.field_194403_g = true;
+                this.field_194402_f = i;
+                this.field_194404_h = i;
+                this.sendPacket(new SPacketKeepAlive(this.field_194404_h));
+            }
+        }
+    }
+    // CatServer end
 }
