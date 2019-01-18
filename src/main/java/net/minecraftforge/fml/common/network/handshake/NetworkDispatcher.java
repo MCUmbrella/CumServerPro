@@ -208,11 +208,6 @@ public class NetworkDispatcher extends SimpleChannelInboundHandler<Packet<?>> im
                 if (this.player.connection != this) return;
                 super.update();
             }
-
-            @Override
-            public void sendPacket(Packet<?> packetIn) {
-                super.sendPacket(packetIn);
-            }
         };
         this.netHandler = serverHandler;
         // NULL the play server here - we restore it further on. If not, there are packets sent before the login
