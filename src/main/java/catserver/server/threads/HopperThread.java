@@ -33,7 +33,12 @@ public class HopperThread extends Thread {
                     if (!hopper.isOnTransferCooldown())
                     {
                         hopper.setTransferCooldown(0);
-                        hopper.updateHopper();
+                        hopper.lock.lock();
+                        try {
+                            hopper.updateHopper();
+                        }finally {
+                            hopper.lock.unlock();
+                        }
                     }
                 }
             }catch (Exception e) {

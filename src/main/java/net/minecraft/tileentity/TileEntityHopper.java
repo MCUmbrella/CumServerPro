@@ -1,6 +1,8 @@
 package net.minecraft.tileentity;
 
 import java.util.List;
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Nullable;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
@@ -44,6 +46,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
     private NonNullList<ItemStack> inventory = NonNullList.<ItemStack>with(5, ItemStack.EMPTY, true);
     public int transferCooldown = -1;
     public long tickedGameTime;
+    public Lock lock = new ReentrantLock();
     // CraftBukkit start - add fields and methods
     public List<HumanEntity> transaction = new java.util.ArrayList<HumanEntity>();
     private int maxStack = MAX_STACK;
@@ -124,12 +127,16 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
 
     public void setInventorySlotContents(int index, ItemStack stack)
     {
-        this.fillWithLoot((EntityPlayer)null);
-        this.getItems().set(index, stack);
+        lock.lock();
+        try {
+            this.fillWithLoot((EntityPlayer) null);
+            this.getItems().set(index, stack);
 
-        if (stack.getCount() > this.getInventoryStackLimit())
-        {
-            stack.setCount(this.getInventoryStackLimit());
+            if (stack.getCount() > this.getInventoryStackLimit()) {
+                stack.setCount(this.getInventoryStackLimit());
+            }
+        }finally {
+            lock.unlock();
         }
     }
 
