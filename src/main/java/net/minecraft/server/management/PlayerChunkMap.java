@@ -9,7 +9,6 @@ import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
 import java.util.*;
-import java.util.concurrent.CopyOnWriteArrayList;
 import javax.annotation.Nullable;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -41,9 +40,9 @@ public class PlayerChunkMap
     private final List<EntityPlayerMP> players = Lists.<EntityPlayerMP>newArrayList();
     private final Long2ObjectMap<PlayerChunkMapEntry> entryMap = new Long2ObjectOpenHashMap<PlayerChunkMapEntry>(4096);
     private final Set<PlayerChunkMapEntry> dirtyEntries = Sets.<PlayerChunkMapEntry>newHashSet();
-    private final List<PlayerChunkMapEntry> pendingSendToPlayers = new CopyOnWriteArrayList<>(); // CatServer - LinkedList -> CopyOnWriteArrayList
-    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new CopyOnWriteArrayList<>(); // CatServer - LinkedList -> CopyOnWriteArrayList
-    private final List<PlayerChunkMapEntry> entries = new CopyOnWriteArrayList<>(); // CatServer - LinkedList -> CopyOnWriteArrayList
+    private final List<PlayerChunkMapEntry> pendingSendToPlayers = new Vector<>(); // CatServer - LinkedList -> Vector
+    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new Vector<>(); // CatServer - LinkedList -> Vector
+    private final List<PlayerChunkMapEntry> entries = new Vector<>(); // CatServer - LinkedList -> Vector
     private int playerViewRadius;
     private long previousTotalWorldTime;
     private boolean sortMissingChunks = true;
@@ -169,7 +168,7 @@ public class PlayerChunkMap
 
                     if (playerchunkmapentry1.providePlayerChunk(flag))
                     {
-                        this.entriesWithoutChunks.remove(playerchunkmapentry1);
+                        iterator.remove();
 
                         if (playerchunkmapentry1.sendToPlayers())
                         {
@@ -185,7 +184,7 @@ public class PlayerChunkMap
                     }
                 } else {
                     // CraftBukkit - SPIGOT-2891: remove once chunk has been provided
-                    this.entriesWithoutChunks.remove(playerchunkmapentry1);
+                    iterator.remove();
                 }
             }
         }
@@ -201,7 +200,7 @@ public class PlayerChunkMap
 
                 if (playerchunkmapentry3.sendToPlayers())
                 {
-                    this.pendingSendToPlayers.remove(playerchunkmapentry3);
+                    iterator1.remove();
                     --i1;
 
                     if (i1 < 0)
