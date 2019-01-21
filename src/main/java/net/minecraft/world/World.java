@@ -97,7 +97,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     private int seaLevel = 63;
     protected boolean scheduledUpdatesAreImmediate;
-    public final List<Entity> loadedEntityList = new Vector<>(); // CatServer - LinkedList -> Vector
+    public final List<Entity> loadedEntityList = Lists.<Entity>newArrayList();
     protected final List<Entity> unloadedEntityList = Lists.<Entity>newArrayList();
     public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
     public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();
