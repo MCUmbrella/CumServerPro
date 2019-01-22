@@ -13,7 +13,7 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 
 import catserver.server.BukkitInjector;
 import catserver.server.Metrics;
-import catserver.server.utils.AsyncKeepaliveThread;
+import catserver.server.threads.AsyncKeepaliveThread;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;

@@ -1,4 +1,4 @@
-package catserver.server.utils;
+package catserver.server.threads;
 
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.server.MinecraftServer;
