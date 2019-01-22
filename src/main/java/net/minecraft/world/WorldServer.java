@@ -1,6 +1,8 @@
 package net.minecraft.world;
 
+import catserver.server.threads.EntityMoveThread;
 import catserver.server.threads.HopperThread;
+import catserver.server.utils.EntityMoveTask;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -229,12 +231,17 @@ public class WorldServer extends World implements IThreadListener
 
         this.initCapabilities();
         this.initHopperThread(super.getHopperQueue());
+        this.initEntityMoveThread(super.getEntityMoveQueue());
         return this;
     }
 
     private void initHopperThread(ConcurrentLinkedQueue<TileEntityHopper> queue)
     {
         new Thread(new HopperThread(this, queue), this.getWorld().getName() + " - HopperThread").start();
+    }
+
+    private void initEntityMoveThread(ConcurrentLinkedQueue<EntityMoveTask> queue) {
+        new Thread(new EntityMoveThread(this, queue), this.getWorld().getName() + " - EntityMoveThread").start();
     }
 
     @Override

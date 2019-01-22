@@ -1,5 +1,6 @@
 package net.minecraft.entity;
 
+import catserver.server.utils.EntityMoveTask;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -730,6 +731,16 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public void move(MoverType type, double x, double y, double z)
     {
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.startTiming(); // Spigot
+        if (this instanceof EntityPlayer) {
+            move0(type, x, y, z, false);
+            return;
+        }
+        world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z));
+        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
+    }
+
+    public void move0(MoverType type, double x, double y, double z, boolean async)
+    {
         if (this.noClip)
         {
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
@@ -1202,7 +1213,6 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
             this.world.profiler.endSection();
         }
-        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
     }
 
     public void resetPositionToBB()
