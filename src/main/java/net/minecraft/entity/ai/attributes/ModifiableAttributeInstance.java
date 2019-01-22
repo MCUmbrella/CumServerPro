@@ -85,7 +85,8 @@ public class ModifiableAttributeInstance implements IAttributeInstance
     {
         if (this.getModifier(modifier.getID()) != null)
         {
-            throw new IllegalArgumentException("Modifier is already applied on this attribute!");
+            new IllegalArgumentException("Modifier is already applied on this attribute!").printStackTrace();
+            // throw new IllegalArgumentException("Modifier is already applied on this attribute!");
         }
         else
         {
