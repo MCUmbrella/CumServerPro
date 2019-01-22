@@ -161,7 +161,8 @@ public class ContainerRepair extends Container
 
         if (itemstack.isEmpty())
         {
-            this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
+            // this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
+            if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CatServer - mods bypass
             this.maximumCost = 0;
         }
         else
@@ -206,7 +207,8 @@ public class ContainerRepair extends Container
                 {
                     if (!flag && (itemstack1.getItem() != itemstack2.getItem() || !itemstack1.isItemStackDamageable()))
                     {
-                        this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
+                        // this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
+                        if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CatServer - mods bypass
                         this.maximumCost = 0;
                         return;
                     }
