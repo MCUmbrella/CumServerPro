@@ -735,7 +735,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
             move0(type, x, y, z, false);
             return;
         }
-        world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z));
+        world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z, System.currentTimeMillis()));
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
     }
 
@@ -1113,7 +1113,11 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
                 if (bl.getType() != org.bukkit.Material.AIR) {
                     VehicleBlockCollisionEvent event = new VehicleBlockCollisionEvent(vehicle, bl);
-                    world.getServer().getPluginManager().callEvent(event);
+                    if (async) {
+                        getServer().processQueue.add(() -> world.getServer().getPluginManager().callEvent(event));
+                    }else {
+                        world.getServer().getPluginManager().callEvent(event);
+                    }
                 }
             }
 
@@ -1192,10 +1196,21 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
                     {
 //                        this.setFire(8);
                         EntityCombustEvent event = new org.bukkit.event.entity.EntityCombustByBlockEvent(null, getBukkitEntity(), 8);
-                        world.getServer().getPluginManager().callEvent(event);
+                        if (async) {
+                            getServer().processQueue.add(() -> {
+                                world.getServer().getPluginManager().callEvent(event);
 
-                        if (!event.isCancelled()) {
-                            this.setFire(event.getDuration());
+                                if (!event.isCancelled()) {
+                                    Entity.this.setFire(event.getDuration());
+                                }
+                            });
+
+                        }else {
+                            world.getServer().getPluginManager().callEvent(event);
+
+                            if (!event.isCancelled()) {
+                                this.setFire(event.getDuration());
+                            }
                         }
                     }
                 }

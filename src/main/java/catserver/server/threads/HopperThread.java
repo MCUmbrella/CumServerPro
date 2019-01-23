@@ -21,7 +21,7 @@ public class HopperThread extends Thread {
             try{
                 TileEntityHopper hopper = queue.poll();
                 if (hopper == null) {
-                    Thread.sleep(5);
+                    Thread.sleep(2);
                     continue;
                 }
                 if (world == null || !world.isBlockLoaded(hopper.getPos())) continue;

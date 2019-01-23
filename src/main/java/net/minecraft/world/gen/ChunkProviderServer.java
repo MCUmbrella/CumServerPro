@@ -2,6 +2,7 @@ package net.minecraft.world.gen;
 
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.netty.util.internal.ConcurrentSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
@@ -33,7 +34,7 @@ import org.bukkit.event.world.ChunkUnloadEvent;
 public class ChunkProviderServer implements IChunkProvider
 {
     private static final Logger LOGGER = LogManager.getLogger();
-    public final Set<Long> droppedChunksSet = Sets.<Long>newHashSet();
+    public final Set<Long> droppedChunksSet = new ConcurrentSet<>();
     public final IChunkGenerator chunkGenerator;
     public final IChunkLoader chunkLoader;
     public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<>(8192); //TODO: CatServer, I gave up it. F*CK Async.

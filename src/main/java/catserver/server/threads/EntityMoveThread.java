@@ -3,6 +3,7 @@ package catserver.server.threads;
 import catserver.server.utils.EntityMoveTask;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldServer;
+import net.minecraftforge.fml.common.FMLLog;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -19,13 +20,18 @@ public class EntityMoveThread extends Thread {
 
     @Override
     public void run() {
+        long nowTime = System.currentTimeMillis();
+        long count = 0;
         while (true) {
             try {
+                if ((count++ % 10) == 0)
+                    nowTime = System.currentTimeMillis();
                 EntityMoveTask task = queue.poll();
                 if (task == null) {
-                    Thread.sleep(5);
+                    Thread.sleep(2);
                     continue;
                 }
+                if (nowTime - task.time > 200) continue;
                 Entity entity = task.entity;
 
                 if (world == null || entity.isDead || !world.isChunkLoaded((int)entity.posX >> 4, (int)entity.posZ >> 4, true)) continue;
