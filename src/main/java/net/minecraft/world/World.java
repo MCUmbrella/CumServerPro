@@ -1,5 +1,6 @@
 package net.minecraft.world;
 
+import catserver.server.utils.EntityMoveTask;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
@@ -140,6 +141,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
     private ConcurrentLinkedQueue<TileEntityHopper> hopperQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<EntityMoveTask> entityMoveQueue = new ConcurrentLinkedQueue<>();
 
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
@@ -4377,5 +4379,13 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public ConcurrentLinkedQueue<TileEntityHopper> getHopperQueue() {
         return hopperQueue;
+    }
+
+    public void addEntityMoveQueue(EntityMoveTask moveTask) {
+        this.entityMoveQueue.offer(moveTask);
+    }
+
+    public ConcurrentLinkedQueue<EntityMoveTask> getEntityMoveQueue() {
+        return entityMoveQueue;
     }
 }

@@ -1,5 +1,6 @@
 package net.minecraft.entity;
 
+import catserver.server.utils.EntityMoveTask;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -730,6 +731,16 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public void move(MoverType type, double x, double y, double z)
     {
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.startTiming(); // Spigot
+        if (this instanceof EntityPlayer) {
+            move0(type, x, y, z, false);
+            return;
+        }
+        world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z, System.currentTimeMillis()));
+        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
+    }
+
+    public void move0(MoverType type, double x, double y, double z, boolean async)
+    {
         if (this.noClip)
         {
             this.setEntityBoundingBox(this.getEntityBoundingBox().offset(x, y, z));
@@ -1102,7 +1113,11 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
                 if (bl.getType() != org.bukkit.Material.AIR) {
                     VehicleBlockCollisionEvent event = new VehicleBlockCollisionEvent(vehicle, bl);
-                    world.getServer().getPluginManager().callEvent(event);
+                    if (async) {
+                        getServer().processQueue.add(() -> world.getServer().getPluginManager().callEvent(event));
+                    }else {
+                        world.getServer().getPluginManager().callEvent(event);
+                    }
                 }
             }
 
@@ -1181,10 +1196,21 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
                     {
 //                        this.setFire(8);
                         EntityCombustEvent event = new org.bukkit.event.entity.EntityCombustByBlockEvent(null, getBukkitEntity(), 8);
-                        world.getServer().getPluginManager().callEvent(event);
+                        if (async) {
+                            getServer().processQueue.add(() -> {
+                                world.getServer().getPluginManager().callEvent(event);
 
-                        if (!event.isCancelled()) {
-                            this.setFire(event.getDuration());
+                                if (!event.isCancelled()) {
+                                    Entity.this.setFire(event.getDuration());
+                                }
+                            });
+
+                        }else {
+                            world.getServer().getPluginManager().callEvent(event);
+
+                            if (!event.isCancelled()) {
+                                this.setFire(event.getDuration());
+                            }
                         }
                     }
                 }
@@ -1202,7 +1228,6 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
             this.world.profiler.endSection();
         }
-        org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
     }
 
     public void resetPositionToBB()
