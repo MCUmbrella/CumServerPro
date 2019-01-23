@@ -99,9 +99,6 @@ public class PlayerInteractionManager
     {
         // ++this.curblockDamage;
         this.curblockDamage = MinecraftServer.currentTick;
-        // CatServer - Realtime start
-        fixupDiggingTime();
-        // CatServer - Realtime end
 
         if (this.receivedFinishDiggingPacket)
         {
@@ -624,11 +621,4 @@ public class PlayerInteractionManager
     {
         player.getEntityAttribute(EntityPlayer.REACH_DISTANCE).setBaseValue(distance);
     }
-
-    // CatServer - Realtime start
-    public void fixupDiggingTime() {
-        int ticks = (int) (this.world.getMinecraftServer()).getRealTimeTicks();
-        this.curblockDamage += ticks;
-    }
-    // CatServer - Realtime end
 }
