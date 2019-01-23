@@ -240,7 +240,8 @@ public class WorldServer extends World implements IThreadListener
         new Thread(new HopperThread(this, queue), this.getWorld().getName() + " - HopperThread").start();
     }
 
-    private void initEntityMoveThread(ConcurrentLinkedQueue<EntityMoveTask> queue) {
+    private void initEntityMoveThread(ConcurrentLinkedQueue<EntityMoveTask> queue)
+    {
         new Thread(new EntityMoveThread(this, queue), this.getWorld().getName() + " - EntityMoveThread").start();
     }
 
