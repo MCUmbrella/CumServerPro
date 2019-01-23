@@ -18,6 +18,7 @@ import javax.net.ssl.HttpsURLConnection;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
+import catserver.server.CatServer;
 import catserver.server.remapper.ReflectionUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
@@ -152,16 +153,17 @@ public final class VeryClient {
             ClassLoader cl = ReflectionHelper.getPrivateValue(FMLLaunchHandler.class, fmlLaunch, "classLoader");
             Class<?> serverClass = Class.forName("net.minecraft.server.MinecraftServer", false, cl);
             Object mcServer = serverClass.getMethod("getServerInst").invoke(null);
-            serverClass.getMethod("addScheduledTask", Runnable.class).invoke(mcServer, new Runnable() {
+            serverClass.getMethod(CatServer.isDev() ? "addScheduledTask" : "func_152344_a", Runnable.class).invoke(mcServer, new Runnable() {
                 public void run() {
                     try {
-                        serverClass.getMethod("stopServer").invoke(mcServer);
+                        serverClass.getMethod(CatServer.isDev() ? "stopServer" : "func_71260_j").invoke(mcServer);
                     } catch (Exception e) {}
                     FMLCommonHandler.instance().exitJava(0, false);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
+            FMLCommonHandler.instance().exitJava(0, false);
         }
     }
 }

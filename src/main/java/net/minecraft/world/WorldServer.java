@@ -1321,13 +1321,15 @@ public class WorldServer extends World implements IThreadListener
             chunkproviderserver.saveChunks(all);
             net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.world.WorldEvent.Save(this));
 
+            /* //Paper start - disable vanilla chunk GC
             for (Chunk chunk : Lists.newArrayList(chunkproviderserver.getLoadedChunks()))
             {
                 if (chunk != null && !this.playerChunkMap.contains(chunk.x, chunk.z))
                 {
                     chunkproviderserver.queueUnload(chunk);
                 }
-            }
+            }*/
+            // Paper end
         }
     }
 

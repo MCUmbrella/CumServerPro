@@ -185,6 +185,8 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     private static final int SAMPLE_INTERVAL = 100;
     public final double[] recentTps = new double[ 3 ];
     public final SlackActivityAccountant slackActivityAccountant = new SlackActivityAccountant();
+    private static long lastTickNanos = System.nanoTime();
+    private static long realTimeTicks = 1;
     // Spigot end
 
     public MinecraftServer(OptionSet options, Proxy proxyIn, DataFixer dataFixerIn, YggdrasilAuthenticationService authServiceIn, MinecraftSessionService sessionServiceIn, GameProfileRepository profileRepoIn, PlayerProfileCache profileCacheIn)
@@ -767,6 +769,14 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     {
         SpigotTimings.serverTickTimer.startTiming(); // Spigot
         long i = System.nanoTime();
+        long nowTick = System.nanoTime();
+        // CatServer - Realtime Start
+        realTimeTicks = (nowTick - lastTickNanos) / 50000000;
+        if (realTimeTicks < 1) {
+            realTimeTicks = 1;
+        }
+        lastTickNanos = nowTick;
+        // CatServer - RealTime End
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPreServerTick();
         ++this.tickCounter;
 
@@ -1744,4 +1754,10 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     {
         return this.dataFixer;
     }
+
+    // CatServer - Realtime Start
+    public long getRealTimeTicks() {
+        return realTimeTicks;
+    }
+    // CatServer - Realtime Start
 }
