@@ -826,6 +826,12 @@ public class EntityArmorStand extends EntityLivingBase
     {
         org.bukkit.craftbukkit.event.CraftEventFactory.callEntityDeathEvent(this, drops); // CraftBukkit - call event
         this.setDead();
+        // CatServer start
+        for (EntityItem item : capturedDrops)
+        {
+            world.spawnEntity(item);
+        }
+        // CatServer end
     }
 
     public boolean isImmuneToExplosions()
