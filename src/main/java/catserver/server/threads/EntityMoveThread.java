@@ -21,11 +21,13 @@ public class EntityMoveThread extends Thread {
     @Override
     public void run() {
         long nowTime = System.currentTimeMillis();
-        long count = 0;
+        short count = 0;
         while (true) {
             try {
-                if ((count++ % 10) == 0)
+                if ((count++ % 10) == 0) {
                     nowTime = System.currentTimeMillis();
+                    count = 0;
+                }
                 EntityMoveTask task = queue.poll();
                 if (task == null) {
                     Thread.sleep(2);
