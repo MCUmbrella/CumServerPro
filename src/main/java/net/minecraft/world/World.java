@@ -485,7 +485,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             this.capturedBlockSnapshots.add(new net.minecraftforge.common.util.BlockSnapshot(this, pos, newState, flags));
             return true;
         }
-        // CraftBukkit end
+        // CatServer end
         if (this.isOutsideBuildHeight(pos))
         {
             return false;
