@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Nullable;
+
+import catserver.server.CatServer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockHopper;
@@ -152,7 +154,26 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
 
     public void update()
     {
-        this.world.addHopperQueue(this);
+        if (CatServer.hopperAsync) {
+            this.world.addHopperQueue(this);
+        } else {
+            if (!this.world.isRemote)
+            {
+                --this.transferCooldown;
+                this.tickedGameTime = this.world.getTotalWorldTime();
+
+                if (!this.isOnTransferCooldown())
+                {
+                    this.setTransferCooldown(0);
+                    this.lock.lock();
+                    try {
+                        this.updateHopper();
+                    }finally {
+                        this.lock.unlock();
+                    }
+                }
+            }
+        }
     }
 
     public boolean updateHopper()

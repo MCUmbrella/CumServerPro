@@ -1,0 +1,3 @@
+async:
+  hopper: false
+  entityMove: false

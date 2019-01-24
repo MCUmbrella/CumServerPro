@@ -1,5 +1,6 @@
 package net.minecraft.entity;
 
+import catserver.server.CatServer;
 import catserver.server.utils.EntityMoveTask;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -735,7 +736,12 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
             move0(type, x, y, z, false);
             return;
         }
-        world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z, System.currentTimeMillis()));
+        if (CatServer.entityMoveAsync) {
+            world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z, System.currentTimeMillis()));
+        } else {
+            move0(type, x, y, z, false);
+        }
+
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
     }
 
