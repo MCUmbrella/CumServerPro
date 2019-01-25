@@ -1,3 +1,4 @@
 async:
   hopper: false
   entityMove: true
+  chunkGen: false

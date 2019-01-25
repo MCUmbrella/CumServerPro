@@ -1,6 +1,7 @@
 package net.minecraft.world;
 
 import catserver.server.utils.EntityMoveTask;
+import catserver.server.utils.GenTask;
 import catserver.server.utils.ThreadSafeList;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
@@ -143,6 +144,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     int[] lightUpdateBlockList;
     private ConcurrentLinkedQueue<TileEntityHopper> hopperQueue = new ConcurrentLinkedQueue<>();
     private ConcurrentLinkedQueue<EntityMoveTask> entityMoveQueue = new ConcurrentLinkedQueue<>();
+    private ConcurrentLinkedQueue<GenTask> chunkGenQueue = new ConcurrentLinkedQueue<>();
 
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
@@ -4388,5 +4390,13 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public ConcurrentLinkedQueue<EntityMoveTask> getEntityMoveQueue() {
         return entityMoveQueue;
+    }
+
+    public ConcurrentLinkedQueue<GenTask> getChunkGenQueue() {
+        return chunkGenQueue;
+    }
+
+    public void addChunkGenQueue(GenTask task) {
+        this.chunkGenQueue.offer(task);
     }
 }
