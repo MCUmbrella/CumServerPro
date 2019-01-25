@@ -13,10 +13,11 @@ public class CatServer {
 	private static final String version = "2.0.0";
 	private static final String native_verson = "v1_12_R1";
     public static YamlConfiguration config;
-    public static boolean hopperAsync = true;
+    public static File configFile;
+    public static boolean hopperAsync = false;
     public static boolean entityMoveAsync = true;
 
-	public static String getVersion(){
+	public static String getVersion() {
 		return version;
 	}
 
@@ -37,19 +38,32 @@ public class CatServer {
     }
 
     public static void loadConfig() {
-        File file = new File("catserver.yml");
-        if (file.exists()) {
-            config = YamlConfiguration.loadConfiguration(file);
+        configFile = new File("catserver.yml");
+        if (configFile.exists()) {
+            config = YamlConfiguration.loadConfiguration(configFile);
         } else {
             config = YamlConfiguration.loadConfiguration(new InputStreamReader(VeryConfig.class.getClassLoader().getResourceAsStream("configurations/catserver.yml")));
             try {
-                file.createNewFile();
-                config.save(file);
+                configFile.createNewFile();
+                config.save(configFile);
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
-        hopperAsync = config.getBoolean("async.hopper");
-        entityMoveAsync = config.getBoolean("async.entityMove");
+        hopperAsync = getOrWriteBooleanConfig("async.hopper", hopperAsync);
+        entityMoveAsync = getOrWriteBooleanConfig("async.entityMove", hopperAsync);
+    }
+
+    public static boolean getOrWriteBooleanConfig(String path, boolean def) {
+	    if (config.contains(path)) {
+	        return config.getBoolean(path);
+        }
+	    config.set(path, def);
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return def;
     }
 }
