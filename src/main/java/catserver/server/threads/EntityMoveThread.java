@@ -22,7 +22,7 @@ public class EntityMoveThread extends Thread {
     public void run() {
         long nowTime = System.currentTimeMillis();
         short count = 0;
-        while (true) {
+        while (world != null) {
             try {
                 if ((count++ % 10) == 0) {
                     nowTime = System.currentTimeMillis();

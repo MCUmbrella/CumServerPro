@@ -17,7 +17,7 @@ public class HopperThread extends Thread {
 
     @Override
     public void run() {
-        while (true) {
+        while (world != null) {
             try{
                 TileEntityHopper hopper = queue.poll();
                 if (hopper == null) {
