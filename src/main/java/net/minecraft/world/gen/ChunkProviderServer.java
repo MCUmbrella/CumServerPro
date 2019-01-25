@@ -6,13 +6,14 @@ import io.netty.util.internal.ConcurrentSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.io.IOException;
-import java.util.Collection;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import javax.annotation.Nullable;
+
+import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.EnumCreatureType;
@@ -28,6 +29,7 @@ import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.IChunkLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.bukkit.Bukkit;
 import org.bukkit.event.world.ChunkUnloadEvent;
 
 // TODO: This class needs serious testing.
@@ -37,7 +39,26 @@ public class ChunkProviderServer implements IChunkProvider
     public final Set<Long> droppedChunksSet = new ConcurrentSet<>();
     public final IChunkGenerator chunkGenerator;
     public final IChunkLoader chunkLoader;
-    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<>(8192); //TODO: CatServer, I gave up it. F*CK Async.
+    public final Long2ObjectMap<Chunk> id2ChunkMap = Long2ObjectMaps.synchronize(new Long2ObjectOpenHashMap<Chunk>(8192) {
+        final String message = "插件/MOD尝试异步操作Long2ObjectMaps已拦截,请与插件/MOD作者反馈!";
+        @Override
+        public ObjectSet<Map.Entry<Long, Chunk>> entrySet() {
+            if (! Bukkit.isPrimaryThread()) {
+                new UnsupportedOperationException(message).printStackTrace();
+                return new Long2ObjectOpenHashMap<>(id2ChunkMap).entrySet();
+            }
+            return super.entrySet();
+        }
+
+        @Override
+        public FastEntrySet<Chunk> long2ObjectEntrySet() {
+            if (! Bukkit.isPrimaryThread()) {
+                new UnsupportedOperationException(message).printStackTrace();
+                return new Long2ObjectOpenHashMap<>(id2ChunkMap).long2ObjectEntrySet();
+            }
+            return super.long2ObjectEntrySet();
+        }
+    }); // CatServer - Async comp
     public final WorldServer world;
     private final Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 

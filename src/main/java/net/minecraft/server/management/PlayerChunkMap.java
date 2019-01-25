@@ -1,10 +1,12 @@
 package net.minecraft.server.management;
 
+import catserver.server.utils.ThreadSafeList;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ComparisonChain;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
+import io.netty.util.internal.ConcurrentSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
 
@@ -39,10 +41,10 @@ public class PlayerChunkMap
     private final WorldServer world;
     private final List<EntityPlayerMP> players = Lists.<EntityPlayerMP>newArrayList();
     private final Long2ObjectMap<PlayerChunkMapEntry> entryMap = new Long2ObjectOpenHashMap<PlayerChunkMapEntry>(4096);
-    private final Set<PlayerChunkMapEntry> dirtyEntries = Sets.<PlayerChunkMapEntry>newHashSet();
-    private final List<PlayerChunkMapEntry> pendingSendToPlayers = Lists.<PlayerChunkMapEntry>newLinkedList();
-    private final List<PlayerChunkMapEntry> entriesWithoutChunks = Lists.<PlayerChunkMapEntry>newLinkedList();
-    private final List<PlayerChunkMapEntry> entries = Lists.<PlayerChunkMapEntry>newArrayList();
+    private final Set<PlayerChunkMapEntry> dirtyEntries = new ConcurrentSet<>(); // CatServer - Async comp
+    private final List<PlayerChunkMapEntry> pendingSendToPlayers = new ThreadSafeList<>(true); // CatServer - Async comp
+    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new ThreadSafeList<>(true); // CatServer - Async comp
+    private final List<PlayerChunkMapEntry> entries = new ThreadSafeList<>(true); // CatServer - Async comp
     private int playerViewRadius;
     private long previousTotalWorldTime;
     private boolean sortMissingChunks = true;
