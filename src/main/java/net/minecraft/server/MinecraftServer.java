@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import catserver.server.threads.WatchCatThread;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
@@ -475,8 +476,11 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.currentTask = null;
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
-        AsyncKeepaliveThread.startThread(); // CatServer
+        // CatServer start
+        AsyncKeepaliveThread.startThread();
+        WatchCatThread.startThread();
         new Metrics();
+        // CatServer end
     }
 
     public void saveAllWorlds(boolean isSilent)
@@ -515,6 +519,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         }
         // CraftBukkit end
         LOGGER.info("Stopping server");
+        WatchCatThread.stopThread(); // CatServer
         if (this.server != null) {
             this.server.disablePlugins();
         }
