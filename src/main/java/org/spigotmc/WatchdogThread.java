@@ -82,7 +82,7 @@ public class WatchdogThread extends Thread
 
                 if ( restart )
                 {
-                    MinecraftServer.getServerInst().primaryThread.stop(); // CatServer - stop server thread
+                    MinecraftServer.getServerInst().primaryThread.suspend(); // CatServer - suspend server thread
                     RestartCommand.restart();
                 }
                 break;
