@@ -53,10 +53,9 @@ public class ThreadSafeList<E> extends Vector<E> {
     @Override
     public synchronized E remove(int index) {
         if (!Bukkit.isPrimaryThread()) {
-            switchPrimaryThread(() -> super.remove(index));
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
-            return get(index);
+            return null;
         }
         return super.remove(index);
     }
@@ -64,7 +63,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     @Override
     public void clear() {
         if (!Bukkit.isPrimaryThread()) {
-            switchPrimaryThread(() -> super.clear());
+            switchPrimaryThread(super::clear);
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return;
