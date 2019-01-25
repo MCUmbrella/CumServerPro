@@ -1,6 +1,7 @@
 package net.minecraft.world;
 
 import catserver.server.utils.EntityMoveTask;
+import catserver.server.utils.ThreadSafeList;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
@@ -100,8 +101,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     private int seaLevel = 63;
     protected boolean scheduledUpdatesAreImmediate;
-    public final List<Entity> loadedEntityList = Lists.<Entity>newArrayList();
-    protected final List<Entity> unloadedEntityList = Lists.<Entity>newArrayList();
+    public final List<Entity> loadedEntityList = new ThreadSafeList<>(false); //CatServer - Async comp
+    protected final List<Entity> unloadedEntityList = new ThreadSafeList<>(false); // CatServer - Async comp
     public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
     public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();
     private final List<TileEntity> addedTileEntityList = Lists.<TileEntity>newArrayList();
