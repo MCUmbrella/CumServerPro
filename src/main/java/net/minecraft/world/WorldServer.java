@@ -723,7 +723,7 @@ public class WorldServer extends World implements IThreadListener
                 } catch (Exception e) {
                     try {
                         getChunkProvider().unloadChunk(chunk, true);
-                    } catch (Exception) {
+                    } catch (Exception e2) {
                         e.printStackTrace();
                     }
                     FMLLog.warning("区块更新发生错误,已将区块卸载防止崩溃! (区块 x:" + chunk.getPos().x + ", z:" + chunk.getPos().z);
