@@ -2,6 +2,7 @@ package catserver.server.utils;
 
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
+import org.spigotmc.AsyncCatcher;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -19,7 +20,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public boolean add(E e) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             switchPrimaryThread(() -> super.add(e));
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
@@ -30,7 +31,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public void add(int index, E element) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             switchPrimaryThread(() -> super.add(index, element));
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
@@ -41,7 +42,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public boolean remove(Object o) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             switchPrimaryThread(() -> super.remove(o));
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
@@ -52,7 +53,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized E remove(int index) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return null;
@@ -62,7 +63,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public void clear() {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             switchPrimaryThread(super::clear);
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
@@ -73,7 +74,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized boolean addAll(Collection<? extends E> c) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             switchPrimaryThread(() -> super.addAll(c));
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
@@ -84,7 +85,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized boolean addAll(int index, Collection<? extends E> c) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             switchPrimaryThread(() -> super.addAll(index, c));
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
@@ -95,7 +96,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized void addElement(E obj) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             switchPrimaryThread(() -> super.addElement(obj));
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
@@ -106,7 +107,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized void removeElementAt(int index) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return;
@@ -116,7 +117,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized boolean removeAll(Collection<?> c) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return false;
@@ -126,7 +127,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized void removeAllElements() {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return;
@@ -136,7 +137,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized boolean removeElement(Object obj) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return false;
@@ -146,7 +147,7 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized boolean removeIf(Predicate<? super E> filter) {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return false;
@@ -156,12 +157,16 @@ public class ThreadSafeList<E> extends Vector<E> {
 
     @Override
     public synchronized Iterator<E> iterator() {
-        if (!Bukkit.isPrimaryThread()) {
+        if (checkThread()) {
             if (print)
                 new UnsupportedOperationException(message).printStackTrace();
             return new ArrayList<E>(this).iterator();
         }
         return super.iterator();
+    }
+
+    private boolean checkThread() {
+        return AsyncCatcher.enabled && !Bukkit.isPrimaryThread();
     }
 
     private void switchPrimaryThread(Runnable runnable) {
