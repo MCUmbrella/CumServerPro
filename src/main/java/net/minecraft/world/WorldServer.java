@@ -21,6 +21,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -137,6 +138,8 @@ public class WorldServer extends World implements IThreadListener
 
     public final int dimension;
 
+    public EntityMoveThread entityMoveThread = null;
+
     public WorldServer(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler methodprofiler, org.bukkit.World.Environment env, org.bukkit.generator.ChunkGenerator gen) {
         super(saveHandlerIn, info, net.minecraftforge.common.DimensionManager.createProviderFor(dimensionId), methodprofiler, false, gen, env);
         this.pvpMode = server.isPVPEnabled();
@@ -247,10 +250,11 @@ public class WorldServer extends World implements IThreadListener
         }
     }
 
-    private void initEntityMoveThread(ConcurrentLinkedQueue<EntityMoveTask> queue)
+    private void initEntityMoveThread(LinkedBlockingQueue<EntityMoveTask> queue)
     {
         if (CatServer.entityMoveAsync) {
-            new Thread(new EntityMoveThread(this, queue), this.getWorld().getName() + " - EntityMoveThread").start();
+            entityMoveThread = new EntityMoveThread(this, queue, this.getWorld().getName() + " - EntityMoveThread");
+            entityMoveThread.start();
         }
     }
 

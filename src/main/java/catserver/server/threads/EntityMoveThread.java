@@ -3,37 +3,25 @@ package catserver.server.threads;
 import catserver.server.utils.EntityMoveTask;
 import net.minecraft.entity.Entity;
 import net.minecraft.world.WorldServer;
-import net.minecraftforge.fml.common.FMLLog;
-
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class EntityMoveThread extends Thread {
 
     private final WorldServer world;
-    private final ConcurrentLinkedQueue<EntityMoveTask> queue;
+    public final LinkedBlockingQueue<EntityMoveTask> queue;
 
-    public EntityMoveThread(WorldServer worldServer, ConcurrentLinkedQueue<EntityMoveTask> queue) {
+    public EntityMoveThread(WorldServer worldServer, LinkedBlockingQueue<EntityMoveTask> queue, String name) {
         this.world = worldServer;
         this.queue = queue;
+        setName(name);
     }
 
 
     @Override
     public void run() {
-        long nowTime = System.currentTimeMillis();
-        short count = 0;
         while (world != null) {
             try {
-                if ((count++ % 10) == 0) {
-                    nowTime = System.currentTimeMillis();
-                    count = 0;
-                }
-                EntityMoveTask task = queue.poll();
-                if (task == null) {
-                    Thread.sleep(2);
-                    continue;
-                }
-                if (nowTime - task.time > 200) continue;
+                EntityMoveTask task = queue.take();
                 Entity entity = task.entity;
 
                 if (world == null || entity.isDead || !world.isChunkLoaded((int)entity.posX >> 4, (int)entity.posZ >> 4, true)) continue;
