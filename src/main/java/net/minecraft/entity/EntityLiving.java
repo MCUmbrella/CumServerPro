@@ -820,10 +820,10 @@ public abstract class EntityLiving extends EntityLivingBase
         this.senses.clearSensingCache();
         this.world.profiler.endSection();
         this.world.profiler.startSection("targetSelector");
-        this.targetTasks.onUpdateTasks();
+        this.targetTasks.onUpdateTasks(world);
         this.world.profiler.endSection();
         this.world.profiler.startSection("goalSelector");
-        this.tasks.onUpdateTasks();
+        this.tasks.onUpdateTasks(world);
         this.world.profiler.endSection();
         this.world.profiler.startSection("navigation");
         this.navigator.onUpdateNavigation();

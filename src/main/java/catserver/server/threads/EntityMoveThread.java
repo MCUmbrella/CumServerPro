@@ -1,16 +1,15 @@
 package catserver.server.threads;
 
-import catserver.server.utils.EntityMoveTask;
-import net.minecraft.entity.Entity;
+import catserver.server.utils.EntityTask;
 import net.minecraft.world.WorldServer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class EntityMoveThread extends Thread {
 
     private final WorldServer world;
-    public final LinkedBlockingQueue<EntityMoveTask> queue;
+    public final LinkedBlockingQueue<EntityTask> queue;
 
-    public EntityMoveThread(WorldServer worldServer, LinkedBlockingQueue<EntityMoveTask> queue, String name) {
+    public EntityMoveThread(WorldServer worldServer, LinkedBlockingQueue<EntityTask> queue, String name) {
         this.world = worldServer;
         this.queue = queue;
         setName(name);
@@ -21,13 +20,9 @@ public class EntityMoveThread extends Thread {
     public void run() {
         while (world != null) {
             try {
-                EntityMoveTask task = queue.take();
-                Entity entity = task.entity;
-
-                if (world == null || entity.isDead || !world.isChunkLoaded((int)entity.posX >> 4, (int)entity.posZ >> 4, true)) continue;
-
+                EntityTask task = queue.take();
                 //Start
-                entity.move0(task.moverType, task.x, task.y, task.z, true);
+                task.run();
             }catch (Exception e) {
                 e.printStackTrace();
             }

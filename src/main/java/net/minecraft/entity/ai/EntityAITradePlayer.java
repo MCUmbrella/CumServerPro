@@ -1,5 +1,6 @@
 package net.minecraft.entity.ai;
 
+import catserver.server.CatServer;
 import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 
@@ -57,6 +58,7 @@ public class EntityAITradePlayer extends EntityAIBase
 
     public void resetTask()
     {
+        if (!CatServer.entityMoveAsync)
         this.villager.setCustomer((EntityPlayer)null);
     }
 }

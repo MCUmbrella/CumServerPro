@@ -1,6 +1,6 @@
 package net.minecraft.world;
 
-import catserver.server.utils.EntityMoveTask;
+import catserver.server.utils.EntityTask;
 import catserver.server.utils.GenTask;
 import catserver.server.utils.ThreadSafeList;
 import com.google.common.base.Function;
@@ -139,7 +139,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
     private LinkedBlockingQueue<TileEntityHopper> hopperQueue = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<EntityMoveTask> entityMoveQueue = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<EntityTask> entityMoveQueue = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<GenTask> chunkGenQueue = new LinkedBlockingQueue<>();
 
     public boolean restoringBlockSnapshots = false;
@@ -4380,11 +4380,11 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         return hopperQueue;
     }
 
-    public void addEntityMoveQueue(EntityMoveTask moveTask) {
+    public void addEntityMoveQueue(EntityTask moveTask) {
         this.entityMoveQueue.offer(moveTask);
     }
 
-    public LinkedBlockingQueue<EntityMoveTask> getEntityMoveQueue() {
+    public LinkedBlockingQueue<EntityTask> getEntityMoveQueue() {
         return entityMoveQueue;
     }
 
