@@ -3,7 +3,6 @@ package catserver.server.utils;
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.gen.IChunkGenerator;
-import sun.misc.Unsafe;
 
 public class GenTask {
     public final ChunkProviderServer chunkProviderServer;

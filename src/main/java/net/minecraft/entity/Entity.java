@@ -737,7 +737,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
             return;
         }
         if (CatServer.entityMoveAsync) {
-            world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z, MinecraftServer.currentTick));
+            world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z));
         } else {
             move0(type, x, y, z, false);
         }

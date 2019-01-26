@@ -9,28 +9,23 @@ import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.gen.ChunkProviderServer;
 import net.minecraft.world.gen.IChunkGenerator;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class ChunkGenThread extends Thread {
     private final WorldServer worldServer;
-    private final ConcurrentLinkedQueue<GenTask> queue;
+    private final LinkedBlockingQueue<GenTask> queue;
 
-    public ChunkGenThread(WorldServer worldServer, ConcurrentLinkedQueue<GenTask> queue) {
+    public ChunkGenThread(WorldServer worldServer, LinkedBlockingQueue<GenTask> queue) {
         this.worldServer = worldServer;
         this.queue = queue;
     }
 
     @Override
     public void run() {
-        long nowTime = System.currentTimeMillis();
         GenTask thisTask = null;
         while (worldServer != null) {
             try {
-                GenTask task = queue.poll();
-                if (task == null) {
-                    Thread.sleep(1);
-                    continue;
-                }
+                GenTask task = queue.take();
                 thisTask = task;
                 IChunkGenerator chunkGenerator = task.generator;
                 Chunk genChunk = chunkGenerator.generateChunk(task.x, task.z);
