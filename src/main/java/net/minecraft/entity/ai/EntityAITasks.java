@@ -1,7 +1,7 @@
 package net.minecraft.entity.ai;
 
 import catserver.server.CatServer;
-import catserver.server.utils.EntityAITask;
+import catserver.server.async.EntityAITask;
 import com.google.common.collect.Sets;
 import java.util.Iterator;
 import java.util.Set;

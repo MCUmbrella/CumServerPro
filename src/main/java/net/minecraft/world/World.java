@@ -1,7 +1,7 @@
 package net.minecraft.world;
 
-import catserver.server.utils.EntityTask;
-import catserver.server.utils.GenTask;
+import catserver.server.async.EntityTask;
+import catserver.server.async.GenTask;
 import catserver.server.utils.ThreadSafeList;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;

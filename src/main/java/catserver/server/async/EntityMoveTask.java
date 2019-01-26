@@ -1,4 +1,4 @@
-package catserver.server.utils;
+package catserver.server.async;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
