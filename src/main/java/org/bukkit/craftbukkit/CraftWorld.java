@@ -1,5 +1,6 @@
 package org.bukkit.craftbukkit;
 
+import catserver.server.CatServer;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.util.ArrayList;
@@ -315,6 +316,7 @@ public class CraftWorld implements World {
 
         net.minecraft.world.chunk.Chunk chunk = world.getChunkProvider().getLoadedChunk(x, z);
         if (chunk != null) {
+            server.getLogger().warning("插件 " + CatServer.getCallerPlugin() + " 正在卸载区块 [" + x + ", " + z + "] ,建议不要使用优化类插件以免和MOD冲突!"); // CatServer
             world.getChunkProvider().queueUnload(chunk);
         }
 
@@ -336,6 +338,7 @@ public class CraftWorld implements World {
             return true;
         }
 
+        server.getLogger().warning("插件 " + CatServer.getCallerPlugin() + " 正在卸载区块 [" + x + ", " + z + "] ,建议不要使用优化类插件以免和MOD冲突!"); // CatServer
         // If chunk had previously been queued to save, must do save to avoid loss of that data
         return world.getChunkProvider().unloadChunk(chunk, chunk.mustSave || save);
     }

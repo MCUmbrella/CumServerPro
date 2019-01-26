@@ -15,9 +15,16 @@ public class ReflectionUtils {
         return ReflectionUtils.getCallerClass(3).getClassLoader(); // added one due to it being the caller of the caller;
     }
 
+    public static Class<?>[] getStackClass() {
+        return sm.getStackClass();
+    }
+
     static class SecurityManager extends java.lang.SecurityManager {
         public Class<?> getCallerClass(int skip) {
             return getClassContext()[skip + 1];
+        }
+        public Class<?>[] getStackClass() {
+            return getClassContext();
         }
     }
 

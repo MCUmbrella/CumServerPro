@@ -1,13 +1,17 @@
 package catserver.server;
 
+import catserver.server.remapper.ReflectionUtils;
+import catserver.server.remapper.RemapUtils;
 import catserver.server.very.VeryConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLLog;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.plugin.PluginDescriptionFile;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.reflect.Field;
 
 public class CatServer {
 	private static final String version = "2.0.0";
@@ -65,5 +69,20 @@ public class CatServer {
             e.printStackTrace();
         }
         return def;
+    }
+
+    public static String getCallerPlugin() {
+        try {
+            for (Class<?> clazz : ReflectionUtils.getStackClass()) {
+                ClassLoader cl = clazz.getClassLoader();
+                if (cl != null && cl.getClass().getSimpleName().equals("PluginClassLoader")) {
+                    Field field = Class.forName("org.bukkit.plugin.java.PluginClassLoader").getDeclaredField("description");
+                    field.setAccessible(true);
+                    PluginDescriptionFile description = field.get(cl);
+                    return description.getName();
+                }
+            }
+        } catch (Exception e) {}
+        return "null";
     }
 }
