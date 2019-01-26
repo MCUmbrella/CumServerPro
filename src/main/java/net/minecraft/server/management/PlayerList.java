@@ -1,5 +1,6 @@
 package net.minecraft.server.management;
 
+import catserver.server.PlayerDataFixer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -185,6 +186,8 @@ public abstract class PlayerList
         {
             s1 = netManager.getRemoteAddress().toString();
         }
+
+        PlayerDataFixer.checkLocation(playerIn); // CatServer - fix invalid location
 
         // Spigot start - spawn location event
         Player bukkitPlayer = playerIn.getBukkitEntity();
