@@ -78,7 +78,7 @@ public class CatServer {
                 if (cl != null && cl.getClass().getSimpleName().equals("PluginClassLoader")) {
                     Field field = Class.forName("org.bukkit.plugin.java.PluginClassLoader").getDeclaredField("description");
                     field.setAccessible(true);
-                    PluginDescriptionFile description = field.get(cl);
+                    PluginDescriptionFile description = (PluginDescriptionFile) field.get(cl);
                     return description.getName();
                 }
             }
