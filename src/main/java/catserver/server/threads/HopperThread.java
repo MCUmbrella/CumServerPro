@@ -1,30 +1,31 @@
 package catserver.server.threads;
 
+import net.minecraft.crash.CrashReport;
+import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.tileentity.TileEntityHopper;
+import net.minecraft.util.ReportedException;
 import net.minecraft.world.WorldServer;
 
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class HopperThread extends Thread {
 
     private final WorldServer world;
-    private final ConcurrentLinkedQueue<TileEntityHopper> queue;
+    private final LinkedBlockingQueue<TileEntityHopper> queue;
 
-    public HopperThread(WorldServer worldServer, ConcurrentLinkedQueue<TileEntityHopper> queue) {
+    public HopperThread(WorldServer worldServer, LinkedBlockingQueue<TileEntityHopper> queue) {
         this.world = worldServer;
         this.queue = queue;
     }
 
     @Override
     public void run() {
+        TileEntityHopper thisHopper = null;
         while (world != null) {
             try{
-                TileEntityHopper hopper = queue.poll();
-                if (hopper == null) {
-                    Thread.sleep(2);
-                    continue;
-                }
-                if (world == null || !world.isBlockLoaded(hopper.getPos())) continue;
+                TileEntityHopper hopper = queue.take();
+                thisHopper = hopper;
+                if (!world.isBlockLoaded(hopper.getPos())) continue;
                 if (!this.world.isRemote)
                 {
                     --hopper.transferCooldown;
@@ -41,8 +42,11 @@ public class HopperThread extends Thread {
                         }
                     }
                 }
-            }catch (Exception e) {
-                e.printStackTrace();
+            }catch (Throwable throwable) {
+                CrashReport crashreport = CrashReport.makeCrashReport(throwable, "Exception update Hopper");
+                CrashReportCategory crashreportcategory = crashreport.makeCategory("Hopper to be update");
+                crashreportcategory.addCrashSection("Location", String.format("%d,%d,%d", thisHopper.getXPos(), thisHopper.getYPos(), thisHopper.getZPos()));
+                throw new ReportedException(crashreport);
             }
 
         }

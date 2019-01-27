@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import catserver.server.CatServer;
 import catserver.server.threads.WatchCatThread;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -39,9 +40,7 @@ import java.util.Queue;
 import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.Callable;
-import java.util.concurrent.Executors;
-import java.util.concurrent.FutureTask;
+import java.util.concurrent.*;
 import javax.annotation.Nullable;
 import javax.imageio.ImageIO;
 
@@ -771,6 +770,11 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     public void tick()
     {
         SpigotTimings.serverTickTimer.startTiming(); // Spigot
+        for (WorldServer world : worlds) {
+            world.entityMoveThreadPool = new ThreadPoolExecutor(4, 4 + Runtime.getRuntime().availableProcessors(),
+                    1L, TimeUnit.SECONDS,
+                    new LinkedBlockingQueue<>());
+        }
         long i = System.nanoTime();
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPreServerTick();
         ++this.tickCounter;
@@ -832,6 +836,16 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostServerTick();
         WatchCatThread.update(); // CatServer
         org.spigotmc.WatchdogThread.tick(); // Spigot
+        if (CatServer.entityMoveAsync) {
+            for (WorldServer world : worlds) {
+                world.entityMoveThreadPool.shutdown();
+                try {
+                    world.entityMoveThreadPool.awaitTermination(30, TimeUnit.SECONDS);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         SpigotTimings.serverTickTimer.stopTiming(); // Spigot
         org.spigotmc.CustomTimingsHandler.tick(); // Spigot
     }

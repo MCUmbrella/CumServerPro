@@ -1,5 +1,6 @@
 async:
   hopper: false
   entityMove: true
+  chunkGen: false
 check:
   threadLag: true

@@ -1,5 +1,6 @@
 package net.minecraft.network;
 
+import catserver.server.CatServer;
 import com.google.common.collect.Lists;
 import com.google.common.primitives.Doubles;
 import com.google.common.primitives.Floats;
@@ -515,7 +516,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 d10 = d6 * d6 + d7 * d7 + d8 * d8;
                 boolean flag1 = false;
 
-                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold) // Spigot
+                if (d10 > org.spigotmc.SpigotConfig.movedWronglyThreshold && !CatServer.entityMoveAsync) // Spigot
                 {
                     flag1 = true;
                     LOGGER.warn("{} moved wrongly!", entity.getName());

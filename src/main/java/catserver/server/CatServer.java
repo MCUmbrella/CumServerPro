@@ -21,6 +21,7 @@ public class CatServer {
     public static boolean hopperAsync = false;
     public static boolean entityMoveAsync = true;
     public static boolean threadLag = true;
+    public static boolean chunkGenAsync = false;
 
 	public static String getVersion() {
 		return version;
@@ -58,6 +59,7 @@ public class CatServer {
         hopperAsync = getOrWriteBooleanConfig("async.hopper", hopperAsync);
         entityMoveAsync = getOrWriteBooleanConfig("async.entityMove", hopperAsync);
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
+        chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {

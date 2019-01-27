@@ -1,11 +1,13 @@
 package net.minecraft.entity;
 
+import catserver.server.CatServer;
+import catserver.server.async.EntityAICollisionTask;
+import catserver.server.async.EntityAIMoveTask;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -2154,6 +2156,15 @@ public abstract class EntityLivingBase extends Entity
 
     public void travel(float strafe, float vertical, float forward)
     {
+        if (this instanceof EntityPlayer || !CatServer.entityMoveAsync) {
+            travel0(strafe, vertical, forward, false);
+            return;
+        }
+        world.addEntityMoveQueue(new EntityAIMoveTask(this, strafe, vertical, forward));
+    }
+
+    public void travel0(float strafe, float vertical, float forward, boolean async)
+    {
         if (this.isServerWorld() || this.canPassengerSteer())
         {
             if (!this.isInWater() || this instanceof EntityPlayer && ((EntityPlayer)this).capabilities.isFlying)
@@ -2212,14 +2223,18 @@ public abstract class EntityLivingBase extends Entity
                             if (f5 > 0.0F)
                             {
                                 this.playSound(this.getFallSound((int)f5), 1.0F, 1.0F);
-                                this.attackEntityFrom(DamageSource.FLY_INTO_WALL, f5);
+                                world.getMinecraftServer().processQueue.add(() -> this.attackEntityFrom(DamageSource.FLY_INTO_WALL, f5));
                             }
                         }
 
                         if (this.onGround && !this.world.isRemote)
                         {
-                            if (getFlag(7) && !CraftEventFactory.callToggleGlideEvent(this, false).isCancelled())
-                                this.setFlag(7, false);
+                            if (async) {
+                                world.getMinecraftServer().processQueue.add(() -> CraftEventFactory.callToggleGlideEvent(this, false));
+                            }else {
+                                if (getFlag(7) && !CraftEventFactory.callToggleGlideEvent(this, false).isCancelled())
+                                    this.setFlag(7, false);
+                            }
                         }
                     }
                     else
@@ -2764,6 +2779,15 @@ public abstract class EntityLivingBase extends Entity
     }
 
     protected void collideWithNearbyEntities()
+    {
+        if (this instanceof EntityPlayer || ! CatServer.entityMoveAsync) {
+            collideWithNearbyEntities0();
+        } else {
+            world.addEntityMoveQueue(new EntityAICollisionTask(this));
+        }
+    }
+
+    public void collideWithNearbyEntities0()
     {
         List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), EntitySelectors.getTeamCollisionPredicate(this));
 
