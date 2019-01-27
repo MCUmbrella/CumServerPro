@@ -178,7 +178,7 @@ public class ContainerRepair extends Container
             {
                 // CatServer start - call bukkit event when forge event cancel
                 if (!net.minecraftforge.common.ForgeHooks.onAnvilChange(this, itemstack, itemstack2, outputSlot, repairedItemName, j)) {
-                    if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY);
+                    if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), outputSlot.getStackInSlot(0));
                     return;
                 }
                 // CatServer end
