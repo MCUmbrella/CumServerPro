@@ -12,6 +12,8 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.Field;
+import java.util.ArrayList;
+import java.util.List;
 
 public class CatServer {
 	private static final String version = "2.0.0";
@@ -22,6 +24,7 @@ public class CatServer {
     public static boolean entityMoveAsync = true;
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
+    public static List<String> disableForgeGenWorld = new ArrayList<>();
 
 	public static String getVersion() {
 		return version;
@@ -60,6 +63,7 @@ public class CatServer {
         entityMoveAsync = getOrWriteBooleanConfig("async.entityMove", hopperAsync);
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
+        disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {
@@ -67,6 +71,19 @@ public class CatServer {
 	        return config.getBoolean(path);
         }
 	    config.set(path, def);
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return def;
+    }
+
+    public static List<String> getOrWriteStringListConfig(String path, List<String> def) {
+        if (config.contains(path)) {
+            return config.getStringList(path);
+        }
+        config.set(path, def);
         try {
             config.save(configFile);
         } catch (IOException e) {

@@ -4,3 +4,7 @@ async: #异步选项
   chunkGen: false #区块生成是否异步
 check:
   threadLag: true #服务器卡顿线程检查
+world: #世界配置
+  worldGen: #世界地形生成
+    disableForgeGenWorld: #禁用了mod地形生成器的世界
+      - "xxxxxxx"

@@ -1,5 +1,6 @@
 package net.minecraft.world.chunk;
 
+import catserver.server.CatServer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
@@ -1223,7 +1224,8 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             }
             BlockSand.fallInstantly = false;
             this.world.getServer().getPluginManager().callEvent(new org.bukkit.event.world.ChunkPopulateEvent(bukkitChunk));
-            net.minecraftforge.fml.common.registry.GameRegistry.generateWorld(this.x, this.z, this.world, generator, this.world.getChunkProvider());
+            if (! CatServer.disableForgeGenWorld.contains(world.getName()))
+                net.minecraftforge.fml.common.registry.GameRegistry.generateWorld(this.x, this.z, this.world, generator, this.world.getChunkProvider());
             this.markDirty();
         }
         populating = prev;
