@@ -1,5 +1,6 @@
 package catserver.server.threads;
 
+import catserver.server.CatServer;
 import net.minecraft.server.MinecraftServer;
 import org.bukkit.Bukkit;
 
@@ -33,6 +34,7 @@ public class WatchCatThread extends TimerTask {
     }
 
     public static void startThread() {
+        if (CatServer.threadLag)
         timer.schedule(new WatchCatThread(), 30 * 1000, 500);
     }
 

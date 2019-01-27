@@ -20,6 +20,7 @@ public class CatServer {
     public static File configFile;
     public static boolean hopperAsync = false;
     public static boolean entityMoveAsync = true;
+    public static boolean threadLag = true;
 
 	public static String getVersion() {
 		return version;
@@ -56,6 +57,7 @@ public class CatServer {
         }
         hopperAsync = getOrWriteBooleanConfig("async.hopper", hopperAsync);
         entityMoveAsync = getOrWriteBooleanConfig("async.entityMove", hopperAsync);
+        threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {

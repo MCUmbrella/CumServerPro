@@ -1,3 +1,5 @@
 async:
   hopper: false
   entityMove: true
+check:
+  threadLag: true
