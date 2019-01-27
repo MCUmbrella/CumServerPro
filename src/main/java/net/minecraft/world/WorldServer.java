@@ -137,8 +137,6 @@ public class WorldServer extends World implements IThreadListener
 
     public final int dimension;
 
-    public EntityMoveThread entityMoveThread = null;
-
     public WorldServer(MinecraftServer server, ISaveHandler saveHandlerIn, WorldInfo info, int dimensionId, Profiler methodprofiler, org.bukkit.World.Environment env, org.bukkit.generator.ChunkGenerator gen) {
         super(saveHandlerIn, info, net.minecraftforge.common.DimensionManager.createProviderFor(dimensionId), methodprofiler, false, gen, env);
         this.pvpMode = server.isPVPEnabled();
@@ -237,7 +235,6 @@ public class WorldServer extends World implements IThreadListener
 
         this.initCapabilities();
         this.initHopperThread(super.getHopperQueue());
-        this.initEntityMoveThread(super.getEntityMoveQueue());
         this.initChunkGenThread(super.getChunkGenQueue());
         return this;
     }
@@ -246,14 +243,6 @@ public class WorldServer extends World implements IThreadListener
     {
         if (CatServer.hopperAsync) {
             new Thread(new HopperThread(this, queue), this.getWorld().getName() + " - HopperThread").start();
-        }
-    }
-
-    private void initEntityMoveThread(LinkedBlockingQueue<EntityTask> queue)
-    {
-        if (CatServer.entityMoveAsync) {
-            entityMoveThread = new EntityMoveThread(this, queue, this.getWorld().getName() + " - EntityMoveThread");
-            entityMoveThread.start();
         }
     }
 

@@ -3,7 +3,7 @@ package catserver.server.async;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 
-public class EntityMoveTask implements EntityTask {
+public class EntityMoveTask extends AbstractEntityTask{
     public final Entity entity;
     public final MoverType moverType;
     public final double x;

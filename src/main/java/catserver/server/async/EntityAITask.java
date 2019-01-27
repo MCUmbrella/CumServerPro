@@ -2,7 +2,7 @@ package catserver.server.async;
 
 import net.minecraft.entity.ai.EntityAITasks;
 
-public class EntityAITask implements EntityTask{
+public class EntityAITask extends AbstractEntityTask{
     private final EntityAITasks tasks;
 
     public EntityAITask(EntityAITasks tasks) {
