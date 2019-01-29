@@ -1,10 +1,18 @@
-async: #异步选项
-  hopper: false #漏斗处理是否异步
-  entityMove: true #实体处理是否异步
-  chunkGen: false #区块生成是否异步
+#异步选项
+async:
+  #漏斗处理是否异步
+  hopper: false
+  #实体处理是否异步
+  entityMove: true
+  #区块生成是否异步(测试功能，请勿使用)
+  chunkGen: false
 check:
-  threadLag: true #服务器卡顿线程检查
-world: #世界配置
-  worldGen: #世界地形生成
-    disableForgeGenWorld: #禁用了mod地形生成器的世界
+  #服务器卡顿线程检查
+  threadLag: true
+#世界配置
+world:
+  #世界地形生成
+  worldGen:
+    #禁用了mod地形生成器的世界
+    disableForgeGenWorld:
       - "xxxxxxx"
