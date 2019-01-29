@@ -142,7 +142,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private LinkedBlockingQueue<GenTask> chunkGenQueue = new LinkedBlockingQueue<>();
     public ExecutorService entityMoveThreadPool = new ThreadPoolExecutor(4, 4 + Runtime.getRuntime().availableProcessors(),
             1L, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>());
+            new ArrayBlockingQueue<>(4096));
 
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;

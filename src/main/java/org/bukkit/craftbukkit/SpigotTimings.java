@@ -28,6 +28,8 @@ public class SpigotTimings {
     public static final CustomTimingsHandler timeUpdateTimer = new CustomTimingsHandler("Time Update");
     public static final CustomTimingsHandler serverCommandTimer = new CustomTimingsHandler("Server Command");
     public static final CustomTimingsHandler worldSaveTimer = new CustomTimingsHandler("World Save");
+    public static final CustomTimingsHandler threadPoolCreate = new CustomTimingsHandler("Thread Pool Create");
+    public static final CustomTimingsHandler threadPoolShutdown = new CustomTimingsHandler("Thread Pool Shutdown");
 
     public static final CustomTimingsHandler entityMoveTimer = new CustomTimingsHandler("** entityMove");
     public static final CustomTimingsHandler tickEntityTimer = new CustomTimingsHandler("** tickEntity");

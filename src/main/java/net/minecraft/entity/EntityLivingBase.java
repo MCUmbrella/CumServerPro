@@ -2156,7 +2156,7 @@ public abstract class EntityLivingBase extends Entity
 
     public void travel(float strafe, float vertical, float forward)
     {
-        if (this instanceof EntityPlayer || !CatServer.entityMoveAsync) {
+        if (!CatServer.entityMoveAsync || !canAsync || this instanceof EntityPlayer) {
             travel0(strafe, vertical, forward, false);
             return;
         }
@@ -2780,7 +2780,8 @@ public abstract class EntityLivingBase extends Entity
 
     protected void collideWithNearbyEntities()
     {
-        if (this instanceof EntityPlayer || ! CatServer.entityMoveAsync) {
+        if (!CatServer.entityMoveAsync || !canAsync || this instanceof EntityPlayer) {
+
             collideWithNearbyEntities0();
         } else {
             world.addEntityMoveQueue(new EntityAICollisionTask(this));

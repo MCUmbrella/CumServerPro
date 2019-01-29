@@ -770,11 +770,13 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     public void tick()
     {
         SpigotTimings.serverTickTimer.startTiming(); // Spigot
+        SpigotTimings.threadPoolCreate.startTiming();
         for (WorldServer world : worlds) {
             world.entityMoveThreadPool = new ThreadPoolExecutor(4, 4 + Runtime.getRuntime().availableProcessors(),
                     1L, TimeUnit.SECONDS,
                     new LinkedBlockingQueue<>());
         }
+        SpigotTimings.threadPoolCreate.stopTiming();
         long i = System.nanoTime();
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPreServerTick();
         ++this.tickCounter;
@@ -836,16 +838,13 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostServerTick();
         WatchCatThread.update(); // CatServer
         org.spigotmc.WatchdogThread.tick(); // Spigot
+        SpigotTimings.threadPoolShutdown.startTiming();
         if (CatServer.entityMoveAsync) {
             for (WorldServer world : worlds) {
                 world.entityMoveThreadPool.shutdown();
-                try {
-                    world.entityMoveThreadPool.awaitTermination(2, TimeUnit.MILLISECONDS);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
             }
         }
+        SpigotTimings.threadPoolShutdown.stopTiming();
         SpigotTimings.serverTickTimer.stopTiming(); // Spigot
         org.spigotmc.CustomTimingsHandler.tick(); // Spigot
     }

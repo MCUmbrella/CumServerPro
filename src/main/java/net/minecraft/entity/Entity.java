@@ -219,6 +219,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
      * Setting this to true will prevent the world from calling {@link #onUpdate()} for this entity.
      */
     public boolean updateBlocked;
+    public boolean canAsync = false;
 
     // CraftBukkit start
     public boolean valid;
@@ -258,6 +259,11 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         this.pistonDeltas = new double[] {0.0D, 0.0D, 0.0D};
         this.world = worldIn;
         this.setPosition(0.0D, 0.0D, 0.0D);
+        String thisCls = this.getClass().getName();
+        if (thisCls.startsWith("net.minecraft.")) {
+            canAsync = true;
+        }
+
 
         if (worldIn != null)
         {
@@ -730,15 +736,11 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public void move(MoverType type, double x, double y, double z)
     {
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.startTiming(); // Spigot
-        if (this instanceof EntityPlayer) {
+        if (!CatServer.entityMoveAsync || !canAsync || this instanceof EntityPlayer) {
             move0(type, x, y, z, false);
             return;
         }
-        if (CatServer.entityMoveAsync) {
-            world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z));
-        } else {
-            move0(type, x, y, z, false);
-        }
+        world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z));
 
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.stopTiming(); // Spigot
     }
