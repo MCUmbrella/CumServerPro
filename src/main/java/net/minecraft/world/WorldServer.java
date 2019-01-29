@@ -24,6 +24,8 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.Block;
@@ -118,7 +120,7 @@ public class WorldServer extends World implements IThreadListener
     private final MinecraftServer mcServer;
     public EntityTracker entityTracker;
     private final PlayerChunkMap playerChunkMap;
-    private final Set<NextTickListEntry> pendingTickListEntriesHashSet = Sets.<NextTickListEntry>newHashSet();
+    private final Set<NextTickListEntry> pendingTickListEntriesHashSet = new ConcurrentSet<>();
     private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new TreeSet<NextTickListEntry>();
     private final Map<UUID, Entity> entitiesByUuid = Maps.<UUID, Entity>newHashMap();
     public boolean disableLevelSaving;
@@ -939,9 +941,10 @@ public class WorldServer extends World implements IThreadListener
             // TODO: Check if this condition should be always false(HashTreeSet from CB related)
             if (i != this.pendingTickListEntriesHashSet.size())
             {
-                throw new IllegalStateException("TickNextTick list out of synch");
+                this.pendingTickListEntriesHashSet.clear();
+                this.pendingTickListEntriesHashSet.addAll(this.pendingTickListEntriesTreeSet);
             }
-            else
+            // else
             {
                 if (i > 65536)
                 {
