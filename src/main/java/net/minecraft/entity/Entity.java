@@ -37,6 +37,7 @@ import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityTameable;
 import net.minecraft.entity.passive.EntityVillager;
+import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -286,7 +287,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityEvent.EntityConstructing(this));
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
         }
-        if (this.getClass().getName().startsWith("net.minecraft.") && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof EntityVillager || this instanceof EntityHorse)) {
+        if (this.getClass().getName().startsWith("net.minecraft.") && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof EntityVillager || this instanceof EntityHorse || this instanceof EntityWolf)) {
             canAsync = true;
         }
     }
