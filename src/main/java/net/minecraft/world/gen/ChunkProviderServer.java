@@ -1,8 +1,5 @@
 package net.minecraft.world.gen;
 
-import akka.util.Unsafe;
-import catserver.server.CatServer;
-import catserver.server.utils.GenTask;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import io.netty.util.internal.ConcurrentSet;
@@ -20,7 +17,6 @@ import it.unimi.dsi.fastutil.objects.ObjectSet;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.entity.EnumCreatureType;
-import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -82,7 +78,7 @@ public class ChunkProviderServer implements IChunkProvider
     {
         if (this.world.provider.canDropChunk(chunkIn.x, chunkIn.z))
         {
-            this.droppedChunksSet.add(ChunkPos.asLong(chunkIn.x, chunkIn.z));
+            this.droppedChunksSet.add(Long.valueOf(ChunkPos.asLong(chunkIn.x, chunkIn.z)));
             chunkIn.unloadQueued = true;
         }
     }
@@ -102,7 +98,7 @@ public class ChunkProviderServer implements IChunkProvider
     public Chunk getLoadedChunk(int x, int z)
     {
         long i = ChunkPos.asLong(x, z);
-        Chunk chunk = this.id2ChunkMap.get(i);
+        Chunk chunk = (Chunk)this.id2ChunkMap.get(i);
 
         if (chunk != null)
         {
@@ -163,18 +159,7 @@ public class ChunkProviderServer implements IChunkProvider
         if (runnable != null) runnable.run();
         return chunk;
     }
-    public void provideChunk__async(int x, int z, PlayerChunkMapEntry entry)
-    {
-        Chunk chunk = this.loadChunk(x, z);
-        if (chunk == null) {
-            world.timings.syncChunkLoadTimer.startTiming(); // Spigot
-            long i = ChunkPos.asLong(x, z);
-            world.addChunkGenQueue(new GenTask(this, chunkGenerator, x, z, i, entry));
-            world.timings.syncChunkLoadTimer.stopTiming(); // Spigot
-            return;
-        }
-        entry.chunk = chunk;
-    }
+
     public Chunk provideChunk(int x, int z)
     {
         Chunk chunk = this.loadChunk(x, z);

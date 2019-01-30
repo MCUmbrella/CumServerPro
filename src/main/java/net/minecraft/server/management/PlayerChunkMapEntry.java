@@ -1,6 +1,5 @@
 package net.minecraft.server.management;
 
-import catserver.server.CatServer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -41,7 +40,7 @@ public class PlayerChunkMapEntry
             PlayerChunkMapEntry.this.loading = false;
         }
     };
-    public boolean loading = true; // CatServer - ASync - private->public
+    private boolean loading = true;
 
     public PlayerChunkMapEntry(PlayerChunkMap mapIn, int chunkX, int chunkZ)
     {
@@ -124,11 +123,6 @@ public class PlayerChunkMapEntry
         {
             if (canGenerate)
             {
-                if (CatServer.chunkGenAsync) {
-                    this.loading = true;
-                    this.playerChunkMap.getWorldServer().getChunkProvider().provideChunk__async(this.pos.x, this.pos.z, this);
-                    return true;
-                }
                 this.chunk = this.playerChunkMap.getWorldServer().getChunkProvider().provideChunk(this.pos.x, this.pos.z);
             }
             else

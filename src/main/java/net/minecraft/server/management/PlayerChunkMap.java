@@ -379,7 +379,7 @@ public class PlayerChunkMap
                         {
                             PlayerChunkMapEntry playerchunkmapentry = this.getEntry(l1 - j1, i2 - k1);
 
-                            if (playerchunkmapentry != null && !playerchunkmapentry.loading)
+                            if (playerchunkmapentry != null)
                             {
                                 playerchunkmapentry.removePlayer(player);
                             }

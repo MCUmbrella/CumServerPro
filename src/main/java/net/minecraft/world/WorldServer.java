@@ -1,11 +1,9 @@
 package net.minecraft.world;
 
 import catserver.server.CatServer;
-import catserver.server.threads.ChunkGenThread;
 import catserver.server.threads.EntityMoveThread;
 import catserver.server.threads.HopperThread;
 import catserver.server.utils.EntityMoveTask;
-import catserver.server.utils.GenTask;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -236,7 +234,6 @@ public class WorldServer extends World implements IThreadListener
         this.initCapabilities();
         this.initHopperThread(super.getHopperQueue());
         this.initEntityMoveThread(super.getEntityMoveQueue());
-        this.initChunkGenThread(super.getChunkGenQueue());
         return this;
     }
 
@@ -251,12 +248,6 @@ public class WorldServer extends World implements IThreadListener
     {
         if (CatServer.entityMoveAsync) {
             new Thread(new EntityMoveThread(this, queue), this.getWorld().getName() + " - EntityMoveThread").start();
-        }
-    }
-
-    private void initChunkGenThread(ConcurrentLinkedQueue<GenTask> queue) {
-        if (CatServer.chunkGenAsync) {
-            new Thread(new ChunkGenThread(this, queue), this.getWorld().getName() + " - ChunkGenThread").start();
         }
     }
 
