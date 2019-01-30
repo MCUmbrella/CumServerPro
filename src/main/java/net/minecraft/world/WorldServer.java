@@ -243,7 +243,7 @@ public class WorldServer extends World implements IThreadListener
         return this;
     }
 
-    private void initHopperThread(LinkedBlockingQueue<TileEntityHopper> queue)
+    private void initHopperThread(ConcurrentLinkedQueue<TileEntityHopper> queue)
     {
         if (CatServer.hopperAsync) {
             new Thread(new HopperThread(this, queue), this.getWorld().getName() + " - HopperThread").start();
@@ -258,7 +258,7 @@ public class WorldServer extends World implements IThreadListener
         }
     }
 
-    private void initChunkGenThread(LinkedBlockingQueue<GenTask> queue) {
+    private void initChunkGenThread(ConcurrentLinkedQueue<GenTask> queue) {
         if (CatServer.chunkGenAsync) {
             new Thread(new ChunkGenThread(this, queue), this.getWorld().getName() + " - ChunkGenThread").start();
         }

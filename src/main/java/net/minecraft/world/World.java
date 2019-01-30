@@ -9,13 +9,17 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import java.util.*;
+import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
+import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
+import com.google.common.collect.Maps;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
+import net.minecraft.block.BlockObserver;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
@@ -76,6 +80,7 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.bukkit.Bukkit;
+import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.SpigotTimings;
@@ -138,9 +143,9 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private boolean processingLoadedTiles;
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
-    private LinkedBlockingQueue<TileEntityHopper> hopperQueue = new LinkedBlockingQueue<>();
+    private ConcurrentLinkedQueue<TileEntityHopper> hopperQueue = new ConcurrentLinkedQueue<>();
     private LinkedBlockingQueue<EntityMoveTask> entityMoveQueue = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<GenTask> chunkGenQueue = new LinkedBlockingQueue<>();
+    private ConcurrentLinkedQueue<GenTask> chunkGenQueue = new ConcurrentLinkedQueue<>();
 
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
@@ -4376,7 +4381,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.hopperQueue.offer(hopper);
     }
 
-    public LinkedBlockingQueue<TileEntityHopper> getHopperQueue() {
+    public ConcurrentLinkedQueue<TileEntityHopper> getHopperQueue() {
         return hopperQueue;
     }
 
@@ -4388,7 +4393,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         return entityMoveQueue;
     }
 
-    public LinkedBlockingQueue<GenTask> getChunkGenQueue() {
+    public ConcurrentLinkedQueue<GenTask> getChunkGenQueue() {
         return chunkGenQueue;
     }
 

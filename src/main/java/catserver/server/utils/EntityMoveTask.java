@@ -9,13 +9,15 @@ public class EntityMoveTask {
     public final double x;
     public final double y;
     public final double z;
+    public final long time;
 
-    public EntityMoveTask(Entity entity, MoverType moverType, double x, double y, double z) {
+    public EntityMoveTask(Entity entity, MoverType moverType, double x, double y, double z, long time) {
         this.entity = entity;
         this.moverType = moverType;
         this.x = x;
         this.y = y;
         this.z = z;
+        this.time = time;
     }
 
 }
