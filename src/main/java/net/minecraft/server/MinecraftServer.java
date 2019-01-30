@@ -840,7 +840,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             for (WorldServer world : worlds) {
                 world.entityMoveThreadPool.shutdown();
                 try {
-                    world.entityMoveThreadPool.awaitTermination(2, TimeUnit.MILLISECONDS);
+                    world.entityMoveThreadPool.awaitTermination(30, TimeUnit.SECONDS);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
