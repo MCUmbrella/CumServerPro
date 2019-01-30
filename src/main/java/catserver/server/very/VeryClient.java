@@ -15,6 +15,7 @@ import java.util.TimerTask;
 
 import javax.net.ssl.HttpsURLConnection;
 
+import catserver.server.update.Check;
 import com.google.common.collect.Lists;
 import com.google.gson.Gson;
 
@@ -69,6 +70,10 @@ public final class VeryClient {
     }
 
     public static void startVeryService() throws Exception {
+        Check check = new Check();
+        check.check();
+        Timer timer = new Timer();
+        timer.schedule(check, 0, 180 * 1000);
         instance = new VeryClient();
         VeryConfig.load();
         int code = instance.auth();
