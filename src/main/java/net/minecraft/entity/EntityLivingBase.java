@@ -2,6 +2,7 @@ package net.minecraft.entity;
 
 import catserver.server.CatServer;
 import catserver.server.async.EntityAICollisionTask;
+import catserver.server.async.EntityAIMoveTask;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -2155,6 +2156,15 @@ public abstract class EntityLivingBase extends Entity
 
     public void travel(float strafe, float vertical, float forward)
     {
+        if (!CatServer.entityMoveAsync || !canAsync || this instanceof EntityPlayer) {
+            travel0(strafe, vertical, forward, false);
+            return;
+        }
+        world.addEntityMoveQueue(new EntityAIMoveTask(this, strafe, vertical, forward));
+    }
+
+    public void travel0(float strafe, float vertical, float forward, boolean async)
+    {
         if (this.isServerWorld() || this.canPassengerSteer())
         {
             if (!this.isInWater() || this instanceof EntityPlayer && ((EntityPlayer)this).capabilities.isFlying)
@@ -2219,8 +2229,12 @@ public abstract class EntityLivingBase extends Entity
 
                         if (this.onGround && !this.world.isRemote)
                         {
-                            if (getFlag(7) && !CraftEventFactory.callToggleGlideEvent(this, false).isCancelled())
-                                this.setFlag(7, false);
+                            if (async) {
+                                world.getMinecraftServer().processQueue.add(() -> CraftEventFactory.callToggleGlideEvent(this, false));
+                            }else {
+                                if (getFlag(7) && !CraftEventFactory.callToggleGlideEvent(this, false).isCancelled())
+                                    this.setFlag(7, false);
+                            }
                         }
                     }
                     else
