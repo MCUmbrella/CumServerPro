@@ -3,7 +3,7 @@ package catserver.server.utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 
-public class EntityMoveTask implements EntityTask {
+public class EntityMoveTask {
     public final Entity entity;
     public final MoverType moverType;
     public final double x;
@@ -18,8 +18,4 @@ public class EntityMoveTask implements EntityTask {
         this.z = z;
     }
 
-    @Override
-    public void run() {
-        entity.move0(moverType, x, y, z, true);
-    }
 }

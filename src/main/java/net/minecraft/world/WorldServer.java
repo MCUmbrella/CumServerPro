@@ -4,7 +4,7 @@ import catserver.server.CatServer;
 import catserver.server.threads.ChunkGenThread;
 import catserver.server.threads.EntityMoveThread;
 import catserver.server.threads.HopperThread;
-import catserver.server.utils.EntityTask;
+import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.GenTask;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -250,7 +250,7 @@ public class WorldServer extends World implements IThreadListener
         }
     }
 
-    private void initEntityMoveThread(LinkedBlockingQueue<EntityTask> queue)
+    private void initEntityMoveThread(LinkedBlockingQueue<EntityMoveTask> queue)
     {
         if (CatServer.entityMoveAsync) {
             entityMoveThread = new EntityMoveThread(this, queue, this.getWorld().getName() + " - EntityMoveThread");

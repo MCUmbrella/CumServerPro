@@ -1,13 +1,10 @@
 package net.minecraft.entity.ai;
 
-import catserver.server.CatServer;
-import catserver.server.utils.EntityAITask;
 import com.google.common.collect.Sets;
 import java.util.Iterator;
 import java.util.Set;
 import javax.annotation.Nullable;
 import net.minecraft.profiler.Profiler;
-import net.minecraft.world.World;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -55,16 +52,7 @@ public class EntityAITasks
         }
     }
 
-    public void onUpdateTasks(World world)
-    {
-        if (CatServer.entityMoveAsync) {
-            world.addEntityMoveQueue(new EntityAITask(this));
-            return;
-        }
-        onUpdateTasks0();
-    }
-
-    public void onUpdateTasks0()
+    public void onUpdateTasks()
     {
         this.profiler.startSection("goalSetup");
 
