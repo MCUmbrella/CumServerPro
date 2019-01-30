@@ -1,13 +1,13 @@
 package net.minecraft.entity;
 
 import catserver.server.CatServer;
-import catserver.server.async.EntityAICollisionTask;
 import catserver.server.async.EntityAIMoveTask;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -2779,15 +2779,6 @@ public abstract class EntityLivingBase extends Entity
     }
 
     protected void collideWithNearbyEntities()
-    {
-        if (this instanceof EntityPlayer || ! CatServer.entityMoveAsync) {
-            collideWithNearbyEntities0();
-        } else {
-            world.addEntityMoveQueue(new EntityAICollisionTask(this));
-        }
-    }
-
-    public void collideWithNearbyEntities0()
     {
         List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), EntitySelectors.getTeamCollisionPredicate(this));
 

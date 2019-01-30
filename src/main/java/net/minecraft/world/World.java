@@ -9,7 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import java.util.*;
-import java.util.concurrent.*;
+import java.util.concurrent.LinkedBlockingQueue;
 import javax.annotation.Nullable;
 
 import net.minecraft.advancements.AdvancementManager;
@@ -139,10 +139,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
     private LinkedBlockingQueue<TileEntityHopper> hopperQueue = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<EntityTask> entityMoveQueue = new LinkedBlockingQueue<>();
     private LinkedBlockingQueue<GenTask> chunkGenQueue = new LinkedBlockingQueue<>();
-    public ExecutorService entityMoveThreadPool = new ThreadPoolExecutor(4, 4 + Runtime.getRuntime().availableProcessors(),
-            1L, TimeUnit.SECONDS,
-            new LinkedBlockingQueue<>());
 
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
@@ -4383,7 +4381,11 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     }
 
     public void addEntityMoveQueue(EntityTask moveTask) {
-        this.entityMoveThreadPool.submit(moveTask);
+        this.entityMoveQueue.offer(moveTask);
+    }
+
+    public LinkedBlockingQueue<EntityTask> getEntityMoveQueue() {
+        return entityMoveQueue;
     }
 
     public LinkedBlockingQueue<GenTask> getChunkGenQueue() {

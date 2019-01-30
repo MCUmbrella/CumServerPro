@@ -2,7 +2,7 @@ package catserver.server.async;
 
 import net.minecraft.entity.EntityLivingBase;
 
-public class EntityAIMoveTask extends AbstractEntityTask{
+public class EntityAIMoveTask implements EntityTask{
     private final EntityLivingBase livingBase;
     private final float strafe, vertical, forward;
 
