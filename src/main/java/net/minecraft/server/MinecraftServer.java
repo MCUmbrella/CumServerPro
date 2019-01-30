@@ -1,6 +1,5 @@
 package net.minecraft.server;
 
-import catserver.server.CatServer;
 import catserver.server.threads.WatchCatThread;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -833,11 +832,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostServerTick();
         WatchCatThread.update(); // CatServer
         org.spigotmc.WatchdogThread.tick(); // Spigot
-        if (CatServer.entityMoveAsync) {
-            for (WorldServer world : worlds) {
-                while (!world.entityMoveThread.queue.isEmpty());
-            }
-        }
         SpigotTimings.serverTickTimer.stopTiming(); // Spigot
         org.spigotmc.CustomTimingsHandler.tick(); // Spigot
     }
