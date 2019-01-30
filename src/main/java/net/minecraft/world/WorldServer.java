@@ -940,9 +940,10 @@ public class WorldServer extends World implements IThreadListener
             // TODO: Check if this condition should be always false(HashTreeSet from CB related)
             if (i != this.pendingTickListEntriesHashSet.size())
             {
-                throw new IllegalStateException("TickNextTick list out of synch");
+                this.pendingTickListEntriesHashSet.clear();
+                this.pendingTickListEntriesHashSet.addAll(pendingTickListEntriesTreeSet);
             }
-            else
+            // else
             {
                 if (i > 65536)
                 {
