@@ -70,14 +70,14 @@ public abstract class Biome extends net.minecraftforge.registries.IForgeRegistry
     protected static final WorldGenBigTree BIG_TREE_FEATURE = new WorldGenBigTree(false);
     protected static final WorldGenSwamp SWAMP_FEATURE = new WorldGenSwamp();
     public static final RegistryNamespaced<ResourceLocation, Biome> REGISTRY = net.minecraftforge.registries.GameData.getWrapper(Biome.class);
-    private final String biomeName;
-    private final float baseHeight;
-    private final float heightVariation;
-    private final float temperature;
-    private final float rainfall;
-    private final int waterColor;
-    private final boolean enableSnow;
-    private final boolean enableRain;
+    public final String biomeName; // NPCMod - Comp
+    public final float baseHeight; // NPCMod - Comp
+    public final float heightVariation; // NPCMod - Comp
+    public final float temperature; // NPCMod - Comp
+    public final float rainfall; // NPCMod - Comp
+    public final int waterColor; // NPCMod - Comp
+    public final boolean enableSnow; // NPCMod - Comp
+    public final boolean enableRain; // NPCMod - Comp
     @Nullable
     private final String baseBiomeRegName;
     public IBlockState topBlock = Blocks.GRASS.getDefaultState();
