@@ -1,4 +1,4 @@
-package catserver.server.async;
+package catserver.server.utils;
 
 import net.minecraft.entity.ai.EntityAITasks;
 

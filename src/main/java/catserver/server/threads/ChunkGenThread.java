@@ -1,6 +1,6 @@
 package catserver.server.threads;
 
-import catserver.server.async.GenTask;
+import catserver.server.utils.GenTask;
 import net.minecraft.crash.CrashReport;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.util.ReportedException;

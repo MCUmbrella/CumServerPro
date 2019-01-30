@@ -1,4 +1,4 @@
-package catserver.server.async;
+package catserver.server.utils;
 
 import net.minecraft.server.management.PlayerChunkMapEntry;
 import net.minecraft.world.gen.ChunkProviderServer;

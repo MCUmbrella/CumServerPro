@@ -1,4 +1,4 @@
-package catserver.server.async;
+package catserver.server.utils;
 
 public interface EntityTask extends Runnable {
 }

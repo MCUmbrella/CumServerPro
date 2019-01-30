@@ -1,6 +1,6 @@
 package catserver.server.threads;
 
-import catserver.server.async.EntityTask;
+import catserver.server.utils.EntityTask;
 import net.minecraft.world.WorldServer;
 import java.util.concurrent.LinkedBlockingQueue;
 

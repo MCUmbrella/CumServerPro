@@ -1,11 +1,16 @@
 package net.minecraft.world.gen;
 
-import catserver.server.async.GenTask;
+import akka.util.Unsafe;
+import catserver.server.CatServer;
+import catserver.server.utils.GenTask;
 import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
 import io.netty.util.internal.ConcurrentSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
+import it.unimi.dsi.fastutil.longs.LongSet;
+import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.io.IOException;
 import java.util.*;
