@@ -47,7 +47,6 @@ public class Check extends TimerTask {
             String n = sendRequest("action=version");
             if (!n.equals(v)) {
                 System.out.println("检测到CatServer版本更新, 请更新. 最新版: " + n);
-                System.exit(1);
             }else {
                 System.out.println("CatServer更新检测完毕, 已经是最新版本: " + n);
             }
