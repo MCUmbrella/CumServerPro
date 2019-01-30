@@ -34,7 +34,9 @@ import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.passive.EntityHorse;
 import net.minecraft.entity.passive.EntityTameable;
+import net.minecraft.entity.passive.EntityVillager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -240,6 +242,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public boolean fromMobSpawner;
     public void inactiveTick() { }
     // Spigot end
+    private boolean canAsync = false;
 
     public Entity(World worldIn)
     {
@@ -282,6 +285,9 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         if(!(this instanceof EntityPlayer)) { // CatServer - move to EntityPlayer
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityEvent.EntityConstructing(this));
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
+        }
+        if (this.getClass().getName().startsWith("net.minecraft.") && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof EntityVillager || this instanceof EntityHorse)) {
+            canAsync = true;
         }
     }
 
@@ -732,11 +738,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public void move(MoverType type, double x, double y, double z)
     {
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.startTiming(); // Spigot
-        if (this instanceof EntityPlayer) {
-            move0(type, x, y, z, false);
-            return;
-        }
-        if (CatServer.entityMoveAsync) {
+        if (CatServer.entityMoveAsync && canAsync) {
             world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z, System.currentTimeMillis()));
         } else {
             move0(type, x, y, z, false);

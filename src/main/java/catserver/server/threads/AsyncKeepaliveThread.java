@@ -26,6 +26,7 @@ public class AsyncKeepaliveThread extends Thread {
     }
 
     public static void stopThread() {
-        thread.stop();
+        if (thread != null)
+            thread.stop();
     }
 }

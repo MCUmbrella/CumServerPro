@@ -1,30 +1,36 @@
 package catserver.server.threads;
 
+import catserver.server.utils.HopperTask;
 import net.minecraft.tileentity.TileEntityHopper;
 import net.minecraft.world.WorldServer;
 
 import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public class HopperThread extends Thread {
 
     private final WorldServer world;
-    private final ConcurrentLinkedQueue<TileEntityHopper> queue;
+    private final LinkedBlockingQueue<HopperTask> queue;
 
-    public HopperThread(WorldServer worldServer, ConcurrentLinkedQueue<TileEntityHopper> queue) {
+    public HopperThread(WorldServer worldServer, LinkedBlockingQueue<HopperTask> queue) {
         this.world = worldServer;
         this.queue = queue;
     }
 
     @Override
     public void run() {
+        long nowTime = System.currentTimeMillis();
+        short count = 0;
         while (world != null) {
             try{
-                TileEntityHopper hopper = queue.poll();
-                if (hopper == null) {
-                    Thread.sleep(2);
-                    continue;
+                if ((count++ % 10) == 0) {
+                    nowTime = System.currentTimeMillis();
+                    count = 0;
                 }
-                if (world == null || !world.isBlockLoaded(hopper.getPos())) continue;
+                HopperTask hopperTask = queue.take();
+                TileEntityHopper hopper = hopperTask.hopper;
+                if (nowTime - hopperTask.time > 200) continue;
+                if (!world.isBlockLoaded(hopper.getPos())) continue;
                 if (!this.world.isRemote)
                 {
                     --hopper.transferCooldown;

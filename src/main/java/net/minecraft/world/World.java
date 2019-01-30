@@ -1,6 +1,7 @@
 package net.minecraft.world;
 
 import catserver.server.utils.EntityMoveTask;
+import catserver.server.utils.HopperTask;
 import catserver.server.utils.ThreadSafeList;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
@@ -8,7 +9,7 @@ import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import java.util.*;
-import java.util.concurrent.ConcurrentLinkedQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
@@ -141,8 +142,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private boolean processingLoadedTiles;
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
-    private ConcurrentLinkedQueue<TileEntityHopper> hopperQueue = new ConcurrentLinkedQueue<>();
-    private ConcurrentLinkedQueue<EntityMoveTask> entityMoveQueue = new ConcurrentLinkedQueue<>();
+    private LinkedBlockingQueue<HopperTask> hopperQueue = new LinkedBlockingQueue<>();
+    private LinkedBlockingQueue<EntityMoveTask> entityMoveQueue = new LinkedBlockingQueue<>();
 
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
@@ -4375,10 +4376,10 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public void addHopperQueue(TileEntityHopper hopper)
     {
-        this.hopperQueue.offer(hopper);
+        this.hopperQueue.offer(new HopperTask(hopper, System.currentTimeMillis()));
     }
 
-    public ConcurrentLinkedQueue<TileEntityHopper> getHopperQueue() {
+    public LinkedBlockingQueue<HopperTask> getHopperQueue() {
         return hopperQueue;
     }
 
@@ -4386,7 +4387,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.entityMoveQueue.offer(moveTask);
     }
 
-    public ConcurrentLinkedQueue<EntityMoveTask> getEntityMoveQueue() {
+    public LinkedBlockingQueue<EntityMoveTask> getEntityMoveQueue() {
         return entityMoveQueue;
     }
 }
