@@ -2996,6 +2996,7 @@ public abstract class EntityLivingBase extends Entity
         if (this.isHandActive())
         {
             ItemStack itemstack = this.getHeldItem(this.getActiveHand());
+            if (net.minecraftforge.common.ForgeHooks.canContinueUsing(this.activeItemStack, itemstack)) this.activeItemStack = itemstack;
 
             if (itemstack == this.activeItemStack)
             {
