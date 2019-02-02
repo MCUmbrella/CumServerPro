@@ -1,8 +1,8 @@
 package catserver.server;
 
 import catserver.server.remapper.ReflectionUtils;
+import catserver.server.remapper.RemapUtils;
 import catserver.server.very.VeryConfig;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLLog;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -14,8 +14,6 @@ import java.io.InputStreamReader;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
 
 public class CatServer {
 	private static final String version = "2.0.0";
@@ -26,7 +24,6 @@ public class CatServer {
     public static boolean entityMoveAsync = true;
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
-    public static boolean asyncSkullProfile = true;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
 
 	public static String getVersion() {
@@ -67,7 +64,6 @@ public class CatServer {
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
-        asyncSkullProfile = getOrWriteBooleanConfig("async.skullProfile", asyncSkullProfile);
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {
