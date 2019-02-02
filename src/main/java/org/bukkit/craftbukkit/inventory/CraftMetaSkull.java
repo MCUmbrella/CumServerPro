@@ -2,6 +2,8 @@ package org.bukkit.craftbukkit.inventory;
 
 import java.util.Map;
 
+import catserver.server.CatServer;
+import com.google.common.base.Predicate;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTUtil;
@@ -75,12 +77,20 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
         super.applyToItem(tag);
 
         if (profile != null) {
-            // Must be done sync due to way client handles textures
-            profile = com.google.common.util.concurrent.Futures.getUnchecked(TileEntitySkull.updateGameprofile(profile, com.google.common.base.Predicates.alwaysTrue(), true)); // Spigot
-
-            NBTTagCompound owner = new NBTTagCompound();
-            NBTUtil.writeGameProfile(owner, profile);
-            tag.setTag(SKULL_OWNER.NBT, owner);
+            if (CatServer.asyncSkullProfile) {
+                TileEntitySkull.updateGameprofile(profile, input -> {
+                    NBTTagCompound owner = new NBTTagCompound();
+                    NBTUtil.writeGameProfile(owner, profile);
+                    tag.setTag(SKULL_OWNER.NBT, owner);
+                    return true;
+                }, false);
+            } else {
+                profile = com.google.common.util.concurrent.Futures.getUnchecked(TileEntitySkull.updateGameprofile(profile, com.google.common.base.Predicates.alwaysTrue(), true)); // Spigot
+                // Must be done sync due to way client handles textures
+                NBTTagCompound owner = new NBTTagCompound();
+                NBTUtil.writeGameProfile(owner, profile);
+                tag.setTag(SKULL_OWNER.NBT, owner);
+            }
         }
     }
 
