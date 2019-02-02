@@ -16,3 +16,5 @@ world:
     #禁用了mod地形生成器的世界
     disableForgeGenWorld:
       - "xxxxxxx"
+#禁用更新正版信息 可以防止头颅卡服
+disableUpdateGameProfile: true

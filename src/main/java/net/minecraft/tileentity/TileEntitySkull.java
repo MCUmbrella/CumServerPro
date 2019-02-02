@@ -1,5 +1,6 @@
 package net.minecraft.tileentity;
 
+import catserver.server.CatServer;
 import com.google.common.base.Predicate;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -72,7 +73,8 @@ public class TileEntitySkull extends TileEntity implements ITickable
                         }
                     };
 
-                    MinecraftServer.getServerInst().getGameProfileRepository().findProfilesByNames(new String[] { key }, Agent.MINECRAFT, gameProfileLookup);
+                    if (! CatServer.disableUpdateGameProfile)
+                        MinecraftServer.getServerInst().getGameProfileRepository().findProfilesByNames(new String[] { key }, Agent.MINECRAFT, gameProfileLookup);
 
                     GameProfile profile = profiles[ 0 ];
                     if (profile == null) {

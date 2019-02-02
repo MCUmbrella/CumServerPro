@@ -24,6 +24,7 @@ public class CatServer {
     public static boolean entityMoveAsync = true;
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
+    public static boolean disableUpdateGameProfile = true;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
 
 	public static String getVersion() {
@@ -64,6 +65,7 @@ public class CatServer {
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
+        disableUpdateGameProfile = getOrWriteBooleanConfig("disableUpdateGameProfile", disableUpdateGameProfile);
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {
