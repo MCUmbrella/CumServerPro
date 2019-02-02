@@ -80,7 +80,7 @@ class CraftMetaSkull extends CraftMetaItem implements SkullMeta {
             if (CatServer.asyncSkullProfile) {
                 TileEntitySkull.updateGameprofile(profile, input -> {
                     NBTTagCompound owner = new NBTTagCompound();
-                    NBTUtil.writeGameProfile(owner, input);
+                    NBTUtil.writeGameProfile(owner, profile);
                     tag.setTag(SKULL_OWNER.NBT, owner);
                     return true;
                 }, false);
