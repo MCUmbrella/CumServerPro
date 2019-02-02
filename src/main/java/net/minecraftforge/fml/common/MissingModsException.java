@@ -103,6 +103,12 @@ public class MissingModsException extends EnhancedRuntimeException implements ID
             ArtifactVersion currentVersion = info.getCurrentVersion();
             String currentString = currentVersion != null ? currentVersion.getVersionString() : "missing";
             stream.println(String.format("\t%s : need %s]: have %s", acceptedVersion.getLabel(), acceptedVersion.getRangeString(), currentString)); //CatServer - missing mod print modID, not "unknown"
+            stream.println("你依赖mod没装!!!!!!!");
+            stream.println("你依赖mod没装!!!!!!!");
+            stream.println("你依赖mod没装!!!!!!!");
+            stream.println("再问自杀!!!!!!");
+            stream.println("再问自杀!!!!!!");
+            stream.println("再问自杀!!!!!!");
         }
         stream.println("");
     }
