@@ -1,5 +1,6 @@
 package net.minecraft.world;
 
+import catserver.server.WorldCapture;
 import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.HopperTask;
 import catserver.server.utils.ThreadSafeList;
@@ -174,6 +175,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private int tileTickPosition;
     public final Map<Explosion.CacheKey, Float> explosionDensityCache = new HashMap<>(); // Paper - Optimize explosions
 
+    public WorldCapture worldCapture; // CatServer
+
     public CraftWorld getWorld() {
         return this.world;
     }
@@ -265,6 +268,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
+        this.worldCapture = new WorldCapture((WorldServer) this);
     }
 
     protected World(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client)
@@ -288,6 +292,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
+        this.worldCapture = new WorldCapture((WorldServer) this);
     }
 
     public World init()
@@ -1385,6 +1390,14 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public boolean addEntity(Entity entity, CreatureSpawnEvent.SpawnReason spawnReason) {
         if (entity == null) return false;
+
+        // CatServer start
+        if (this.restoringBlockSnapshots) return true;
+        if (this.captureBlockSnapshots && !(entity instanceof EntityPlayer)) {
+            worldCapture.addEntitySnap(entity, spawnReason);
+            return true;
+        }
+        // CatServer end
 
         org.bukkit.event.Cancellable event = null;
         if (entity instanceof EntityLivingBase && !(entity instanceof EntityPlayerMP)) {

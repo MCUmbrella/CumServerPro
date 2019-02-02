@@ -895,6 +895,7 @@ public class ForgeHooks
 
         if (!(itemstack.getItem() instanceof ItemBucket)) // if not bucket
         {
+            world.worldCapture.startCapture(player, itemstack, hand); // CatServer
             world.captureBlockSnapshots = true;
             // CraftBukkit start
             if(itemstack.getItem() instanceof ItemDye && itemstack.getMetadata() == 15){
@@ -984,6 +985,7 @@ public class ForgeHooks
                     world.restoringBlockSnapshots = false;
                 }
 
+                world.worldCapture.restore(); // CatServer
                 ((org.bukkit.craftbukkit.entity.CraftPlayer) player.getBukkitEntity()).updateInventory(); // CatServer - update inventory
             }
             else
@@ -1035,6 +1037,8 @@ public class ForgeHooks
                         }
                     }
                 }
+
+                world.worldCapture.apply(); // CatServer
             }
         }
         world.capturedBlockSnapshots.clear();
