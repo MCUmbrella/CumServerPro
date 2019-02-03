@@ -66,7 +66,7 @@ public class CatServer {
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
         disableUpdateGameProfile = getOrWriteBooleanConfig("disableUpdateGameProfile", disableUpdateGameProfile);
-        worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 20) * 1000000;
+        worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 10) * 1000000;
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {
