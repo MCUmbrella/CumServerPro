@@ -16,5 +16,9 @@ world:
     #禁用了mod地形生成器的世界
     disableForgeGenWorld:
       - "xxxxxxx"
+#每个tick耗时限制(毫秒)
+maxTickTime:
+  #世界生成限制(可以缓解跑图卡服)
+  worldGen: 10
 #禁用更新正版信息 可以防止头颅卡服
 disableUpdateGameProfile: true

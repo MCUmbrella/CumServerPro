@@ -1,7 +1,6 @@
 package catserver.server;
 
 import catserver.server.remapper.ReflectionUtils;
-import catserver.server.remapper.RemapUtils;
 import catserver.server.very.VeryConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLLog;
@@ -25,6 +24,7 @@ public class CatServer {
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
     public static boolean disableUpdateGameProfile = true;
+    public static long worldGenMaxTickTime = 10000000L;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
 
 	public static String getVersion() {
@@ -66,6 +66,7 @@ public class CatServer {
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
         disableUpdateGameProfile = getOrWriteBooleanConfig("disableUpdateGameProfile", disableUpdateGameProfile);
+        worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 20) * 1000000;
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {
@@ -84,6 +85,19 @@ public class CatServer {
     public static List<String> getOrWriteStringListConfig(String path, List<String> def) {
         if (config.contains(path)) {
             return config.getStringList(path);
+        }
+        config.set(path, def);
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return def;
+    }
+
+    public static long getOrWriteStringLongConfig(String path, long def) {
+        if (config.contains(path)) {
+            return config.getLong(path);
         }
         config.set(path, def);
         try {

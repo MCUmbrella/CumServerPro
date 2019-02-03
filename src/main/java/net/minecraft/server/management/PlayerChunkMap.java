@@ -1,5 +1,6 @@
 package net.minecraft.server.management;
 
+import catserver.server.CatServer;
 import catserver.server.utils.ThreadSafeList;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
@@ -156,7 +157,7 @@ public class PlayerChunkMap
 
         if (!this.entriesWithoutChunks.isEmpty())
         {
-            long l = System.nanoTime() + 50000000L;
+            long l = System.nanoTime() + CatServer.worldGenMaxTickTime;
             int k = 49;
             Iterator<PlayerChunkMapEntry> iterator = this.entriesWithoutChunks.iterator();
 
