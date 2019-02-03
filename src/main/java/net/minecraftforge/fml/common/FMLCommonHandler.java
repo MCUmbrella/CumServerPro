@@ -58,6 +58,7 @@ import net.minecraft.world.World;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.model.animation.Animation;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.common.ForgeVersion;
 import net.minecraftforge.common.MinecraftForge;
 import net.minecraftforge.common.util.CompoundDataFixer;
@@ -385,6 +386,7 @@ public class FMLCommonHandler
 
     public void handleWorldDataSave(SaveHandler handler, WorldInfo worldInfo, NBTTagCompound tagCompound)
     {
+        if (worldInfo.getDimension() != 0) return; // CatServer
         for (ModContainer mc : Loader.instance().getModList())
         {
             if (mc instanceof InjectedModContainer)
@@ -405,7 +407,7 @@ public class FMLCommonHandler
         {
             return;
         }
-        if (handlerSet.contains(handler) || worldInfo.getDimension() != 0)
+        if (handlerSet.contains(handler) || DimensionManager.getWorld(0) != null) // CatServer
         {
             return;
         }
