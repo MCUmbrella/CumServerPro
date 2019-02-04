@@ -24,7 +24,7 @@ public class CatServer {
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
     public static boolean disableUpdateGameProfile = true;
-    public static long worldGenMaxTickTime = 10000000L;
+    public static long worldGenMaxTickTime = 15000000L;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
 
 	public static String getVersion() {
@@ -66,7 +66,7 @@ public class CatServer {
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
         disableUpdateGameProfile = getOrWriteBooleanConfig("disableUpdateGameProfile", disableUpdateGameProfile);
-        worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 10) * 1000000;
+        worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 15) * 1000000;
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {
