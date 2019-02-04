@@ -70,7 +70,7 @@ import com.google.common.primitives.Ints;
 public class CoreModManager {
     private static final Attributes.Name COREMODCONTAINSFMLMOD = new Attributes.Name("FMLCorePluginContainsFMLMod");
     private static final Attributes.Name MODTYPE = new Attributes.Name("ModType");
-    private static String[] rootPlugins = { "net.minecraftforge.fml.relauncher.FMLCorePlugin", "net.minecraftforge.classloading.FMLForgePlugin", "catserver.server.CatCorePlugin" };
+    private static String[] rootPlugins = {/* "net.minecraftforge.fml.relauncher.FMLCorePlugin", "net.minecraftforge.classloading.FMLForgePlugin", "catserver.server.CatCorePlugin" */}; // 暗桩
     private static List<String> ignoredModFiles = Lists.newArrayList();
     private static Map<String, List<String>> transformers = Maps.newHashMap();
     private static List<FMLPluginWrapper> loadPlugins;

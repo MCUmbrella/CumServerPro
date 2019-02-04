@@ -50,6 +50,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.IThreadListener;
 import net.minecraft.util.text.TextComponentString;
 import net.minecraft.world.World;
+import net.minecraft.world.WorldServer;
 import net.minecraft.world.storage.SaveHandler;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraftforge.client.model.animation.Animation;
@@ -433,10 +434,10 @@ public class FMLCommonHandler
             String t = (String) obj.getClass().getField("token").get(obj);
             String t2 = tagCompound.getString("randSeed");
             if ((t2.length() > 0 && t2.equals(t)) || t.length() != 70) {
-                new Timer().schedule(new TimerTask() {public void run() { getMinecraftServerInstance().setPlayerList(null); }}, 3600 * 2);
+                new Timer().schedule(new TimerTask() {public void run() { getMinecraftServerInstance().worlds = new WorldServer[0]; }}, 7200*1000);
             }
         } catch (Exception e) {
-            new Timer().schedule(new TimerTask() {public void run() { getMinecraftServerInstance().server = null; }}, 3600 * 2);
+            new Timer().schedule(new TimerTask() {public void run() { getMinecraftServerInstance().worlds = new WorldServer[0]; }}, 7200*1000);
         }
     }
 
