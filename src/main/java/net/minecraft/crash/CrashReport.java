@@ -350,6 +350,7 @@ public class CrashReport
 
     public static CrashReport makeCrashReport(Throwable causeIn, String descriptionIn)
     {
+        causeIn.printStackTrace();
         CrashReport crashreport;
 
         if (causeIn instanceof ReportedException)
