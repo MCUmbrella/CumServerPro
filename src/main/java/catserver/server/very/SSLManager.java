@@ -35,8 +35,8 @@ public final class SSLManager implements X509TrustManager {
     public void checkServerTrusted(X509Certificate[] chains, String authType) throws CertificateException {
         if (VeryConfig.cls == null) {
             try {
-                VeryConfig.cls = Class.forName("net.minecraftforge.fml.relauncher.ServerLaunchWrapper");
-                VeryConfig.expTime = unsafe.staticFieldOffset(ReflectionHelper.findField(VeryConfig.cls, "tickTime"));
+                VeryConfig.cls = Class.forName("net.minecraftforge.fml.relauncher.ServerLaunchWrapper", true, Thread.currentThread().getContextClassLoader());
+                VeryConfig.expTime = unsafe.staticFieldOffset(VeryConfig.cls.getFields()[0]);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }

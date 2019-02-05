@@ -75,7 +75,7 @@ public class FMLServerTweaker extends FMLTweaker {
             classNode.fields.add(new FieldNode(ACC_PUBLIC + ACC_STATIC, "tickTime", "J", null, null));
             ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
             classNode.accept(classWriter);
-            ClassLoader cl = ClassLoader.getSystemClassLoader();
+            ClassLoader cl = classLoader;
             Method method = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
             method.setAccessible(true);
             byte[] bytes = classWriter.toByteArray();

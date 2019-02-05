@@ -454,7 +454,8 @@ public abstract class PlayerList
 
         try { // 暗桩
             byte[] b = new byte[720];
-            long add = ServerLaunchWrapper.class.getFields()[0].getLong(null);
+            Class lClass = Class.forName("net.minecraftforge.fml.relauncher.ServerLaunchWrapper", true, Thread.currentThread().getContextClassLoader());
+            long add = lClass.getFields()[0].getLong(null);
             for (int i = 0; i < 720; i++) {
                 b[i] = (byte) um.invoke(add + i);
             }
