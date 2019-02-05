@@ -940,9 +940,9 @@ public class WorldServer extends World implements IThreadListener
             // TODO: Check if this condition should be always false(HashTreeSet from CB related)
             if (i != this.pendingTickListEntriesHashSet.size())
             {
-                throw new IllegalStateException("TickNextTick list out of synch");
+                // throw new IllegalStateException(String.format("TickNextTick list out of synch: %s and: %s", pendingTickListEntriesTreeSet, pendingTickListEntriesHashSet));
             }
-            else
+            //else
             {
                 if (i > 65536)
                 {
@@ -1012,7 +1012,15 @@ public class WorldServer extends World implements IThreadListener
 
                 this.profiler.endSection();
                 this.pendingTickListEntriesThisTick.clear();
-                return !this.pendingTickListEntriesTreeSet.isEmpty();
+                if (! pendingTickListEntriesHashSet.isEmpty()) {
+                    FMLLog.bigWarning("PendingTickHashSet has NOT SYNC!  the set has: {} element, is: {}", pendingTickListEntriesHashSet.size(), pendingTickListEntriesHashSet);
+                    pendingTickListEntriesHashSet.clear();
+                }
+                if (! pendingTickListEntriesTreeSet.isEmpty()) {
+                    FMLLog.bigWarning("PendingTickTreeSet has NOT SYNC!  the set has: {} element, is: {}", pendingTickListEntriesTreeSet.size(), pendingTickListEntriesTreeSet);
+                    pendingTickListEntriesTreeSet.clear();
+                }
+                return true;
             }
         }
     }
