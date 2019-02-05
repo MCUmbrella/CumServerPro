@@ -1012,15 +1012,11 @@ public class WorldServer extends World implements IThreadListener
 
                 this.profiler.endSection();
                 this.pendingTickListEntriesThisTick.clear();
-                if (! pendingTickListEntriesHashSet.isEmpty()) {
-                    FMLLog.bigWarning("PendingTickHashSet has NOT SYNC!  the set has: {} element, is: {}", pendingTickListEntriesHashSet.size(), pendingTickListEntriesHashSet);
+                if (pendingTickListEntriesHashSet.size() != pendingTickListEntriesTreeSet.size()) {
+                    pendingTickListEntriesTreeSet.clear();
                     pendingTickListEntriesHashSet.clear();
                 }
-                if (! pendingTickListEntriesTreeSet.isEmpty()) {
-                    FMLLog.bigWarning("PendingTickTreeSet has NOT SYNC!  the set has: {} element, is: {}", pendingTickListEntriesTreeSet.size(), pendingTickListEntriesTreeSet);
-                    pendingTickListEntriesTreeSet.clear();
-                }
-                return true;
+                return pendingTickListEntriesTreeSet.isEmpty();
             }
         }
     }
