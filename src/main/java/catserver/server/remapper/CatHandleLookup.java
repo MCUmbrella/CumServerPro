@@ -1,7 +1,10 @@
 package catserver.server.remapper;
 
+import catserver.server.CatServer;
+
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.lang.invoke.MethodHandle;
 import java.lang.invoke.MethodHandles;
 import java.lang.invoke.MethodType;
@@ -11,6 +14,14 @@ import java.util.HashMap;
 
 public class CatHandleLookup {
     private static HashMap<String, String> map = new HashMap<>();
+
+    static {
+        try {
+            CatHandleLookup.loadMappings(new BufferedReader(new InputStreamReader(MappingLoader.class.getClassLoader().getResourceAsStream("mappings/" + CatServer.getNativeVersion() + "/cb2srg.srg"))));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public static MethodHandle findSpecial(MethodHandles.Lookup lookup, Class<?> refc, String name, MethodType type, Class<?> specialCaller) throws NoSuchMethodException, IllegalAccessException {
         if (refc.getName().startsWith("net.minecraft.")) {
@@ -104,7 +115,6 @@ public class CatHandleLookup {
 
 
     public static void loadMappings(BufferedReader reader) throws IOException {
-
         String line;
         while ((line = reader.readLine()) != null) {
             int commentIndex = line.indexOf('#');

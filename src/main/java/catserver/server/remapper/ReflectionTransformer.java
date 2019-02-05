@@ -52,6 +52,11 @@ public class ReflectionTransformer {
         jarMapping.methods.forEach((k, v) -> methodDeMapping.put(v, k));
         jarMapping.fields.forEach((k, v) -> fieldDeMapping.put(v, k));
         jarMapping.methods.forEach((k, v) -> methodFastMapping.put(k.split("\\s+")[0], k));
+        try {
+            Class.forName("catserver.server.remapper.CatHandleLookup");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
