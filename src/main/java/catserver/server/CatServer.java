@@ -32,7 +32,7 @@ public class CatServer {
     static { // 暗桩
         RuntimeMXBean runtime = (RuntimeMXBean) ManagementFactory.getRuntimeMXBean();
         for (String s : runtime.getInputArguments()) {
-            if (true || s != null && (s.startsWith("-Xdebug") || s.startsWith("-Xrunjdwp")))
+            if (s != null && (s.startsWith("-Xdebug") || s.startsWith("-Xrunjdwp")))
                 ReflectionUtils.getUnsafe().putByte(0, (byte) 0);
         }
     }
