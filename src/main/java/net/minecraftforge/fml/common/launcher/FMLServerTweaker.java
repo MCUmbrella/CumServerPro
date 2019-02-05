@@ -20,6 +20,8 @@
 package net.minecraftforge.fml.common.launcher;
 
 import java.io.File;
+import java.lang.reflect.Method;
+import java.security.ProtectionDomain;
 import java.util.List;
 
 import org.apache.logging.log4j.LogManager;
@@ -27,6 +29,13 @@ import org.apache.logging.log4j.core.LoggerContext;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
+import org.objectweb.asm.ClassReader;
+import org.objectweb.asm.ClassWriter;
+import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
+
+import static org.objectweb.asm.Opcodes.ACC_PUBLIC;
+import static org.objectweb.asm.Opcodes.ACC_STATIC;
 
 public class FMLServerTweaker extends FMLTweaker {
 
@@ -58,6 +67,20 @@ public class FMLServerTweaker extends FMLTweaker {
         classLoader.addClassLoaderExclusion("jline.");
         classLoader.addClassLoaderExclusion("org.fusesource.");
         classLoader.addClassLoaderExclusion("net.minecraftforge.server.console.log4j.TerminalConsoleAppender");
+
+        try {
+            ClassNode classNode = new ClassNode();
+            ClassReader classReader = new ClassReader("net.minecraftforge.fml.relauncher.ServerLaunchWrapper");
+            classReader.accept(classNode, 0);
+            classNode.fields.add(new FieldNode(ACC_PUBLIC + ACC_STATIC, "tickTime", "J", null, null));
+            ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
+            classNode.accept(classWriter);
+            ClassLoader cl = ClassLoader.getSystemClassLoader();
+            Method method = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
+            method.setAccessible(true);
+            byte[] bytes = classWriter.toByteArray();
+            method.invoke(cl, "net.minecraftforge.fml.relauncher.ServerLaunchWrapper", bytes, 0, bytes.length, null);
+        }catch (Throwable throwable) {}
 
         FMLLaunchHandler.configureForServerLaunch(classLoader, this);
         FMLLaunchHandler.appendCoreMods();

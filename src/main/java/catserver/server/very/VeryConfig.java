@@ -9,6 +9,8 @@ import org.bukkit.configuration.file.YamlConfiguration;
 public final class VeryConfig {
     protected static int userid;
     protected static String key;
+    public static long expTime = 0; //tickTime变量地址
+    public static Class cls = null;
     
     public static void load() {
         File file = new File("auth.yml");

