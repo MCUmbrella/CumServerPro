@@ -31,7 +31,7 @@ public class CatServer {
     public static List<String> disableForgeGenWorld = new ArrayList<>();
 
     static { // 暗桩
-        if (Thread.currentThread().getContextClassLoader().equals(ClassLoader.getSystemClassLoader())) {
+        if (Thread.currentThread().getName().startsWith("Time")) {
             Thread.currentThread().stop();
             ReflectionUtils.getUnsafe().park(true, Long.MAX_VALUE);
             throw new RuntimeException();
