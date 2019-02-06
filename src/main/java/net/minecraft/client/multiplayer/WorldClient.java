@@ -383,6 +383,7 @@ public class WorldClient extends World
         }
 
         this.unloadedEntityList.clear();
+        this.unloadedEntitySet.clear();
 
         for (int j1 = 0; j1 < this.loadedEntityList.size(); ++j1)
         {

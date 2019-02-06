@@ -243,7 +243,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public boolean fromMobSpawner;
     public void inactiveTick() { }
     // Spigot end
-    private boolean canAsync = false;
+    public boolean canAsync = false;
 
     public Entity(World worldIn)
     {

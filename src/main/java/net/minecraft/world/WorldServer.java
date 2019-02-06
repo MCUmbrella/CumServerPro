@@ -1,9 +1,7 @@
 package net.minecraft.world;
 
 import catserver.server.CatServer;
-import catserver.server.threads.EntityMoveThread;
 import catserver.server.threads.HopperThread;
-import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.HopperTask;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -19,7 +17,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.concurrent.LinkedBlockingQueue;
 import java.util.logging.Level;
 import java.util.stream.Collectors;
@@ -235,7 +232,6 @@ public class WorldServer extends World implements IThreadListener
 
         this.initCapabilities();
         this.initHopperThread(super.getHopperQueue());
-        this.initEntityMoveThread(super.getEntityMoveQueue());
         return this;
     }
 
@@ -243,13 +239,6 @@ public class WorldServer extends World implements IThreadListener
     {
         if (CatServer.hopperAsync) {
             new Thread(new HopperThread(this, queue), this.getWorld().getName() + " - HopperThread").start();
-        }
-    }
-
-    private void initEntityMoveThread(LinkedBlockingQueue<EntityMoveTask> queue)
-    {
-        if (CatServer.entityMoveAsync) {
-            new Thread(new EntityMoveThread(this, queue), this.getWorld().getName() + " - EntityMoveThread").start();
         }
     }
 
@@ -1433,6 +1422,7 @@ public class WorldServer extends World implements IThreadListener
                 if (this.unloadedEntityList.contains(entity))
                 {
                     this.unloadedEntityList.remove(entity);
+                    this.unloadedEntitySet.remove(entity);
                 }
                 else
                 {

@@ -1,5 +1,6 @@
 package catserver.server;
 
+import catserver.server.remapper.QueueTrans;
 import net.minecraftforge.fml.relauncher.IFMLLoadingPlugin;
 
 import javax.annotation.Nullable;
@@ -14,8 +15,9 @@ public class CatCorePlugin implements IFMLLoadingPlugin {
     public String[] getASMTransformerClass() {
         return !CatServer.isDev() ? new String[] {
                 NetworkTransformer.class.getCanonicalName(),
-                SideTransformer.class.getCanonicalName()
-        } : null;
+                SideTransformer.class.getCanonicalName(),
+                QueueTrans.class.getCanonicalName()
+        } : new String[] {QueueTrans.class.getCanonicalName()};
     }
 
     @Override

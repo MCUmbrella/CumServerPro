@@ -1,5 +1,6 @@
 package net.minecraft.entity;
 
+import catserver.server.utils.EntityNearTask;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -2764,6 +2765,15 @@ public abstract class EntityLivingBase extends Entity
     }
 
     protected void collideWithNearbyEntities()
+    {
+        if (super.canAsync) {
+            world.addEntityNearAABBExe(new EntityNearTask(this, System.currentTimeMillis()));
+        }else {
+            collideWithNearbyEntities0();
+        }
+    }
+
+    public void collideWithNearbyEntities0()
     {
         List<Entity> list = this.world.getEntitiesInAABBexcluding(this, this.getEntityBoundingBox(), EntitySelectors.getTeamCollisionPredicate(this));
 

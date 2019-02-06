@@ -3,7 +3,7 @@ package catserver.server.utils;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.MoverType;
 
-public class EntityMoveTask {
+public class EntityMoveTask implements Runnable {
     public final Entity entity;
     public final MoverType moverType;
     public final double x;
@@ -20,4 +20,18 @@ public class EntityMoveTask {
         this.time = time;
     }
 
+    @Override
+    public void run() {
+        try {
+            long nowTime = System.currentTimeMillis();
+            if (nowTime - this.time > 100)
+                return;
+            if (this.entity.world.unloadedEntitySet.contains(this.entity))
+                return;
+            //Start
+            this.entity.move0(this.moverType, this.x, this.y, this.z, true);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }

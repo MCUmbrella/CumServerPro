@@ -99,6 +99,7 @@ dependencies {
     compile 'org.scala-lang:scala-reflect:2.11.1'
     compile 'org.scala-lang:scala-swing_2.11:1.0.1'
     compile 'org.scala-lang:scala-xml_2.11:1.0.2'
+    compile 'com.conversantmedia:disruptor:1.2.15' // CatServer - Async
 }
 
 jar {

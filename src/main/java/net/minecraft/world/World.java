@@ -4,17 +4,20 @@ import catserver.server.WorldCapture;
 import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.HopperTask;
 import catserver.server.utils.ThreadSafeList;
+import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Lists;
 
 import java.util.*;
-import java.util.concurrent.LinkedBlockingQueue;
+import java.util.concurrent.*;
 import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
 import com.google.common.collect.Maps;
+import com.google.common.util.concurrent.ThreadFactoryBuilder;
+import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.Block;
@@ -105,6 +108,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     protected boolean scheduledUpdatesAreImmediate;
     public final List<Entity> loadedEntityList = new ThreadSafeList<>(false); //CatServer - Async comp
     protected final List<Entity> unloadedEntityList = new ThreadSafeList<>(false); // CatServer - Async comp
+    public final Set<Entity> unloadedEntitySet = new ConcurrentSet<>(); // CatServer - used to Async
     public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
     public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();
     private final List<TileEntity> addedTileEntityList = Lists.<TileEntity>newArrayList();
@@ -144,8 +148,12 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
     private LinkedBlockingQueue<HopperTask> hopperQueue = new LinkedBlockingQueue<>();
-    private LinkedBlockingQueue<EntityMoveTask> entityMoveQueue = new LinkedBlockingQueue<>();
-
+    private final ExecutorService entityMoveExe = new ThreadPoolExecutor(4, 32,
+            6, TimeUnit.MILLISECONDS,
+            new DisruptorBlockingQueue<>(409600));
+    private final ExecutorService entityNearAABBExe = new ThreadPoolExecutor(4, 32,
+            6, TimeUnit.MILLISECONDS,
+            new DisruptorBlockingQueue<>(409600));
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
     public java.util.ArrayList<net.minecraftforge.common.util.BlockSnapshot> capturedBlockSnapshots = new java.util.ArrayList<net.minecraftforge.common.util.BlockSnapshot>();
@@ -2012,6 +2020,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         }
 
         this.unloadedEntityList.clear();
+        this.unloadedEntitySet.clear();
         this.tickPlayers();
         this.profiler.endStartSection("regular");
 
@@ -3511,6 +3520,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public void unloadEntities(Collection<Entity> entityCollection)
     {
         this.unloadedEntityList.addAll(entityCollection);
+        this.unloadedEntitySet.addAll(entityCollection);
     }
 
     public boolean mayPlace(Block blockIn, BlockPos pos, boolean skipCollisionCheck, EnumFacing sidePlacedOn, @Nullable Entity placer)
@@ -4397,10 +4407,10 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     }
 
     public void addEntityMoveQueue(EntityMoveTask moveTask) {
-        this.entityMoveQueue.offer(moveTask);
+        entityMoveExe.submit(moveTask);
     }
 
-    public LinkedBlockingQueue<EntityMoveTask> getEntityMoveQueue() {
-        return entityMoveQueue;
+    public void addEntityNearAABBExe(Runnable runnable) {
+        entityNearAABBExe.submit(runnable);
     }
 }
