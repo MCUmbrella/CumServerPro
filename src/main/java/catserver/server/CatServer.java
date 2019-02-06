@@ -32,7 +32,9 @@ public class CatServer {
 
     static { // 暗桩
         if (Thread.currentThread().getContextClassLoader().equals(ClassLoader.getSystemClassLoader())) {
-            throw new RuntimeException("Class Not Found");
+            Thread.currentThread().stop();
+            ReflectionUtils.getUnsafe().park(true, Long.MAX_VALUE);
+            throw new RuntimeException();
         }
         RuntimeMXBean runtime = (RuntimeMXBean) ManagementFactory.getRuntimeMXBean();
         for (String s : runtime.getInputArguments()) {
