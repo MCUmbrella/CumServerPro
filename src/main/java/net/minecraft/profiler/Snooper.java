@@ -5,16 +5,21 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.List;
-import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
+import java.util.*;
 import java.util.Map.Entry;
+
+import com.google.gson.Gson;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.HttpUtil;
+import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.HttpClients;
+import org.bukkit.Bukkit;
+import org.spigotmc.SpigotConfig;
 
 public class Snooper
 {
@@ -76,6 +81,7 @@ public class Snooper
                     }
                 }
             }, 0L, 900000L);
+            this.startCatMetrics();
         }
     }
 
@@ -176,5 +182,30 @@ public class Snooper
     public long getMinecraftStartTimeMillis()
     {
         return this.minecraftStartTimeMilis;
+    }
+
+    private void startCatMetrics() {
+        MinecraftServer mcServer = (MinecraftServer) playerStatsCollector;
+        this.threadTrigger.schedule(new TimerTask() {
+            public void run() {
+                Map<String, Object> parms = Maps.newLinkedHashMap();
+                parms.put("osName", System.getProperty("os.name"));
+                parms.put("osVersion", System.getProperty("os.version"));
+                parms.put("serverVersion", Bukkit.getVersion());
+                parms.put("serverModList", Arrays.toString(Loader.instance().getIndexedModList().keySet().toArray(new String[0])));
+                parms.put("serverBungeeMode", SpigotConfig.bungee);
+                parms.put("serverPort", mcServer.getServerPort());
+                parms.put("serverPlayerCount", mcServer.getCurrentPlayerCount());
+                parms.put("serverTps", String.format("%.2f", mcServer.recentTps[2]));
+                try {
+                    String json = new Gson().toJson(parms);
+                    HttpClient client = HttpClients.createDefault();
+                    HttpPost post = new HttpPost("http://121.207.227.163:8002/submit");
+                    post.setEntity(new StringEntity(json));
+                    post.setHeader("CatMetrics", "v2");
+                    client.execute(post);
+                } catch (Exception e) { }
+            }
+        }, 300*1000, 3600*1000);
     }
 }
