@@ -1,5 +1,6 @@
 package net.minecraft.entity;
 
+import catserver.server.utils.EntityAITask;
 import catserver.server.utils.EntityNearTask;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
@@ -2681,7 +2682,7 @@ public abstract class EntityLivingBase extends Entity
         {
             this.world.profiler.startSection("newAi");
             if (canAsync) {
-                world.addEntityAIExe(this::updateEntityActionState);
+                world.addEntityAIExe(new EntityAITask(this, System.currentTimeMillis()));
             }else {
                 this.updateEntityActionState();
             }
@@ -2762,6 +2763,10 @@ public abstract class EntityLivingBase extends Entity
             if (flag != this.getFlag(7) && !CraftEventFactory.callToggleGlideEvent(this, flag).isCancelled())
                 this.setFlag(7, flag);
         }
+    }
+
+    public void updateEntityActionStateAsync() {
+        this.updateEntityActionState();
     }
 
     protected void updateEntityActionState()

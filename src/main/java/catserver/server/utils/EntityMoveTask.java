@@ -23,8 +23,7 @@ public class EntityMoveTask implements Runnable {
     @Override
     public void run() {
         try {
-            long nowTime = System.currentTimeMillis();
-            if (nowTime - this.time > 100)
+            if (System.currentTimeMillis() - this.time > 100)
                 return;
             if (this.entity.world.unloadedEntitySet.contains(this.entity))
                 return;

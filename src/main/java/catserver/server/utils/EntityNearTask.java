@@ -13,8 +13,7 @@ public class EntityNearTask implements Runnable {
 
     @Override
     public void run() {
-        long nowTime = System.currentTimeMillis();
-        if (nowTime - this.time > 100)
+        if (System.currentTimeMillis() - this.time > 100)
             return;
         if (this.entity.world.unloadedEntitySet.contains(this.entity))
             return;
