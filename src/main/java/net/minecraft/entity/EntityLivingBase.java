@@ -2680,7 +2680,11 @@ public abstract class EntityLivingBase extends Entity
         else if (this.isServerWorld())
         {
             this.world.profiler.startSection("newAi");
-            this.updateEntityActionState();
+            if (canAsync) {
+                world.addEntityAIExe(this::updateEntityActionState);
+            }else {
+                this.updateEntityActionState();
+            }
             this.world.profiler.endSection();
         }
         SpigotTimings.timerEntityAI.stopTiming(); // Spigot

@@ -4,7 +4,7 @@ import catserver.server.WorldCapture;
 import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.HopperTask;
 import catserver.server.utils.ThreadSafeList;
-import com.conversantmedia.util.concurrent.DisruptorBlockingQueue;
+import com.conversantmedia.util.concurrent.NoLockDisruptorBlockingQueue;
 import com.google.common.base.Function;
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Predicate;
@@ -12,17 +12,13 @@ import com.google.common.collect.Lists;
 
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.function.Supplier;
 import javax.annotation.Nullable;
 
-import com.google.common.collect.Maps;
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import io.netty.util.internal.ConcurrentSet;
 import net.minecraft.advancements.AdvancementManager;
 import net.minecraft.advancements.FunctionManager;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockLiquid;
-import net.minecraft.block.BlockObserver;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
@@ -83,7 +79,6 @@ import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.bukkit.Bukkit;
-import org.bukkit.block.BlockState;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.craftbukkit.CraftWorld;
 import org.bukkit.craftbukkit.SpigotTimings;
@@ -150,10 +145,13 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private LinkedBlockingQueue<HopperTask> hopperQueue = new LinkedBlockingQueue<>();
     private final ExecutorService entityMoveExe = new ThreadPoolExecutor(4, 32,
             6, TimeUnit.MILLISECONDS,
-            new DisruptorBlockingQueue<>(409600));
+            new NoLockDisruptorBlockingQueue<>(409600));
     private final ExecutorService entityNearAABBExe = new ThreadPoolExecutor(4, 32,
             6, TimeUnit.MILLISECONDS,
-            new DisruptorBlockingQueue<>(409600));
+            new NoLockDisruptorBlockingQueue<>(409600));
+    private final ExecutorService entityAIExe = new ThreadPoolExecutor(4, 32,
+            6, TimeUnit.MILLISECONDS,
+            new NoLockDisruptorBlockingQueue<>(409600));
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
     public java.util.ArrayList<net.minecraftforge.common.util.BlockSnapshot> capturedBlockSnapshots = new java.util.ArrayList<net.minecraftforge.common.util.BlockSnapshot>();
@@ -4412,5 +4410,9 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public void addEntityNearAABBExe(Runnable runnable) {
         entityNearAABBExe.submit(runnable);
+    }
+
+    public void addEntityAIExe(Runnable runnable) {
+        entityAIExe.submit(runnable);
     }
 }

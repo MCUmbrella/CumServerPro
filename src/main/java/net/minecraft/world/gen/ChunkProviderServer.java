@@ -1,14 +1,9 @@
 package net.minecraft.world.gen;
 
-import catserver.server.utils.container.ConcurrentLong2ObjectCHashMap;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Sets;
 import io.netty.util.internal.ConcurrentSet;
 import it.unimi.dsi.fastutil.longs.Long2ObjectMap;
-import it.unimi.dsi.fastutil.longs.Long2ObjectMaps;
 import it.unimi.dsi.fastutil.longs.Long2ObjectOpenHashMap;
-import it.unimi.dsi.fastutil.longs.LongSet;
-import it.unimi.dsi.fastutil.objects.ObjectCollection;
 import it.unimi.dsi.fastutil.objects.ObjectIterator;
 import java.io.IOException;
 import java.util.*;
@@ -40,7 +35,27 @@ public class ChunkProviderServer implements IChunkProvider
     public final Set<Long> droppedChunksSet = new ConcurrentSet<>();
     public final IChunkGenerator chunkGenerator;
     public final IChunkLoader chunkLoader;
-    public final Long2ObjectMap<Chunk> id2ChunkMap = new ConcurrentLong2ObjectCHashMap<>(); // CatServer - Async comp
+    public final Long2ObjectMap<Chunk> id2ChunkMap = new Long2ObjectOpenHashMap<Chunk>(8192) {
+        final String message = "插件/MOD尝试异步操作Long2ObjectMaps已拦截,请与插件/MOD作者反馈!";
+        @Override
+        public ObjectSet<Map.Entry<Long, Chunk>> entrySet() {
+            if (! Bukkit.isPrimaryThread()) {
+                new UnsupportedOperationException(message).printStackTrace();
+                return new Long2ObjectOpenHashMap<>(id2ChunkMap).entrySet();
+            }
+            return super.entrySet();
+        }
+
+        @Override
+        public FastEntrySet<Chunk> long2ObjectEntrySet() {
+            if (! Bukkit.isPrimaryThread()) {
+                new UnsupportedOperationException(message).printStackTrace();
+                return new Long2ObjectOpenHashMap<>(id2ChunkMap).long2ObjectEntrySet();
+            }
+            return super.long2ObjectEntrySet();
+        }
+    }; // CatServer - Async comp
+
     public final WorldServer world;
     private final Set<Long> loadingChunks = com.google.common.collect.Sets.newHashSet();
 
