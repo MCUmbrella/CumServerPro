@@ -1104,11 +1104,11 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public IBlockState getBlockState(BlockPos pos)
     {
         // CatServer start - tree generation
-        if (captureTreeGeneration)
+        if (captureTreeGeneration && Bukkit.isPrimaryThread())
         {
             for (net.minecraftforge.common.util.BlockSnapshot blocksnapshot : this.capturedBlockSnapshots)
             {
-                if (blocksnapshot.getPos().equals(pos)) { 
+                if (blocksnapshot.getPos().equals(pos)) {
                     return blocksnapshot.getReplacedBlock();
                 }
             }
