@@ -80,6 +80,9 @@ public class EntityTracker
 
     public void track(Entity entityIn)
     {
+        if (this.trackedEntityHashTable.containsItem(entityIn.getEntityId())) {
+            return;
+        }
         if (net.minecraftforge.fml.common.registry.EntityRegistry.instance().tryTrackingEntity(this, entityIn)) return;
 
         if (entityIn instanceof EntityPlayerMP)

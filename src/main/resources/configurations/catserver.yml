@@ -6,6 +6,8 @@ async:
   entityMove: true
   #区块生成是否异步(测试功能，请勿使用)
   chunkGen: false
+  #mod生物是否异步
+  modMob: false
 check:
   #服务器卡顿线程检查
   threadLag: true
