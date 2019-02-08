@@ -244,6 +244,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public void inactiveTick() { }
     // Spigot end
     public boolean canAsync = false;
+    public boolean nmsEntity = false;
 
     public Entity(World worldIn)
     {
@@ -287,7 +288,8 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityEvent.EntityConstructing(this));
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
         }
-        if ((CatServer.modMob || this.getClass().getName().startsWith("net.minecraft.")) && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof EntityVillager || this instanceof EntityHorse || this instanceof EntityWolf)) {
+        nmsEntity = this.getClass().getName().startsWith("net.minecraft.");
+        if ((CatServer.modMob || nmsEntity) && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof EntityVillager || this instanceof EntityHorse || this instanceof EntityWolf)) {
             canAsync = true;
         }
     }

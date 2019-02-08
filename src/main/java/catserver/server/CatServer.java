@@ -28,6 +28,7 @@ public class CatServer {
     public static boolean chunkGenAsync = false;
     public static boolean disableUpdateGameProfile = true;
     public static boolean modMob = false;
+    public static boolean entityAI = true;
     public static long worldGenMaxTickTime = 15000000L;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
 
@@ -95,6 +96,7 @@ public class CatServer {
         disableUpdateGameProfile = getOrWriteBooleanConfig("disableUpdateGameProfile", disableUpdateGameProfile);
         worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 15) * 1000000;
         modMob = getOrWriteBooleanConfig("async.modMob", modMob);
+        entityAI = getOrWriteBooleanConfig("async.entityAI", entityAI);
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {

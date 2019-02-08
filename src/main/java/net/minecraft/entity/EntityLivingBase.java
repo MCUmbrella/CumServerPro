@@ -1,5 +1,6 @@
 package net.minecraft.entity;
 
+import catserver.server.CatServer;
 import catserver.server.utils.EntityAITask;
 import catserver.server.utils.EntityNearTask;
 import com.google.common.base.Function;
@@ -2681,7 +2682,7 @@ public abstract class EntityLivingBase extends Entity
         else if (this.isServerWorld())
         {
             this.world.profiler.startSection("newAi");
-            if (canAsync) {
+            if (canAsync && nmsEntity && CatServer.entityAI) {
                 world.addEntityAIExe(new EntityAITask(this, System.currentTimeMillis()));
             }else {
                 this.updateEntityActionState();
