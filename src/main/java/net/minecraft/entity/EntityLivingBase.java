@@ -1604,14 +1604,8 @@ public abstract class EntityLivingBase extends Entity
     protected boolean damageEntity_CB(final DamageSource damagesource, float f) { // void -> boolean, add final
         if (!this.isEntityInvulnerable(damagesource)) {
             final boolean human = this instanceof EntityPlayer;
-            // CatServer start - apply forge damage and armor
             f = net.minecraftforge.common.ForgeHooks.onLivingHurt(this, damagesource, f);
             if (f < 0) return true;
-            if (human) {
-                f = net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(this, ((EntityPlayer)this).inventory.armorInventory, damagesource, f);
-                if (f <= 0) return false;
-            }
-            // CatServer end
             float originalDamage = f;
             Function<Double, Double> hardHat = new Function<Double, Double>() {
                 @Override
@@ -1638,6 +1632,9 @@ public abstract class EntityLivingBase extends Entity
             Function<Double, Double> armor = new Function<Double, Double>() {
                 @Override
                 public Double apply(Double f) {
+                    if (human) {
+                        return (double) net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory, damagesource, f);
+                    }
                     return -(f - EntityLivingBase.this.applyArmorCalculations(damagesource, f.floatValue()));
                 }
             };
@@ -1681,7 +1678,7 @@ public abstract class EntityLivingBase extends Entity
                 return false;
             }
 
-            f = (float) event.getFinalDamage();
+            f = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, damagesource, (float) event.getFinalDamage()); // CatServer
 
             // Apply damage to helmet
             if ((damagesource == DamageSource.ANVIL || damagesource == DamageSource.FALLING_BLOCK) && this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null) {
