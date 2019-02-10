@@ -4,6 +4,9 @@ import catserver.server.remapper.ReflectionUtils;
 import catserver.server.very.VeryConfig;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLLog;
+import org.apache.commons.io.Charsets;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.PluginDescriptionFile;
 
@@ -31,6 +34,7 @@ public class CatServer {
     public static boolean entityAI = true;
     public static long worldGenMaxTickTime = 15000000L;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
+    public static List<String> fakePlayerPermissions;
 
     static { // 暗桩
         if (Thread.currentThread().getName().startsWith("Time")) {
@@ -97,6 +101,12 @@ public class CatServer {
         worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 15) * 1000000;
         modMob = getOrWriteBooleanConfig("async.modMob", modMob);
         entityAI = getOrWriteBooleanConfig("async.entityAI", entityAI);
+        try {
+            reloadFakePlayerPermissions();
+        } catch (IOException e) {
+            System.out.println("FakePlayer权限文件读取失败");
+            System.exit(1);
+        }
     }
 
     public static boolean getOrWriteBooleanConfig(String path, boolean def) {
@@ -151,5 +161,18 @@ public class CatServer {
             }
         } catch (Exception e) {}
         return "null";
+    }
+
+    public static void reloadFakePlayerPermissions() throws IOException {
+        File permissFile = new File("fakePlayerPermission.txt");
+        if (! permissFile.exists()) {
+            permissFile.createNewFile();
+            InputStreamReader inputStreamReader = new InputStreamReader(VeryConfig.class.getClassLoader().getResourceAsStream("configurations/fakePlayerPermission.txt"));
+            List<String> lines = IOUtils.readLines(inputStreamReader);
+            FileUtils.writeLines(permissFile, lines);
+        }
+        fakePlayerPermissions = FileUtils.readLines(permissFile, Charsets.UTF_8);
+        System.out.println("FakePlayer Permissions:");
+        fakePlayerPermissions.forEach(System.out::println);
     }
 }
