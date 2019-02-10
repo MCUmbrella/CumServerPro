@@ -298,7 +298,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
-        this.worldCapture = new WorldCapture((WorldServer) this);
     }
 
     public World init()
