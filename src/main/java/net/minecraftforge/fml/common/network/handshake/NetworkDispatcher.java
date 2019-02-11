@@ -602,7 +602,7 @@ public class NetworkDispatcher extends SimpleChannelInboundHandler<Packet<?>> im
             }
             else
             {
-                FMLLog.log.debug("NetworkDispatcher exception", cause);
+                FMLLog.log.debug("NetworkDispatcher exception", cause.getMessage());
             }
         }
         super.exceptionCaught(ctx, cause);
