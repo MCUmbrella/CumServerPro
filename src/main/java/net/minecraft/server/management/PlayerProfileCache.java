@@ -248,15 +248,18 @@ public class PlayerProfileCache
 
     public void save()
     {
+        List<ProfileEntry> profileEntries = this.getEntriesWithLimit(org.spigotmc.SpigotConfig.userCacheCap);
         new Thread(() -> {
             FMLLog.log.info("UUID缓存保存线程启动...");
-            String s = this.gson.toJson(this.getEntriesWithLimit(org.spigotmc.SpigotConfig.userCacheCap)); // Spigot
+            String s = this.gson.toJson(profileEntries); // Spigot
             BufferedWriter bufferedwriter = null;
 
             try
             {
-                bufferedwriter = Files.newWriter(this.usercacheFile, StandardCharsets.UTF_8);
-                bufferedwriter.write(s);
+                synchronized (this.usercacheFile) {
+                    bufferedwriter = Files.newWriter(this.usercacheFile, StandardCharsets.UTF_8);
+                    bufferedwriter.write(s);
+                }
             }
             catch (FileNotFoundException ignored)
             {
