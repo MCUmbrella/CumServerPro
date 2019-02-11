@@ -39,6 +39,7 @@ import java.util.UUID;
 import javax.annotation.Nullable;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.util.JsonUtils;
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.commons.io.IOUtils;
 
 public class PlayerProfileCache
@@ -247,27 +248,30 @@ public class PlayerProfileCache
 
     public void save()
     {
-        String s = this.gson.toJson(this.getEntriesWithLimit(org.spigotmc.SpigotConfig.userCacheCap)); // Spigot
-        BufferedWriter bufferedwriter = null;
+        new Thread(() -> {
+            FMLLog.log.info("UUID缓存保存线程启动...");
+            String s = this.gson.toJson(this.getEntriesWithLimit(org.spigotmc.SpigotConfig.userCacheCap)); // Spigot
+            BufferedWriter bufferedwriter = null;
 
-        try
-        {
-            bufferedwriter = Files.newWriter(this.usercacheFile, StandardCharsets.UTF_8);
-            bufferedwriter.write(s);
-            return;
-        }
-        catch (FileNotFoundException var8)
-        {
-            ;
-        }
-        catch (IOException var9)
-        {
-            return;
-        }
-        finally
-        {
-            IOUtils.closeQuietly((Writer)bufferedwriter);
-        }
+            try
+            {
+                bufferedwriter = Files.newWriter(this.usercacheFile, StandardCharsets.UTF_8);
+                bufferedwriter.write(s);
+            }
+            catch (FileNotFoundException ignored)
+            {
+                ;
+            }
+            catch (IOException ignored)
+            {
+            }
+            finally
+            {
+                IOUtils.closeQuietly((Writer)bufferedwriter);
+                FMLLog.log.info("UUID缓存保存完毕，线程退出");
+            }
+        }).start();
+
     }
 
     private List<ProfileEntry> getEntriesWithLimit(int limitSize)
