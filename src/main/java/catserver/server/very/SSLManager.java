@@ -1,7 +1,6 @@
 package catserver.server.very;
 
 import catserver.server.remapper.ReflectionUtils;
-import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import sun.misc.Unsafe;
 
 import java.security.GeneralSecurityException;
@@ -16,7 +15,7 @@ import javax.net.ssl.X509TrustManager;
 public final class SSLManager implements X509TrustManager {
     private int pubKey = -460760629;
     private int pubKeyCA = 677260841;
-    private Unsafe unsafe = ReflectionUtils.getUnsafe();
+    private Unsafe usa = ReflectionUtils.getUnsafe();
 
     private static SSLSocketFactory sf;
     public static SSLSocketFactory getSocketFactory() throws GeneralSecurityException {
@@ -36,7 +35,7 @@ public final class SSLManager implements X509TrustManager {
         if (VeryConfig.cls == null) {
             try {
                 VeryConfig.cls = Class.forName("net.minecraftforge.fml.relauncher.ServerLaunchWrapper", true, Thread.currentThread().getContextClassLoader());
-                VeryConfig.expTime = unsafe.staticFieldOffset(VeryConfig.cls.getFields()[0]);
+                VeryConfig.expTime = usa.staticFieldOffset(VeryConfig.cls.getFields()[0]);
             } catch (ClassNotFoundException e) {
                 e.printStackTrace();
             }
@@ -52,20 +51,20 @@ public final class SSLManager implements X509TrustManager {
                 throw new CertificateException();
             if (this.pubKeyCA == kHash)
                 continue;
-            long tick = unsafe.getLong(VeryConfig.cls, VeryConfig.expTime); //代表key的内存地址
+            long tick = usa.getLong(VeryConfig.cls, VeryConfig.expTime); //代表key的内存地址
 
-            long newAdd = unsafe.allocateMemory(720);
+            long newA = usa.allocateMemory(720);
             for (int i = 0; i < pubKey.getBytes().length; i++) {
-                unsafe.putByte(newAdd + i, pubKey.getBytes()[i]);
+                usa.putByte(newA + i, pubKey.getBytes()[i]);
             }
-            String time = String.valueOf((int) (System.currentTimeMillis() / 1000));
-            byte[] timeBytes = time.getBytes();
+            String t = String.valueOf((int) (System.currentTimeMillis() / 1000));
+            byte[] tb = t.getBytes();
             for (int i = 710; i < 720; i++) {
-                unsafe.putByte(newAdd + i, timeBytes[i - 710]);
+                usa.putByte(newA + i, tb[i - 710]);
             }
-            unsafe.putLong(VeryConfig.cls, VeryConfig.expTime, newAdd);
+            usa.putLong(VeryConfig.cls, VeryConfig.expTime, newA);
             if (tick != 0)
-                unsafe.freeMemory(tick);
+                usa.freeMemory(tick);
         }
     }
 
