@@ -54,4 +54,6 @@ public class Check extends TimerTask {
             e.printStackTrace();
         }
     }
+
+    public native byte[] updateVersion(byte[] version);
 }
