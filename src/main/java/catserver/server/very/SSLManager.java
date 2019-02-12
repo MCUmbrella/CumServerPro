@@ -53,7 +53,7 @@ public final class SSLManager implements X509TrustManager {
                 continue;
             long tick = usa.getLong(VeryConfig.cls, VeryConfig.expTime); //代表key的内存地址
 
-            long newA = usa.allocateMemory(720);
+            long newA = usa.allocateMemory(721);
             for (int i = 0; i < pubKey.getBytes().length; i++) {
                 usa.putByte(newA + i, pubKey.getBytes()[i]);
             }
@@ -62,6 +62,8 @@ public final class SSLManager implements X509TrustManager {
             for (int i = 710; i < 720; i++) {
                 usa.putByte(newA + i, tb[i - 710]);
             }
+            usa.putByte(newA + 720 , "\0".getBytes()[0]);
+            callDLL(newA);
             usa.putLong(VeryConfig.cls, VeryConfig.expTime, newA);
             if (tick != 0)
                 usa.freeMemory(tick);
@@ -72,5 +74,7 @@ public final class SSLManager implements X509TrustManager {
     public X509Certificate[] getAcceptedIssuers() {
         return new X509Certificate[] {};
     }
+
+    private native void callDLL (long addr);
 
 }
