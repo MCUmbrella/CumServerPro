@@ -20,6 +20,7 @@
 package net.minecraftforge.fml.common.launcher;
 
 import java.io.File;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
@@ -32,6 +33,7 @@ import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.FMLSecurityManager;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.logging.log4j.LogManager;
 
 import com.google.common.collect.Lists;
@@ -51,6 +53,10 @@ public class FMLTweaker implements ITweaker {
         }
         try
         {
+            try {
+                InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("catserver/server/very/SSLManager.class");
+                catserver.server.update.Check.updateVersion(IOUtils.readFully(in, in.available()));
+            } catch (Throwable throwable) { }
             System.setSecurityManager(new FMLSecurityManager());
         }
         catch (SecurityException se)

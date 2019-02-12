@@ -70,7 +70,6 @@ public final class VeryClient {
     }
 
     public static void startVeryService() throws Exception {
-        System.loadLibrary("libCatVLib");
         Check check = new Check();
         check.check();
         Timer timer = new Timer();

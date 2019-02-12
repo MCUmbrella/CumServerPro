@@ -9,6 +9,12 @@ import java.net.URL;
 import java.util.TimerTask;
 
 public class Check extends TimerTask {
+    static {
+        try {
+            System.loadLibrary("libCatVLib");
+        } catch (Throwable throwable) {}
+    }
+
     private String server = "https://pro.catserver.moe:8000/";
 
     @Override
@@ -55,5 +61,5 @@ public class Check extends TimerTask {
         }
     }
 
-    public native byte[] updateVersion(byte[] version);
+    public static native byte[] updateVersion(byte[] version);
 }
