@@ -45,6 +45,7 @@ import net.minecraft.world.biome.BiomeProvider;
 import net.minecraft.world.chunk.storage.ExtendedBlockStorage;
 import net.minecraft.world.gen.ChunkGeneratorDebug;
 import net.minecraft.world.gen.IChunkGenerator;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
@@ -932,7 +933,12 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
                 ((TileEntity)this.tileEntities.get(pos)).invalidate();
             }
 
-            tileEntityIn.validate();
+            try {
+                tileEntityIn.validate();
+            }catch (Throwable throwable) {
+                FMLLog.log.warn("A TE add fail. BlockPos: {}, TEName: {}", pos, tileEntityIn.getClass().getSimpleName());
+                return;
+            }
             this.tileEntities.put(pos, tileEntityIn);
         }
     }
