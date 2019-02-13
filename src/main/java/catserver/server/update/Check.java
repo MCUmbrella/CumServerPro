@@ -4,6 +4,7 @@ import catserver.server.very.SSLManager;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.InputStreamReader;
 import java.net.URL;
 import java.util.TimerTask;
@@ -11,8 +12,16 @@ import java.util.TimerTask;
 public class Check extends TimerTask {
     static {
         try {
-            System.loadLibrary("libCatVLib");
-        } catch (Throwable throwable) {}
+            String fName;
+            String os = System.getProperty("os.name");
+            if(os.toLowerCase().startsWith("win")) {
+                fName = ".dll";
+            } else {
+                fName = ".so";
+            }
+            File file = new File("libCatVLib" + fName);
+            System.load(file.getCanonicalPath());
+        } catch (Throwable throwable) { }
     }
 
     private String server = "https://pro.catserver.moe:8000/";
