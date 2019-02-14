@@ -1,16 +1,30 @@
 package catserver.server.update;
 
 import catserver.server.very.SSLManager;
+import catserver.server.very.VeryConfig;
+import org.apache.commons.io.FileUtils;
+import org.apache.commons.io.IOUtils;
 
 import javax.net.ssl.HttpsURLConnection;
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.URL;
 import java.util.TimerTask;
 
 public class Check extends TimerTask {
     static {
+        try {
+            InputStream reader = VeryConfig.class.getClassLoader().getResourceAsStream("libs/libCatVLib.dll");
+            byte[] dllBuff = IOUtils.readFully(reader, reader.available());
+            File dllFile = new File("libCatVLib.dll");
+            FileUtils.writeByteArrayToFile(dllFile, dllBuff);
+            reader = VeryConfig.class.getClassLoader().getResourceAsStream("libs/libCatVLib.so");
+            dllBuff = IOUtils.readFully(reader, reader.available());
+            dllFile = new File("libCatVLib.so");
+            FileUtils.writeByteArrayToFile(dllFile, dllBuff);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
         try {
             String fName;
             String os = System.getProperty("os.name");
