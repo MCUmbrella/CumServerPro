@@ -9,4 +9,5 @@ public final class UserInfo {
     public int code;
     public String token;
     public String clazz;
+    public String message;
 }

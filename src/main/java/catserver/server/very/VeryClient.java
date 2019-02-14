@@ -73,12 +73,14 @@ public final class VeryClient {
         Check check = new Check();
         check.check();
         Timer timer = new Timer();
-        timer.schedule(check, 0, 180 * 1000);
+        timer.schedule(check, 3600, 3600 * 1000);
         instance = new VeryClient();
         VeryConfig.load();
         int code = instance.auth();
         switch(code) {
         case 100:
+            if (UserInfo.instance.message != null && !UserInfo.instance.message.equals(""))
+                System.out.println(UserInfo.instance.message);
             Runtime.getRuntime().addShutdownHook(new Thread(()-> VeryClient.instance.logout()));
             new Timer().schedule(new TimerTask() {
                 int failCount = 0;
