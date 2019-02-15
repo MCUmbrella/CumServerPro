@@ -5,6 +5,7 @@ import java.io.InputStreamReader;
 import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.Base64;
 import java.util.Collections;
@@ -145,7 +146,7 @@ public final class VeryClient {
         connection.setRequestProperty("user-agent", "CatServer/VeryClient");
         connection.connect();
 
-        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+        BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8));
         String result = "";
         String line;
         while ((line = in.readLine()) != null) {
