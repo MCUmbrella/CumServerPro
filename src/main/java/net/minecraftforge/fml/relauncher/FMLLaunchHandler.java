@@ -74,6 +74,7 @@ public class FMLLaunchHandler
         this.classLoader.addClassLoaderExclusion("org.objectweb.asm.");
         this.classLoader.addClassLoaderExclusion("LZMA.");
         this.classLoader.addClassLoaderExclusion("jdk.nashorn."); // CatServer
+        this.classLoader.addClassLoaderExclusion("catserver.server.very.");
     }
 
     private void setupClient()
