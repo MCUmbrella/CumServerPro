@@ -252,8 +252,33 @@ public class PlayerChunkMapEntry
                 }
                 else if (this.changes >= net.minecraftforge.common.ForgeModContainer.clumpingThreshold)
                 {
-                    this.sendPacket(new SPacketChunkData(this.chunk, this.changedSectionFilter));
                     //TODO: FDix Mojang's fuckup to modded by combining all TE data into the chunk data packet... seriously... packet size explosion!
+                    try {
+                        this.sendPacket(new SPacketChunkData(this.chunk, this.changedSectionFilter));
+                    }catch (Throwable throwable) { // If out of buffer, try resend packet;
+                        try {
+                            this.sendPacket(new SPacketMultiBlockChange(this.changes, this.changedBlocks, this.chunk));
+                            //} Keep this in the else until we figure out a fix for mojang's derpitude on the data packet so we don't double send crap.
+                            //{// Forge: Send only the tile entities that are updated, Adding this brace lets us keep the indent and the patch small
+                            for (int l = 0; l < this.changes; ++l)
+                            {
+                                int i1 = (this.changedBlocks[l] >> 12 & 15) + this.pos.x * 16;
+                                int j1 = this.changedBlocks[l] & 255;
+                                int k1 = (this.changedBlocks[l] >> 8 & 15) + this.pos.z * 16;
+                                BlockPos blockpos1 = new BlockPos(i1, j1, k1);
+                                net.minecraft.block.state.IBlockState state = this.playerChunkMap.getWorldServer().getBlockState(blockpos1);
+
+                                if (state.getBlock().hasTileEntity(state))
+                                {
+                                    this.sendBlockEntity(this.playerChunkMap.getWorldServer().getTileEntity(blockpos1));
+                                }
+                            }
+                        }catch (Throwable throwable1) {
+                            throwable1.printStackTrace();
+                            return;
+                            //Don't Reset the change blocks. next tick send it
+                        }
+                    }
                 }
                 else
                 {
