@@ -1,6 +1,7 @@
 package net.minecraft.world;
 
 import catserver.server.CatServer;
+import catserver.server.WorldCapture;
 import catserver.server.threads.HopperThread;
 import catserver.server.utils.HopperTask;
 import com.google.common.collect.Lists;
@@ -98,9 +99,11 @@ import net.minecraft.world.gen.feature.WorldGeneratorBonusChest;
 import net.minecraft.world.gen.structure.StructureBoundingBox;
 import net.minecraft.world.gen.structure.template.TemplateManager;
 import net.minecraft.world.storage.ISaveHandler;
+import net.minecraft.world.storage.MapStorage;
 import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.world.storage.WorldSavedDataCallableSave;
 import net.minecraft.world.storage.loot.LootTableManager;
+import net.minecraftforge.common.DimensionManager;
 import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -151,6 +154,20 @@ public class WorldServer extends World implements IThreadListener
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
         this.getWorldBorder().setSize(server.getMaxWorldSize());
+        // CatServer start - if overworld has loaded, use its mapstorage
+        WorldServer overworld = DimensionManager.getWorld(0);
+        if (overworld != null)
+        {
+            this.mapStorage = overworld.mapStorage;
+            perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler(this, overworld.saveHandler));
+        }
+        else
+        {
+            this.mapStorage = new MapStorage(saveHandlerIn);
+            perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler(this, saveHandler));
+        }
+        // CatServer end
+        this.worldCapture = new WorldCapture(this);
         net.minecraftforge.common.DimensionManager.setWorld(dimensionId, this, mcServer);
     }
 
@@ -170,6 +187,20 @@ public class WorldServer extends World implements IThreadListener
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
         this.getWorldBorder().setSize(server.getMaxWorldSize());
+        // CatServer start - if overworld has loaded, use its mapstorage
+        WorldServer overworld = DimensionManager.getWorld(0);
+        if (overworld != null)
+        {
+            this.mapStorage = overworld.mapStorage;
+            perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler(this, overworld.saveHandler));
+        }
+        else
+        {
+            this.mapStorage = new MapStorage(saveHandlerIn);
+            perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler(this, saveHandler));
+        }
+        // CatServer end
+        this.worldCapture = new WorldCapture(this);
         net.minecraftforge.common.DimensionManager.setWorld(dimensionId, this, mcServer);
     }
 

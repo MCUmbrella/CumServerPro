@@ -216,15 +216,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.worldBorder = providerIn.createWorldBorder();
         perWorldStorage = new MapStorage((ISaveHandler)null);
         // CatServer start
-        if (DimensionManager.getWorld(0) != null) // if overworld has loaded, use its mapstorage
-        {
-            this.mapStorage = DimensionManager.getWorld(0).mapStorage;
-        }
-        else
-        {
-            this.mapStorage = new MapStorage(saveHandlerIn);
-        }
-
         if(this.worldInfo != null) // Use saved dimension from level.dat. Fixes issues with MultiVerse
         {
             if (this.worldInfo.getDimension() != 0)
@@ -274,7 +265,6 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
-        this.worldCapture = new WorldCapture((WorldServer) this);
     }
 
     protected World(ISaveHandler saveHandlerIn, WorldInfo info, WorldProvider providerIn, Profiler profilerIn, boolean client)
@@ -293,8 +283,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.provider = providerIn;
         this.isRemote = client;
         this.worldBorder = providerIn.createWorldBorder();
-        perWorldStorage = DimensionManager.getWorld(0) != null ? DimensionManager.getWorld(0).mapStorage : new MapStorage(null);
-        this.mapStorage = DimensionManager.getWorld(0) != null ? DimensionManager.getWorld(0).mapStorage : new MapStorage(null);
+        perWorldStorage = new MapStorage((ISaveHandler)null);
         timings = new SpigotTimings.WorldTimingsHandler(this); // Spigot - code below can generate new world and access timings
         this.entityLimiter = new org.spigotmc.TickLimiter(spigotConfig.entityMaxTickTime);
         this.tileLimiter = new org.spigotmc.TickLimiter(spigotConfig.tileMaxTickTime);
