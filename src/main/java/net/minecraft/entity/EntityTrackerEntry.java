@@ -64,6 +64,7 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.storage.MapData;
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.entity.Player;
@@ -731,7 +732,8 @@ public class EntityTrackerEntry
         }
         else
         {
-            throw new IllegalArgumentException("Don't know how to add " + this.trackedEntity.getClass() + "!");
+            FMLLog.log.warn(new IllegalArgumentException("Don't know how to add " + this.trackedEntity.getClass() + "!").getMessage() + "x:{}, y:{}x z:{}", this.trackedEntity.posX, this.trackedEntity.posY, this.trackedEntity.posZ);
+            return null;
         }
     }
 
