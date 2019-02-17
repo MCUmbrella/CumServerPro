@@ -1572,13 +1572,18 @@ public class Block extends net.minecraftforge.registries.IForgeRegistryEntry.Imp
      */
     public boolean canPlaceTorchOnTop(IBlockState state, IBlockAccess world, BlockPos pos)
     {
-        if (state.isTopSolid() || state.getBlockFaceShape(world, pos, EnumFacing.UP) == BlockFaceShape.SOLID)
+        if (this == Blocks.END_GATEWAY || this == Blocks.LIT_PUMPKIN)
         {
-            return this != Blocks.END_GATEWAY && this != Blocks.LIT_PUMPKIN;
+            return false;
+        }
+        else if (state.isTopSolid() || this instanceof BlockFence || this == Blocks.GLASS || this == Blocks.COBBLESTONE_WALL || this == Blocks.STAINED_GLASS)
+        {
+            return true;
         }
         else
         {
-            return this instanceof BlockFence || this == Blocks.GLASS || this == Blocks.COBBLESTONE_WALL || this == Blocks.STAINED_GLASS;
+            BlockFaceShape shape = state.getBlockFaceShape(world, pos, EnumFacing.UP);
+            return (shape == BlockFaceShape.SOLID || shape == BlockFaceShape.CENTER || shape == BlockFaceShape.CENTER_BIG) && !isExceptionBlockForAttaching(this);
         }
     }
 
@@ -1609,7 +1614,6 @@ public class Block extends net.minecraftforge.registries.IForgeRegistryEntry.Imp
      * particles, this is a server side method that spawns particles with
      * WorldServer.spawnParticle
      *
-     * @param world The current Server world
      * @param blockPosition of the block that the entity landed on.
      * @param iblockstate State at the specific world/pos
      * @param entity the entity that hit landed on the block.
@@ -1645,7 +1649,7 @@ public class Block extends net.minecraftforge.registries.IForgeRegistryEntry.Imp
      * texture sheets for different sides/locations in the world.
      *
      * @param state The current state
-     * @param world The current world
+     * @param worldObj The current world
      * @param target The target the player is looking at {x/y/z/side/sub}
      * @param manager A reference to the current particle manager.
      * @return True to prevent vanilla digging particles form spawning.
@@ -1826,7 +1830,7 @@ public class Block extends net.minecraftforge.registries.IForgeRegistryEntry.Imp
     /**
      * Determines if this block can be used as the base of a beacon.
      *
-     * @param world The current world
+     * @param worldObj The current world
      * @param pos Block position in world
      * @param beacon Beacon position in world
      * @return True, to support the beacon, and make it active with this block.
