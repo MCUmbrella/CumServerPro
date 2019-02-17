@@ -549,8 +549,6 @@ public class DimensionManager
 
         MinecraftServer mcServer = overworld.getMinecraftServer();
 
-        String name;
-
         DimensionType type = DimensionType.OVERWORLD;
         try {
             if (creator.environment() != null)
@@ -562,7 +560,7 @@ public class DimensionManager
         }
 
         Environment env = creator.environment();
-        name = creator.name();
+        String name = creator.name();
         int dim = 0;
         // Use saved dimension from level.dat if it exists. This guarantees that after a world is created, the same dimension will be used. Fixes issues with MultiVerse
         AnvilSaveHandler saveHandler = new AnvilSaveHandler(mcServer.server.getWorldContainer(), name, true, mcServer.getDataFixer());
@@ -597,6 +595,7 @@ public class DimensionManager
 
         WorldServer world = (WorldServer) new WorldServerMulti(mcServer, saveHandler, dim, overworld, mcServer.profiler, worldinfo, env, gen).init();
         world.initialize(worldSettings);
+        worldinfo.setWorldName(name);
 
         world.provider.setDimension(dim); // Fix for TerrainControl injecting their own WorldProvider
         mcServer.getPlayerList().setPlayerManager(mcServer.worldServerList.toArray(new WorldServer[mcServer.worldServerList.size()]));
