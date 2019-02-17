@@ -82,7 +82,7 @@ public class RegionFile
                 {
                     if ((k >> 8) <= this.sectorFree.size()) { // We're maxed out, so we need to read the proper length from the section
                         this.dataFile.seek((k >> 8) * 4096);
-                        length = (this.dataFile.readInt() / 4096) + 1;
+                        length = (this.dataFile.readInt() + 4)/ 4096 + 1;
                         this.dataFile.seek(j1 * 4 + 4); //Go back to where we were
                     }
                 }
@@ -141,7 +141,7 @@ public class RegionFile
                     if (k == 255)
                     {
                         this.dataFile.seek(j * 4096);
-                        k = this.dataFile.readInt() / 4096 + 1;
+                        k = (this.dataFile.readInt() + 4) / 4096 + 1;
                     }
 
                     if (j + k > this.sectorFree.size())
@@ -210,7 +210,7 @@ public class RegionFile
             if (k == 255)
             {
                 this.dataFile.seek(j * 4096);
-                k = this.dataFile.readInt() / 4096 + 1;
+                k = (this.dataFile.readInt() + 4) / 4096 + 1;
             }
             int l = (length + 5) / 4096 + 1;
 
