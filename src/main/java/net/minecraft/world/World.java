@@ -1,5 +1,6 @@
 package net.minecraft.world;
 
+import catserver.server.CatServer;
 import catserver.server.WorldCapture;
 import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.HopperTask;
@@ -143,15 +144,9 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     private final WorldBorder worldBorder;
     int[] lightUpdateBlockList;
     private LinkedBlockingQueue<HopperTask> hopperQueue = new LinkedBlockingQueue<>();
-    private final ExecutorService entityMoveExe = new ThreadPoolExecutor(4, 32,
-            6, TimeUnit.MILLISECONDS,
-            new NoLockDisruptorBlockingQueue<>(409600));
-    private final ExecutorService entityNearAABBExe = new ThreadPoolExecutor(4, 32,
-            6, TimeUnit.MILLISECONDS,
-            new NoLockDisruptorBlockingQueue<>(409600));
-    private final ExecutorService entityAIExe = new ThreadPoolExecutor(4, 32,
-            6, TimeUnit.MILLISECONDS,
-            new NoLockDisruptorBlockingQueue<>(409600));
+    private final ExecutorService entityThreadPool = new ThreadPoolExecutor(1, CatServer.entityPoolNum,
+            30, TimeUnit.MILLISECONDS,
+            new NoLockDisruptorBlockingQueue<>(1000000));
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;
     public java.util.ArrayList<net.minecraftforge.common.util.BlockSnapshot> capturedBlockSnapshots = new java.util.ArrayList<net.minecraftforge.common.util.BlockSnapshot>();
@@ -4393,14 +4388,14 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     }
 
     public void addEntityMoveQueue(EntityMoveTask moveTask) {
-        entityMoveExe.submit(moveTask);
+        entityThreadPool.submit(moveTask);
     }
 
     public void addEntityNearAABBExe(Runnable runnable) {
-        entityNearAABBExe.submit(runnable);
+        entityThreadPool.submit(runnable);
     }
 
     public void addEntityAIExe(Runnable runnable) {
-        entityAIExe.submit(runnable);
+        entityThreadPool.submit(runnable);
     }
 }

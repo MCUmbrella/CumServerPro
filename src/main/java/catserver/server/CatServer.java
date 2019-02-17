@@ -33,6 +33,7 @@ public class CatServer {
     public static boolean modMob = false;
     public static boolean entityAI = true;
     public static long worldGenMaxTickTime = 15000000L;
+    public static int entityPoolNum = 3;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
     public static List<String> fakePlayerPermissions;
 
@@ -101,6 +102,7 @@ public class CatServer {
         worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 15) * 1000000;
         modMob = getOrWriteBooleanConfig("async.modMob", modMob);
         entityAI = getOrWriteBooleanConfig("async.entityAI", entityAI);
+        entityPoolNum = getOrWriteIntConfig("async.asyncPoolNum", entityPoolNum);
         try {
             reloadFakePlayerPermissions();
         } catch (IOException e) {
@@ -114,6 +116,19 @@ public class CatServer {
 	        return config.getBoolean(path);
         }
 	    config.set(path, def);
+        try {
+            config.save(configFile);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return def;
+    }
+
+    public static int getOrWriteIntConfig(String path, int def) {
+        if (config.contains(path)) {
+            return config.getInt(path);
+        }
+        config.set(path, def);
         try {
             config.save(configFile);
         } catch (IOException e) {
