@@ -592,10 +592,10 @@ public class DimensionManager
         if (worldinfo == null) {
             worldinfo = new WorldInfo(worldSettings,name);
         }
+        worldinfo.setWorldName(name);
 
         WorldServer world = (WorldServer) new WorldServerMulti(mcServer, saveHandler, dim, overworld, mcServer.profiler, worldinfo, env, gen).init();
         world.initialize(worldSettings);
-        worldinfo.setWorldName(name);
 
         world.provider.setDimension(dim); // Fix for TerrainControl injecting their own WorldProvider
         mcServer.getPlayerList().setPlayerManager(mcServer.worldServerList.toArray(new WorldServer[mcServer.worldServerList.size()]));
