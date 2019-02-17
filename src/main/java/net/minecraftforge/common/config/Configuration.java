@@ -1615,7 +1615,7 @@ public class Configuration
         prop.setValidValues(validValues);
         prop.setValidValuesDisplay(validValuesDisplay);
         prop.setLanguageKey(langKey);
-        prop.setComment(comment + " [default: " + defaultValue + "]");
+        prop.setComment(comment + " [default: " + prop.getDefault() + "]");
         return prop.getString();
     }
 
