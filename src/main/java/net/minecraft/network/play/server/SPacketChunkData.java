@@ -36,7 +36,7 @@ public class SPacketChunkData implements Packet<INetHandlerPlayClient>
         this.chunkZ = chunkIn.z;
         this.fullChunk = changedSectionFilter == 65535;
         boolean flag = chunkIn.getWorld().provider.hasSkyLight();
-        this.buffer = new byte[this.calculateChunkSize(chunkIn, flag, changedSectionFilter)];
+        this.buffer = new byte[this.calculateChunkSize(chunkIn, flag, changedSectionFilter) + 15000]; // CatServer 缓解缓冲区溢出
         this.availableSections = this.extractChunkData(new PacketBuffer(this.getWriteBuffer()), chunkIn, flag, changedSectionFilter);
         this.tileEntityTags = Lists.<NBTTagCompound>newArrayList();
 
