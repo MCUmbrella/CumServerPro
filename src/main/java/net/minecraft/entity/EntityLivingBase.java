@@ -1632,9 +1632,6 @@ public abstract class EntityLivingBase extends Entity
             Function<Double, Double> armor = new Function<Double, Double>() {
                 @Override
                 public Double apply(Double f) {
-                    if (human) {
-                        return (double) net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory, damagesource, f);
-                    }
                     return -(f - EntityLivingBase.this.applyArmorCalculations(damagesource, f.floatValue()));
                 }
             };
@@ -1674,11 +1671,10 @@ public abstract class EntityLivingBase extends Entity
             float absorptionModifier = absorption.apply((double) f).floatValue();
 
             EntityDamageEvent event = CraftEventFactory.handleLivingEntityDamageEvent(this, damagesource, originalDamage, hardHatModifier, blockingModifier, armorModifier, resistanceModifier, magicModifier, absorptionModifier, hardHat, blocking, armor, resistance, magic, absorption);
+
             if (event.isCancelled()) {
                 return false;
             }
-
-            f = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, damagesource, (float) event.getFinalDamage()); // CatServer
 
             // Apply damage to helmet
             if ((damagesource == DamageSource.ANVIL || damagesource == DamageSource.FALLING_BLOCK) && this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null) {
@@ -1687,8 +1683,15 @@ public abstract class EntityLivingBase extends Entity
 
             // Apply damage to armor
             if (!damagesource.isUnblockable()) {
-                float armorDamage = (float) (event.getDamage() + event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) + event.getDamage(EntityDamageEvent.DamageModifier.HARD_HAT));
-                this.damageArmor(armorDamage);
+                // CatServer start
+                if (human) {
+                    // move from EntityPlayer
+                    f = net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory, damagesource, f);
+                } else {
+                    float armorDamage = (float) (event.getDamage() + event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) + event.getDamage(EntityDamageEvent.DamageModifier.HARD_HAT));
+                    this.damageArmor(armorDamage);
+                }
+                // CatServer end
             }
 
             // Apply blocking code // PAIL: steal from above
@@ -1700,6 +1703,8 @@ public abstract class EntityLivingBase extends Entity
                     this.blockUsingShield((EntityLivingBase) entity);
                 }
             }
+
+            f = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, damagesource, (float) event.getFinalDamage()); // CatServer
 
             absorptionModifier = (float) -event.getDamage(EntityDamageEvent.DamageModifier.ABSORPTION);
             this.setAbsorptionAmount(Math.max(this.getAbsorptionAmount() - absorptionModifier, 0.0F));
