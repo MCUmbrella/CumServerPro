@@ -1280,7 +1280,11 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
                         try
                         {
-                            iblockstate.getBlock().onEntityCollidedWithBlock(this.world, blockpos$pooledmutableblockpos2, iblockstate, this);
+                            if (iblockstate == null)
+                                continue;
+                            Block block = iblockstate.getBlock();
+                            if (block != null)
+                                block.onEntityCollidedWithBlock(this.world, blockpos$pooledmutableblockpos2, iblockstate, this);
                             this.onInsideBlock(iblockstate);
                         }
                         catch (Throwable throwable)
