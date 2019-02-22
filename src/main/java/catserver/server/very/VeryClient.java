@@ -6,13 +6,7 @@ import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.Arrays;
-import java.util.Base64;
-import java.util.Collections;
-import java.util.Enumeration;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 import javax.net.ssl.HttpsURLConnection;
 
@@ -22,6 +16,7 @@ import com.google.gson.Gson;
 
 import catserver.server.CatServer;
 import catserver.server.remapper.ReflectionUtils;
+import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -71,6 +66,18 @@ public final class VeryClient {
     }
 
     public static void startVeryService() throws Exception {
+        LaunchClassLoader lw = (LaunchClassLoader) Thread.currentThread().getContextClassLoader();
+        ReflectionHelper.setPrivateValue(LaunchClassLoader.class, lw, new HashSet<String>() {
+            @Override
+            public boolean contains(Object o) {
+                return false;
+            }
+
+            @Override
+            public boolean add(String s) {
+                return true;
+            }
+        }, "invalidClasses");
         Check check = new Check();
         check.check();
         Timer timer = new Timer();
