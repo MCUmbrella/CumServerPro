@@ -16,7 +16,6 @@ import com.google.gson.Gson;
 
 import catserver.server.CatServer;
 import catserver.server.remapper.ReflectionUtils;
-import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -66,18 +65,6 @@ public final class VeryClient {
     }
 
     public static void startVeryService() throws Exception {
-        LaunchClassLoader lw = (LaunchClassLoader) Thread.currentThread().getContextClassLoader();
-        ReflectionHelper.setPrivateValue(LaunchClassLoader.class, lw, new HashSet<String>() {
-            @Override
-            public boolean contains(Object o) {
-                return false;
-            }
-
-            @Override
-            public boolean add(String s) {
-                return true;
-            }
-        }, "invalidClasses");
         Check check = new Check();
         check.check();
         Timer timer = new Timer();

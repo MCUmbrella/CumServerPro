@@ -22,8 +22,11 @@ package net.minecraftforge.fml.common.launcher;
 import java.io.File;
 import java.lang.reflect.Method;
 import java.security.ProtectionDomain;
+import java.util.HashSet;
 import java.util.List;
 
+import io.netty.util.internal.ConcurrentSet;
+import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.core.LoggerContext;
 
@@ -81,7 +84,20 @@ public class FMLServerTweaker extends FMLTweaker {
             byte[] bytes = classWriter.toByteArray();
             method.invoke(cl, "net.minecraftforge.fml.relauncher.ServerLaunchWrapper", bytes, 0, bytes.length, null);
         }catch (Throwable throwable) {}
+        ReflectionHelper.setPrivateValue(LaunchClassLoader.class, classLoader, new HashSet<String>() {
+            @Override
+            public boolean contains(Object o) {
+                return false;
+            }
 
+            @Override
+            public boolean add(String s) {
+                return true;
+            }
+        }, "invalidClasses");
+        ConcurrentSet<String> currSet = new ConcurrentSet<>();
+        currSet.addAll(ReflectionHelper.getPrivateValue(LaunchClassLoader.class, classLoader, "transformerExceptions"));
+        ReflectionHelper.setPrivateValue(LaunchClassLoader.class, classLoader, currSet, "transformerExceptions");
         FMLLaunchHandler.configureForServerLaunch(classLoader, this);
         FMLLaunchHandler.appendCoreMods();
     }
