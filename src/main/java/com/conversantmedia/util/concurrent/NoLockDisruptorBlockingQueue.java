@@ -27,6 +27,7 @@ import java.util.NoSuchElementException;
 import java.util.Queue;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.locks.LockSupport;
 
 /**
  *
@@ -237,7 +238,7 @@ public final class NoLockDisruptorBlockingQueue<E> extends MultithreadConcurrent
                 throw new InterruptedException();
             }
 
-            queueNotEmptyCondition.await();
+            LockSupport.parkNanos(10000);
         }
     }
 
