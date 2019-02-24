@@ -1,5 +1,6 @@
 package net.minecraft.util;
 
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemFood;
@@ -9,6 +10,8 @@ import net.minecraft.network.play.server.SPacketUpdateHealth;
 import net.minecraft.world.EnumDifficulty;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
+
+import java.lang.reflect.Field;
 
 public class FoodStats
 {
@@ -21,12 +24,17 @@ public class FoodStats
     private EntityPlayer entityhuman;
 
     public FoodStats() {
-        this.entityhuman = null;
+
     }
 
-    public FoodStats(EntityPlayer entityhuman) {
+    public FoodStats(EntityLivingBase entityhuman) {
         org.apache.commons.lang3.Validate.notNull(entityhuman);
-        this.entityhuman = entityhuman;
+        this.entityhuman = (EntityPlayer) entityhuman;
+        try {
+            Field appaleCore = getClass().getField("entityplayer");
+            appaleCore.set(this, entityhuman);
+        } catch (NoSuchFieldException | IllegalAccessException ignored) {}
+
     }
 
     public void addStats(int foodLevelIn, float foodSaturationModifier)
