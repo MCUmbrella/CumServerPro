@@ -1,5 +1,6 @@
 package catserver.server.update;
 
+import catserver.server.CatServer;
 import catserver.server.very.SSLManager;
 import catserver.server.very.VeryConfig;
 import org.apache.commons.io.FileUtils;
@@ -44,8 +45,9 @@ public class Check extends TimerTask {
     public void run() {
         String v = Check.class.getPackage().getImplementationVersion();
         try {
-            String n = sendRequest("action=version");
-            if (!n.equals(v)) {
+            String n = sendRequest("action=buildTime");
+            int buildTime = Integer.parseInt(n);
+            if (buildTime > CatServer.buildTime) {
                 System.out.println("检测到CatServer版本更新: 最新版: " + n);
             }
         } catch (Exception e) {
