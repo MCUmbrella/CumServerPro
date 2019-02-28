@@ -3,6 +3,7 @@ package net.minecraft.world;
 import catserver.server.CatServer;
 import catserver.server.WorldCapture;
 import catserver.server.threads.HopperThread;
+import catserver.server.utils.CatTreeSet;
 import catserver.server.utils.HopperTask;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
@@ -119,7 +120,7 @@ public class WorldServer extends World implements IThreadListener
     public EntityTracker entityTracker;
     private final PlayerChunkMap playerChunkMap;
     private final Set<NextTickListEntry> pendingTickListEntriesHashSet = Sets.<NextTickListEntry>newHashSet();
-    private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new TreeSet<NextTickListEntry>();
+    private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new CatTreeSet<>();
     private final Map<UUID, Entity> entitiesByUuid = Maps.<UUID, Entity>newHashMap();
     public boolean disableLevelSaving;
     private boolean allPlayersSleeping;
