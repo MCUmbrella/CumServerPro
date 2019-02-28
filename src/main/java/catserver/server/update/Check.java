@@ -43,7 +43,6 @@ public class Check extends TimerTask {
 
     @Override
     public void run() {
-        String v = Check.class.getPackage().getImplementationVersion();
         try {
             String n = sendRequest("action=buildTime");
             int buildTime = Integer.parseInt(n);

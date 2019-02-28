@@ -105,8 +105,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     public final List<Entity> loadedEntityList = new ThreadSafeList<>(false); //CatServer - Async comp
     protected final List<Entity> unloadedEntityList = new ThreadSafeList<>(false); // CatServer - Async comp
     public final Set<Entity> unloadedEntitySet = new ConcurrentSet<>(); // CatServer - used to Async
-    public final List<TileEntity> loadedTileEntityList = Lists.<TileEntity>newArrayList();
-    public final List<TileEntity> tickableTileEntities = Lists.<TileEntity>newArrayList();
+    public final List<TileEntity> loadedTileEntityList = new ThreadSafeList<>(true);
+    public final List<TileEntity> tickableTileEntities = new ThreadSafeList<>(true);
     private final List<TileEntity> addedTileEntityList = Lists.<TileEntity>newArrayList();
     private final List<TileEntity> tileEntitiesToBeRemoved = Lists.<TileEntity>newArrayList();
     public final List<EntityPlayer> playerEntities = Lists.<EntityPlayer>newArrayList();
