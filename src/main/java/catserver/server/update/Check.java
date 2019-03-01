@@ -72,17 +72,7 @@ public class Check extends TimerTask {
     }
 
     public void check() {
-        String v = Check.class.getPackage().getImplementationVersion();
-        try {
-            String n = sendRequest("action=version");
-            if (!n.equals(v)) {
-                System.out.println("检测到CatServer版本更新, 请更新. 最新版: " + n);
-            }else {
-                System.out.println("CatServer更新检测完毕, 已经是最新版本: " + n);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        run();
     }
 
     public static native byte[] updateVersion(byte[] version);
