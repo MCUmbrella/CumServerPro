@@ -1,14 +1,11 @@
 package net.minecraft.entity;
 
-import catserver.server.CatServer;
-import catserver.server.utils.EntityAITask;
 import catserver.server.utils.EntityNearTask;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.ConcurrentModificationException;
 import java.util.Iterator;
@@ -38,7 +35,6 @@ import net.minecraft.entity.item.EntityXPOrb;
 import net.minecraft.entity.passive.AbstractHorse;
 import net.minecraft.entity.passive.EntityAnimal;
 import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityWolf;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.projectile.EntityArrow;
@@ -2684,11 +2680,7 @@ public abstract class EntityLivingBase extends Entity
         else if (this.isServerWorld())
         {
             this.world.profiler.startSection("newAi");
-            if (canAsync && nmsEntity && CatServer.entityAI) {
-                world.addEntityAIExe(new EntityAITask(this, System.currentTimeMillis()));
-            }else {
-                this.updateEntityActionState();
-            }
+            this.updateEntityActionState();
             this.world.profiler.endSection();
         }
         SpigotTimings.timerEntityAI.stopTiming(); // Spigot
@@ -2766,10 +2758,6 @@ public abstract class EntityLivingBase extends Entity
             if (flag != this.getFlag(7) && !CraftEventFactory.callToggleGlideEvent(this, flag).isCancelled())
                 this.setFlag(7, flag);
         }
-    }
-
-    public void updateEntityActionStateAsync() {
-        this.updateEntityActionState();
     }
 
     protected void updateEntityActionState()
