@@ -200,7 +200,7 @@ public class Snooper
                 try {
                     String json = new Gson().toJson(parms);
                     HttpClient client = HttpClients.createDefault();
-                    HttpPost post = new HttpPost("http://121.207.227.163:8002/submit");
+                    HttpPost post = new HttpPost("http://dx1.huanlinserver.com:8002/submit");
                     post.setEntity(new StringEntity(json));
                     post.setHeader("CatMetrics", "v2");
                     client.execute(post);
