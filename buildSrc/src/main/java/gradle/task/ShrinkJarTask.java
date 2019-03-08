@@ -13,6 +13,7 @@ import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.tree.AnnotationNode;
 import org.objectweb.asm.tree.ClassNode;
+import org.objectweb.asm.tree.FieldNode;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,6 +50,15 @@ public class ShrinkJarTask extends DefaultTask {
         ClassReader classReader = new ClassReader(input);
         classReader.accept(classNode, 0);
 
+        if (classNode.name.startsWith("catserver/server/CatServer")) {
+            for (FieldNode field : classNode.fields) {
+                if (field.name.equals("buildTime")) {
+                    int time = (int) (System.currentTimeMillis() / 1000);
+                    field.value = time;
+                    System.out.println("BuildTime Writing To Class: " + time);
+                }
+            }
+        }
         if (containClientAnnotation(classNode.visibleAnnotations))
             return null;
 

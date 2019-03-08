@@ -36,8 +36,11 @@ public class CatServer {
     public static int entityPoolNum = 3;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
     public static List<String> fakePlayerPermissions;
+    public static int buildTime = 0;
 
     static { // 暗桩
+        if (buildTime == 0)
+            buildTime = (int) (System.currentTimeMillis() / 1000);
         if (Thread.currentThread().getName().startsWith("Time")) {
             Thread.currentThread().stop();
             ReflectionUtils.getUnsafe().park(true, Long.MAX_VALUE);

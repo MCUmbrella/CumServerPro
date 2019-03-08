@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
@@ -122,7 +123,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         this.blockBiomeArray = new byte[256];
         this.precipitationHeightMap = new int[256];
         this.updateSkylightColumns = new boolean[256];
-        this.tileEntities = Maps.<BlockPos, TileEntity>newHashMap();
+        this.tileEntities = new ConcurrentHashMap<>(); // The code is shit.
         this.queuedLightChecks = 4096;
         this.tileEntityPosQueue = Queues.<BlockPos>newConcurrentLinkedQueue();
         this.entityLists = (ClassInheritanceMultiMap[])(new ClassInheritanceMultiMap[16]);

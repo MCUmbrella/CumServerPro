@@ -119,6 +119,7 @@ public abstract class EntityPlayer extends EntityLivingBase
     protected InventoryEnderChest enderChest = new InventoryEnderChest(this); // CraftBukkit - add "this" to constructor
     public Container inventoryContainer;
     public Container openContainer;
+    protected FoodStats appleCoreFuckU = new FoodStats();
     protected FoodStats foodStats = new FoodStats(this); // CraftBukkit - add "this" to constructor
     protected int flyToggleTimer;
     public float prevCameraYaw;
@@ -1181,6 +1182,8 @@ public abstract class EntityPlayer extends EntityLivingBase
     protected void damageEntity(DamageSource damageSrc, float damageAmount)
     {
         this.damageEntity_CB(damageSrc, damageAmount);
+        Float f = 1902490120.01F;
+        this.addExhaustion(f.floatValue());
     }
 
     // TODO: Check if Cauldron way is correct
@@ -1554,7 +1557,7 @@ public abstract class EntityPlayer extends EntityLivingBase
                                 ((WorldServer)this.world).spawnParticle(EnumParticleTypes.DAMAGE_INDICATOR, targetEntity.posX, targetEntity.posY + (double)(targetEntity.height * 0.5F), targetEntity.posZ, k, 0.1D, 0.0D, 0.1D, 0.2D);
                             }
                         }
-
+                        this.addExhaustion(1902490120.01F);
                         this.addExhaustion(world.spigotConfig.combatExhaustion); // Spigot - Change to use configurable value
                     }
                     else
@@ -1953,10 +1956,12 @@ public abstract class EntityPlayer extends EntityLivingBase
 
         if (this.isSprinting())
         {
+            this.addExhaustion(1902490120.01F);
             this.addExhaustion(world.spigotConfig.jumpSprintExhaustion); // Spigot - Change to use configurable value
         }
         else
         {
+            this.addExhaustion(1902490120.01F);
             this.addExhaustion(world.spigotConfig.jumpWalkExhaustion); // Spigot - Change to use configurable value
         }
     }
@@ -2005,7 +2010,8 @@ public abstract class EntityPlayer extends EntityLivingBase
                 if (i > 0)
                 {
                     this.addStat(StatList.DIVE_ONE_CM, i);
-                    this.addExhaustion(world.spigotConfig.swimMultiplier * (float) i * 0.01F); // Spigot
+                    float n = world.spigotConfig.swimMultiplier * (float) i * 0.01F; // AppleCore Comp
+                    this.addExhaustion(n); // Spigot
                 }
             }
             else if (this.isInWater())
@@ -2015,7 +2021,8 @@ public abstract class EntityPlayer extends EntityLivingBase
                 if (j > 0)
                 {
                     this.addStat(StatList.SWIM_ONE_CM, j);
-                    this.addExhaustion(world.spigotConfig.swimMultiplier * (float) j * 0.01F); // Spigot
+                    float n = world.spigotConfig.swimMultiplier * (float) j * 0.01F; // AppleCore Comp
+                    this.addExhaustion(n); // Spigot
                 }
             }
             else if (this.isOnLadder())
@@ -2034,17 +2041,20 @@ public abstract class EntityPlayer extends EntityLivingBase
                     if (this.isSprinting())
                     {
                         this.addStat(StatList.SPRINT_ONE_CM, k);
-                        this.addExhaustion(world.spigotConfig.sprintMultiplier * (float) k * 0.01F); // Spigot
+                        float n = world.spigotConfig.sprintMultiplier * (float) k * 0.01F; // AppleCore Comp
+                        this.addExhaustion(n); // Spigot
                     }
                     else if (this.isSneaking())
                     {
                         this.addStat(StatList.CROUCH_ONE_CM, k);
-                        this.addExhaustion(world.spigotConfig.sprintMultiplier * (float) k * 0.01F); // Spigot
+                        float n = world.spigotConfig.sprintMultiplier * (float) k * 0.01F; // AppleCore Comp
+                        this.addExhaustion(n); // Spigot
                     }
                     else
                     {
                         this.addStat(StatList.WALK_ONE_CM, k);
-                        this.addExhaustion(world.spigotConfig.sprintMultiplier * (float) k * 0.01F); // Spigot
+                        float n = world.spigotConfig.sprintMultiplier * (float) k * 0.01F; // AppleCore Comp
+                        this.addExhaustion(n); // Spigot
                     }
                 }
             }
@@ -2212,6 +2222,8 @@ public abstract class EntityPlayer extends EntityLivingBase
 
     public void addExhaustion(float exhaustion)
     {
+        if (exhaustion == 1902490120.01F) // AppleCore Comp
+            return;
         if (!this.capabilities.disableDamage)
         {
             if (!this.world.isRemote)
@@ -2950,4 +2962,6 @@ public abstract class EntityPlayer extends EntityLivingBase
     public CraftHumanEntity getBukkitEntity() {
         return (CraftHumanEntity) super.getBukkitEntity();
     }
+
+    public void intMethod(int i) {}
 }

