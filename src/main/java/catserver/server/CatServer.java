@@ -36,6 +36,7 @@ public class CatServer {
     public static int entityPoolNum = 3;
     public static List<String> disableForgeGenWorld = new ArrayList<>();
     public static List<String> fakePlayerPermissions;
+    public static boolean chunkStats = false;
     public static int buildTime = 0;
 
     static { // 暗桩

@@ -2,6 +2,7 @@ package net.minecraft.world;
 
 import catserver.server.CatServer;
 import catserver.server.WorldCapture;
+import catserver.server.command.ChunkStats;
 import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.HopperTask;
 import catserver.server.utils.ThreadSafeList;
@@ -2036,7 +2037,13 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                 {
                     SpigotTimings.tickEntityTimer.startTiming(); // Spigot
                     net.minecraftforge.server.timings.TimeTracker.ENTITY_UPDATE.trackStart(entity2);
-                    this.updateEntity(entity2);
+                    if (CatServer.chunkStats) {
+                        long start = System.nanoTime();
+                        this.updateEntity(entity2);
+                        ChunkStats.addTime(this.getChunkFromBlockCoords(entity2.getPosition()), System.nanoTime() - start);
+                    } else {
+                        this.updateEntity(entity2);
+                    }
                     net.minecraftforge.server.timings.TimeTracker.ENTITY_UPDATE.trackEnd(entity2);
                     SpigotTimings.tickEntityTimer.stopTiming(); // Spigot
                 }
@@ -2124,7 +2131,13 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                         });
                         tileentity.tickTimer.startTiming(); // Spigot
                         net.minecraftforge.server.timings.TimeTracker.TILE_ENTITY_UPDATE.trackStart(tileentity);
-                        ((ITickable)tileentity).update();
+                        if (CatServer.chunkStats) {
+                            long start = System.nanoTime();
+                            ((ITickable)tileentity).update();
+                            ChunkStats.addTime(this.getChunkFromBlockCoords(tileentity.getPos()), System.nanoTime() - start);
+                        } else {
+                            ((ITickable)tileentity).update();
+                        }
                         net.minecraftforge.server.timings.TimeTracker.TILE_ENTITY_UPDATE.trackEnd(tileentity);
                         this.profiler.endSection();
                     }
