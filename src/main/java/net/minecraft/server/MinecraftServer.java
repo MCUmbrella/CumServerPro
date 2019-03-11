@@ -1,5 +1,6 @@
 package net.minecraft.server;
 
+import catserver.api.bukkit.I18nManager;
 import catserver.server.threads.WatchCatThread;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
@@ -344,6 +345,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                     BukkitInjector.registerEnchantments();
                     BukkitInjector.registerPotions();
                     BukkitInjector.initializedBukkit = true;
+                    I18nManager.loadI18n();
                 }
                 server.loadPlugins();
                 server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
