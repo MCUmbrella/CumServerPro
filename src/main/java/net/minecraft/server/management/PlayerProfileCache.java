@@ -250,7 +250,6 @@ public class PlayerProfileCache
     {
         List<ProfileEntry> profileEntries = this.getEntriesWithLimit(org.spigotmc.SpigotConfig.userCacheCap);
         new Thread(() -> {
-            FMLLog.log.info("UUID缓存保存线程启动...");
             String s = this.gson.toJson(profileEntries); // Spigot
             BufferedWriter bufferedwriter = null;
 
@@ -271,7 +270,6 @@ public class PlayerProfileCache
             finally
             {
                 IOUtils.closeQuietly((Writer)bufferedwriter);
-                FMLLog.log.info("UUID缓存保存完毕，线程退出");
             }
         }).start();
 
