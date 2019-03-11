@@ -43,8 +43,8 @@ public class I18nManager {
         initialized = true;
     }
 
-    public String getI18nLocal(String i18n) {
-        String text = this.i18n.get(i18n);
+    public static String getI18nLocal(String i18n) {
+        String text = I18nManager.i18n.get(i18n);
         if (text == null)
             text = I18n.translateToLocal(i18n);
         return text;
