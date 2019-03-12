@@ -23,7 +23,7 @@ public class UnknownDependencyException extends RuntimeException {
      * @param message Brief message explaining the cause of the exception
      */
     public UnknownDependencyException(final String message) {
-        super(message);
+        super(message + " 你的插件没装依赖,再问自杀! ");
     }
 
     /**
