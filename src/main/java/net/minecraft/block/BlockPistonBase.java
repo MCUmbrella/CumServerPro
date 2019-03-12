@@ -387,16 +387,16 @@ public class BlockPistonBase extends BlockDirectional
                 }
             };
 
-            // CatServer start - prohibit move or brok TE!
+            // CatServer start - prohibit move or brok TE and Rails !
             boolean cancell = false;
             for (BlockPos blockPos : moved) {
-                if (worldIn.getTileEntity(blockPos) != null) {
+                if (worldIn.getTileEntity(blockPos) != null || worldIn.getBlockState(blockPos).getBlock() instanceof BlockRailBase) {
                     cancell = true;
                     break;
                 }
             }
             for (BlockPos blockPos : broken) {
-                if (worldIn.getTileEntity(blockPos) != null) {
+                if (worldIn.getTileEntity(blockPos) != null || worldIn.getBlockState(blockPos).getBlock() instanceof BlockRailBase) {
                     cancell = true;
                     break;
                 }
