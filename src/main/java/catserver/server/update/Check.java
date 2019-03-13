@@ -48,8 +48,6 @@ public class Check extends TimerTask {
             int buildTime = Integer.parseInt(n);
             if (buildTime > CatServer.buildTime) {
                 System.out.println("检测到CatServer版本更新: 最新版: " + n);
-            }else {
-                System.out.println("已是最新版: " + n);
             }
         } catch (Exception e) {
             e.printStackTrace();
