@@ -25,6 +25,7 @@ import org.bukkit.Server;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommandYamlParser;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.craftbukkit.entity.CraftFuckPlayer;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.HandlerList;
@@ -474,7 +475,7 @@ public final class SimplePluginManager implements PluginManager {
      * @param event Event details
      */
     public void callEvent(Event event) {
-        if (CatServer.fakePlayerEventPass && event instanceof PlayerEvent) // CatServer
+        if (CatServer.fakePlayerEventPass && event instanceof PlayerEvent && ((PlayerEvent) event).getPlayer() instanceof CraftFuckPlayer) // CatServer
             return;
         if (event.isAsynchronous() || !Bukkit.isPrimaryThread()) { // CatServer
             if (Thread.holdsLock(this)) {
