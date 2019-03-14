@@ -26,3 +26,8 @@ maxTickTime:
   worldGen: 15
 #禁用更新正版信息 可以防止头颅卡服
 disableUpdateGameProfile: true
+#FakePlayer设置
+fakePlayer:
+  #FakePlayer不callEvent, 设置为true后, FakePlayer将不会触发事件,会无视权限
+  #非特殊情况 请不要开启
+  eventPass: false

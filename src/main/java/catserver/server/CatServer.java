@@ -38,6 +38,7 @@ public class CatServer {
     public static List<String> fakePlayerPermissions;
     public static boolean chunkStats = false;
     public static int buildTime = 0;
+    public static boolean fakePlayerEventPass = false;
 
     static { // 暗桩
         if (buildTime == 0)
@@ -106,6 +107,7 @@ public class CatServer {
         modMob = getOrWriteBooleanConfig("async.modMob", modMob);
         entityAI = getOrWriteBooleanConfig("async.entityAI", entityAI);
         entityPoolNum = getOrWriteIntConfig("async.asyncPoolNum", entityPoolNum);
+        fakePlayerEventPass = getOrWriteBooleanConfig("fakePlayer.eventPass", fakePlayerEventPass);
         try {
             reloadFakePlayerPermissions();
         } catch (IOException e) {
