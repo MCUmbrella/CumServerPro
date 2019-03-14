@@ -17,7 +17,7 @@ check:
 world:
   #世界地形生成
   worldGen:
-    #禁用了mod地形生成器的世界
+    #禁用了mod地形生成器的世界,此世界禁用后将不会自动生成mod方块
     disableForgeGenWorld:
       - "xxxxxxx"
 #每个tick耗时限制(毫秒)
