@@ -2747,7 +2747,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         {
             TileEntity tileentity2 = this.addedTileEntityList.get(j2);
 
-            if (!tileentity2.isInvalid() && tileentity2.getPos().equals(pos))
+            if (tileentity2 != null && !tileentity2.isInvalid() && tileentity2.getPos().equals(pos))
             {
                 return tileentity2;
             }
