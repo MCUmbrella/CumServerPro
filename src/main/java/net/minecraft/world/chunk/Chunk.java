@@ -769,6 +769,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     public void addEntity(Entity entityIn)
     {
         this.hasEntities = true;
+        /* CatServer - AsyncComp
         int i = MathHelper.floor(entityIn.posX / 16.0D);
         int j = MathHelper.floor(entityIn.posZ / 16.0D);
 
@@ -777,6 +778,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             LOGGER.warn("Wrong location! ({}, {}) should be ({}, {}), {}", Integer.valueOf(i), Integer.valueOf(j), Integer.valueOf(this.x), Integer.valueOf(this.z), entityIn);
             entityIn.setDead();
         }
+        */ // CatServer end - AsyncComp
 
         int k = MathHelper.floor(entityIn.posY / 16.0D);
 
