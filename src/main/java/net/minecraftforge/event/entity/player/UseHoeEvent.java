@@ -45,6 +45,7 @@ public class UseHoeEvent extends PlayerEvent
     private final ItemStack current;
     private final World world;
     private final BlockPos pos;
+    private final String seed = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
 
     public UseHoeEvent(EntityPlayer player, @Nonnull ItemStack current, World world, BlockPos pos)
     {
