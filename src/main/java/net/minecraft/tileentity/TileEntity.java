@@ -7,7 +7,6 @@ import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReportCategory;
 import net.minecraft.crash.ICrashReportDetail;
 import net.minecraft.init.Blocks;
-import net.minecraft.inventory.IInventory;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.SPacketUpdateTileEntity;
 import net.minecraft.util.Mirror;
@@ -21,11 +20,8 @@ import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.bukkit.craftbukkit.block.CraftBlockEntityState;
 import org.bukkit.inventory.InventoryHolder;
 import org.spigotmc.CustomTimingsHandler;
-
-import catserver.server.inventory.CatCustomInventory;
 
 public abstract class TileEntity implements net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound>
 {
@@ -554,10 +550,6 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
         if (state instanceof InventoryHolder)
         {
             return (InventoryHolder) state;
-        } else if (state instanceof CraftBlockEntityState) { // CatServer
-            TileEntity te = ((CraftBlockEntityState) state).getTileEntity();
-            if (te instanceof IInventory)
-                return (InventoryHolder) new CatCustomInventory((IInventory) te);
         }
         return null;
     }
