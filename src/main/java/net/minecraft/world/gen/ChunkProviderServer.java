@@ -23,6 +23,7 @@ import net.minecraft.world.biome.Biome;
 import net.minecraft.world.chunk.Chunk;
 import net.minecraft.world.chunk.IChunkProvider;
 import net.minecraft.world.chunk.storage.IChunkLoader;
+import net.minecraftforge.fml.common.FMLLog;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.bukkit.Bukkit;
@@ -40,7 +41,7 @@ public class ChunkProviderServer implements IChunkProvider
         @Override
         public ObjectSet<Map.Entry<Long, Chunk>> entrySet() {
             if (! Bukkit.isPrimaryThread()) {
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
                 return new Long2ObjectOpenHashMap<>(id2ChunkMap).entrySet();
             }
             return super.entrySet();
@@ -49,7 +50,7 @@ public class ChunkProviderServer implements IChunkProvider
         @Override
         public FastEntrySet<Chunk> long2ObjectEntrySet() {
             if (! Bukkit.isPrimaryThread()) {
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
                 return new Long2ObjectOpenHashMap<>(id2ChunkMap).long2ObjectEntrySet();
             }
             return super.long2ObjectEntrySet();

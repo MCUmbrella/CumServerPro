@@ -1,6 +1,7 @@
 package catserver.server.utils;
 
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLLog;
 import org.bukkit.Bukkit;
 import org.spigotmc.AsyncCatcher;
 
@@ -23,7 +24,7 @@ public class ThreadSafeList<E> extends Vector<E> {
         if (checkThread()) {
             switchPrimaryThread(() -> super.add(e));
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return true;
         }
         return super.add(e);
@@ -34,7 +35,7 @@ public class ThreadSafeList<E> extends Vector<E> {
         if (checkThread()) {
             switchPrimaryThread(() -> super.add(index, element));
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return;
         }
         super.add(index, element);
@@ -45,7 +46,7 @@ public class ThreadSafeList<E> extends Vector<E> {
         if (checkThread()) {
             switchPrimaryThread(() -> super.remove(o));
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return super.contains(o);
         }
         return super.remove(o);
@@ -55,7 +56,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     public synchronized E remove(int index) {
         if (checkThread()) {
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return null;
         }
         return super.remove(index);
@@ -66,7 +67,7 @@ public class ThreadSafeList<E> extends Vector<E> {
         if (checkThread()) {
             switchPrimaryThread(super::clear);
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return;
         }
         super.clear();
@@ -77,7 +78,7 @@ public class ThreadSafeList<E> extends Vector<E> {
         if (checkThread()) {
             switchPrimaryThread(() -> super.addAll(c));
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return true;
         }
         return super.addAll(c);
@@ -88,7 +89,7 @@ public class ThreadSafeList<E> extends Vector<E> {
         if (checkThread()) {
             switchPrimaryThread(() -> super.addAll(index, c));
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return true;
         }
         return super.addAll(index, c);
@@ -99,7 +100,7 @@ public class ThreadSafeList<E> extends Vector<E> {
         if (checkThread()) {
             switchPrimaryThread(() -> super.addElement(obj));
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return;
         }
         super.addElement(obj);
@@ -109,7 +110,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     public synchronized void removeElementAt(int index) {
         if (checkThread()) {
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return;
         }
         super.removeElementAt(index);
@@ -119,7 +120,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     public synchronized boolean removeAll(Collection<?> c) {
         if (checkThread()) {
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return false;
         }
         return super.removeAll(c);
@@ -129,7 +130,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     public synchronized void removeAllElements() {
         if (checkThread()) {
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return;
         }
         super.removeAllElements();
@@ -139,7 +140,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     public synchronized boolean removeElement(Object obj) {
         if (checkThread()) {
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return false;
         }
         return super.removeElement(obj);
@@ -149,7 +150,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     public synchronized boolean removeIf(Predicate<? super E> filter) {
         if (checkThread()) {
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return false;
         }
         return super.removeIf(filter);
@@ -159,7 +160,7 @@ public class ThreadSafeList<E> extends Vector<E> {
     public synchronized Iterator<E> iterator() {
         if (checkThread()) {
             if (print)
-                new UnsupportedOperationException(message).printStackTrace();
+                FMLLog.log.debug(new UnsupportedOperationException(message));
             return new ArrayList<E>(this).iterator();
         }
         return super.iterator();

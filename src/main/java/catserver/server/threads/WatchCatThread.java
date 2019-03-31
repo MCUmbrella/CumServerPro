@@ -2,6 +2,7 @@ package catserver.server.threads;
 
 import catserver.server.CatServer;
 import net.minecraft.server.MinecraftServer;
+import net.minecraftforge.fml.common.FMLLog;
 import org.bukkit.Bukkit;
 
 import java.util.Timer;
@@ -20,10 +21,10 @@ public class WatchCatThread extends TimerTask {
             lastWarnTime = curTime;
             Bukkit.getLogger().log(Level.WARNING, "------------------------------");
             Bukkit.getLogger().log(Level.WARNING, "[Cat侦测系统]服务器主线程已陷入停顿" + (curTime - lastTime) + "ms! 你的服务器卡顿了!");
-            Bukkit.getLogger().log(Level.WARNING, "当前主线程堆栈追踪:");
+            FMLLog.log.debug("当前主线程堆栈追踪:");
             for ( StackTraceElement stack : MinecraftServer.getServerInst().primaryThread.getStackTrace() )
             {
-                Bukkit.getLogger().log( Level.WARNING, "\t\t" + stack );
+                FMLLog.log.debug("\t\t" + stack);
             }
             Bukkit.getLogger().log(Level.WARNING, "--------------请注意,这不是报错!请勿反馈!可在catserver.yml中check.threadLag关闭----------------");
         }
