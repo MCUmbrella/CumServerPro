@@ -458,6 +458,10 @@ public final class CraftServer implements Server {
         return this.playerView;
     }
 
+    public Player[] getOnlinePlayers_1710() {
+        return getOnlinePlayers().toArray(new Player[0]);
+    }
+
     @Override
     @Deprecated
     public Player getPlayer(final String name) {
