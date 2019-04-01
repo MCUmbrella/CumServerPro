@@ -372,8 +372,11 @@ public class PlayerInteractionManager
             else
             {
                 ItemStack stack = player.getHeldItemMainhand();
-                if (!stack.isEmpty() && stack.getItem().onBlockStartBreak(stack, pos, player)) return false;
-
+                try { // Gravitation Suite - FuckU
+                    if (!stack.isEmpty() && stack.getItem().onBlockStartBreak(stack, pos, player)) return false;
+                } catch (Exception e) {
+                    return false;
+                }
                 this.world.playEvent(this.player, 2001, pos, Block.getStateId(iblockstate));
                 boolean flag1 = false;
 
