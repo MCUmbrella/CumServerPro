@@ -19,8 +19,8 @@ public class WatchCatThread extends TimerTask {
         long curTime = System.currentTimeMillis();
         if (lastTime > 0 && curTime - lastTime > 2000 && curTime - lastWarnTime > 30000) {
             lastWarnTime = curTime;
-            Bukkit.getLogger().log(Level.WARNING, "------------------------------");
-            Bukkit.getLogger().log(Level.WARNING, "[Cat侦测系统]服务器主线程已陷入停顿" + (curTime - lastTime) + "ms! 你的服务器卡顿了!");
+            FMLLog.log.debug("------------------------------");
+            FMLLog.log.debug("[Cat侦测系统]服务器主线程已陷入停顿" + (curTime - lastTime) + "ms! 你的服务器卡顿了!");
             FMLLog.log.debug("当前主线程堆栈追踪:");
             for ( StackTraceElement stack : MinecraftServer.getServerInst().primaryThread.getStackTrace() )
             {
