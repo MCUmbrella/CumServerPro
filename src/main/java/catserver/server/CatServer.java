@@ -2,6 +2,7 @@ package catserver.server;
 
 import catserver.server.remapper.ReflectionUtils;
 import catserver.server.very.VeryConfig;
+import com.conversantmedia.util.concurrent.NoLockDisruptorBlockingQueue;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLLog;
 import org.apache.commons.io.Charsets;
@@ -19,6 +20,9 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.concurrent.TimeUnit;
 
 public class CatServer {
 	private static final String version = "2.0.0";
@@ -39,6 +43,9 @@ public class CatServer {
     public static boolean chunkStats = false;
     public static int buildTime = 0;
     public static boolean fakePlayerEventPass = false;
+    public static final ExecutorService fileIOThread = new ThreadPoolExecutor(1, 2,
+            30, TimeUnit.SECONDS,
+            new NoLockDisruptorBlockingQueue<>(50000));
 
     static { // 暗桩
         if (buildTime == 0)

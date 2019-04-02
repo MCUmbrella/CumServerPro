@@ -146,7 +146,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     int[] lightUpdateBlockList;
     private LinkedBlockingQueue<HopperTask> hopperQueue = new LinkedBlockingQueue<>();
     private final ExecutorService entityThreadPool = new ThreadPoolExecutor(1, CatServer.entityPoolNum,
-            30, TimeUnit.MILLISECONDS,
+            30, TimeUnit.SECONDS,
             new NoLockDisruptorBlockingQueue<>(1000000));
     public boolean restoringBlockSnapshots = false;
     public boolean captureBlockSnapshots = false;

@@ -1,5 +1,6 @@
 package net.minecraft.world.storage;
 
+import catserver.server.CatServer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.DataInputStream;
@@ -14,6 +15,7 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTBase;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.nbt.NBTTagShort;
+import net.minecraftforge.fml.common.FMLLog;
 
 public class MapStorage
 {
@@ -107,22 +109,21 @@ public class MapStorage
     {
         if (this.saveHandler != null)
         {
-            try
+            File file1 = this.saveHandler.getMapFileFromName(data.mapName);
+            if (file1 != null)
             {
-                File file1 = this.saveHandler.getMapFileFromName(data.mapName);
-
-                if (file1 != null)
-                {
-                    NBTTagCompound nbttagcompound = new NBTTagCompound();
-                    nbttagcompound.setTag("data", data.writeToNBT(new NBTTagCompound()));
-                    FileOutputStream fileoutputstream = new FileOutputStream(file1);
-                    CompressedStreamTools.writeCompressed(nbttagcompound, fileoutputstream);
-                    fileoutputstream.close();
-                }
-            }
-            catch (Exception exception)
-            {
-                exception.printStackTrace();
+                CatServer.fileIOThread.submit(() -> {
+                    FMLLog.log.info("AsyncSaveData...");
+                    try {
+                        NBTTagCompound nbttagcompound = new NBTTagCompound();
+                        nbttagcompound.setTag("data", data.writeToNBT(new NBTTagCompound()));
+                        FileOutputStream fileoutputstream = new FileOutputStream(file1);
+                        CompressedStreamTools.writeCompressed(nbttagcompound, fileoutputstream);
+                        fileoutputstream.close();
+                    }catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                });
             }
         }
     }
