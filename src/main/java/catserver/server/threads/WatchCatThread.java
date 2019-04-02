@@ -26,7 +26,7 @@ public class WatchCatThread extends TimerTask {
             {
                 FMLLog.log.debug("\t\t" + stack);
             }
-            Bukkit.getLogger().log(Level.WARNING, "--------------请注意,这不是报错!请勿反馈!可在catserver.yml中check.threadLag关闭----------------");
+            FMLLog.log.debug("--------------请注意,这不是报错!请勿反馈!可在catserver.yml中check.threadLag关闭----------------");
         }
     }
 
