@@ -113,7 +113,6 @@ public class MapStorage
             if (file1 != null)
             {
                 CatServer.fileIOThread.submit(() -> {
-                    FMLLog.log.info("AsyncSaveData...");
                     try {
                         NBTTagCompound nbttagcompound = new NBTTagCompound();
                         nbttagcompound.setTag("data", data.writeToNBT(new NBTTagCompound()));
