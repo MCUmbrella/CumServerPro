@@ -452,7 +452,7 @@ public class InventoryPlayer implements IInventory
             try
             {
                 // CatServer start
-                if (player.world.captureBlockSnapshots) {
+                if (player.world.worldCapture.isCapture() && player.world.captureBlockSnapshots) {
                     player.world.worldCapture.addItemSnap(player, p_191971_2_);
                     return true;
                 } else if (player.world.restoringBlockSnapshots) {

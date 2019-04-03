@@ -895,7 +895,7 @@ public class ForgeHooks
 
         if (!(itemstack.getItem() instanceof ItemBucket)) // if not bucket
         {
-            world.worldCapture.startCapture(player, itemstack, hand); // CatServer
+            world.worldCapture.startCapture(player, itemstack, hand); // CatServer - start capture
             world.captureBlockSnapshots = true;
             // CraftBukkit start
             if(itemstack.getItem() instanceof ItemDye && itemstack.getMetadata() == 15){
@@ -909,6 +909,7 @@ public class ForgeHooks
 
         EnumActionResult ret = itemstack.getItem().onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
         world.captureBlockSnapshots = false;
+        world.worldCapture.stopCapture(); // CatServer - stop capture
 
         List<BlockState> blocks = new ArrayList();
         for (net.minecraftforge.common.util.BlockSnapshot snapshot : (List<net.minecraftforge.common.util.BlockSnapshot>) world.capturedBlockSnapshots.clone()) {

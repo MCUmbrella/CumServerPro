@@ -14,6 +14,7 @@ import java.util.List;
 
 public class WorldCapture {
     private WorldServer world;
+    private boolean capture;
 
     private EntityPlayer curPlayer;
     private ItemStack curItemStack;
@@ -33,6 +34,16 @@ public class WorldCapture {
 
         this.entitySnap.clear();
         this.itemSnap.clear();
+
+        this.capture = true;
+    }
+
+    public void stopCapture() {
+        this.capture = false;
+    }
+
+    public boolean isCapture() {
+        return this.capture;
     }
 
     public void apply() {
