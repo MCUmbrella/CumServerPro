@@ -77,11 +77,7 @@ import net.minecraft.tileentity.TileEntityNote;
 import net.minecraft.tileentity.TileEntitySign;
 import net.minecraft.tileentity.TileEntitySkull;
 import net.minecraft.tileentity.TileEntityStructure;
-import net.minecraft.util.EnumParticleTypes;
-import net.minecraft.util.IProgressUpdate;
-import net.minecraft.util.IThreadListener;
-import net.minecraft.util.ReportedException;
-import net.minecraft.util.WeightedRandom;
+import net.minecraft.util.*;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -278,7 +274,12 @@ public class WorldServer extends World implements IThreadListener
     public TileEntity getTileEntity(BlockPos pos) {
         TileEntity result = super.getTileEntity(pos);
         Block type = getBlockState(pos).getBlock();
-
+        // CatServer start
+        final ResourceLocation resourceLocation = type.getRegistryName();
+        if (resourceLocation == null || ! "minecraft".equals(resourceLocation.getResourceDomain())) {
+            return result;
+        }
+        //CatServer end
         if (type == Blocks.CHEST) {
             if (!(result instanceof TileEntityChest)) {
                 result = fixTileEntity(pos, type, result);
