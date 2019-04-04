@@ -207,6 +207,11 @@ public class ForgeHooks
 
     public static boolean canContinueUsing(@Nonnull ItemStack from, @Nonnull ItemStack to)
     {
+        // CatServer - start
+        if (from == null || to == null) {
+            return false;
+        }
+        // CatServer - end
         if (!from.isEmpty() && !to.isEmpty())
         {
             return from.getItem().canContinueUsing(from, to);
