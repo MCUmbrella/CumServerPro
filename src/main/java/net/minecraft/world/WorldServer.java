@@ -55,29 +55,11 @@ import net.minecraft.scoreboard.ServerScoreboard;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.management.PlayerChunkMap;
 import net.minecraft.tileentity.TileEntity;
-import net.minecraft.tileentity.TileEntityBanner;
-import net.minecraft.tileentity.TileEntityBeacon;
-import net.minecraft.tileentity.TileEntityBed;
-import net.minecraft.tileentity.TileEntityBrewingStand;
-import net.minecraft.tileentity.TileEntityChest;
-import net.minecraft.tileentity.TileEntityCommandBlock;
-import net.minecraft.tileentity.TileEntityComparator;
-import net.minecraft.tileentity.TileEntityDaylightDetector;
-import net.minecraft.tileentity.TileEntityDispenser;
-import net.minecraft.tileentity.TileEntityDropper;
-import net.minecraft.tileentity.TileEntityEnchantmentTable;
-import net.minecraft.tileentity.TileEntityEndGateway;
-import net.minecraft.tileentity.TileEntityEndPortal;
-import net.minecraft.tileentity.TileEntityEnderChest;
-import net.minecraft.tileentity.TileEntityFlowerPot;
-import net.minecraft.tileentity.TileEntityFurnace;
-import net.minecraft.tileentity.TileEntityHopper;
-import net.minecraft.tileentity.TileEntityMobSpawner;
-import net.minecraft.tileentity.TileEntityNote;
-import net.minecraft.tileentity.TileEntitySign;
-import net.minecraft.tileentity.TileEntitySkull;
-import net.minecraft.tileentity.TileEntityStructure;
-import net.minecraft.util.*;
+import net.minecraft.util.EnumParticleTypes;
+import net.minecraft.util.IProgressUpdate;
+import net.minecraft.util.IThreadListener;
+import net.minecraft.util.ReportedException;
+import net.minecraft.util.WeightedRandom;
 import net.minecraft.util.math.AxisAlignedBB;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.ChunkPos;
@@ -272,127 +254,7 @@ public class WorldServer extends World implements IThreadListener
 
     @Override
     public TileEntity getTileEntity(BlockPos pos) {
-        TileEntity result = super.getTileEntity(pos);
-        Block type = getBlockState(pos).getBlock();
-        // CatServer start
-        final ResourceLocation resourceLocation = type.getRegistryName();
-        if (resourceLocation == null || ! "minecraft".equals(resourceLocation.getResourceDomain())) {
-            return result;
-        }
-        //CatServer end
-        if (type == Blocks.CHEST) {
-            if (!(result instanceof TileEntityChest)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.FURNACE) {
-            if (!(result instanceof TileEntityFurnace)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.DROPPER) {
-            if (!(result instanceof TileEntityDropper)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.DISPENSER) {
-            if (!(result instanceof TileEntityDispenser)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.JUKEBOX) {
-            if (!(result instanceof BlockJukebox.TileEntityJukebox)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.NOTEBLOCK) {
-            if (!(result instanceof TileEntityNote)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.MOB_SPAWNER) {
-            if (!(result instanceof TileEntityMobSpawner)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if ((type == Blocks.STANDING_SIGN) || (type == Blocks.WALL_SIGN)) {
-            if (!(result instanceof TileEntitySign)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.ENDER_CHEST) {
-            if (!(result instanceof TileEntityEnderChest)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.BREWING_STAND) {
-            if (!(result instanceof TileEntityBrewingStand)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.BEACON) {
-            if (!(result instanceof TileEntityBeacon)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.HOPPER) {
-            if (!(result instanceof TileEntityHopper)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.ENCHANTING_TABLE) {
-            if (!(result instanceof TileEntityEnchantmentTable)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.END_PORTAL) {
-            if (!(result instanceof TileEntityEndPortal)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.SKULL) {
-            if (!(result instanceof TileEntitySkull)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.DAYLIGHT_DETECTOR || type == Blocks.DAYLIGHT_DETECTOR_INVERTED) {
-            if (!(result instanceof TileEntityDaylightDetector)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.POWERED_COMPARATOR || type == Blocks.UNPOWERED_COMPARATOR) {
-            if (!(result instanceof TileEntityComparator)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.FLOWER_POT) {
-            if (!(result instanceof TileEntityFlowerPot)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.STANDING_BANNER || type == Blocks.WALL_BANNER) {
-            if (!(result instanceof TileEntityBanner)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.STRUCTURE_BLOCK) {
-            if (!(result instanceof TileEntityStructure)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.END_GATEWAY) {
-            if (!(result instanceof TileEntityEndGateway)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.COMMAND_BLOCK) {
-            if (!(result instanceof TileEntityCommandBlock)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.STRUCTURE_BLOCK) {
-            if (!(result instanceof TileEntityStructure)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        } else if (type == Blocks.BED) {
-            if (!(result instanceof TileEntityBed)) {
-                result = fixTileEntity(pos, type, result);
-            }
-        }
-
-        return result;
-    }
-
-    private TileEntity fixTileEntity(BlockPos pos, Block type, TileEntity found) {
-        this.getServer().getLogger().log(Level.SEVERE, "Block at {0},{1},{2} is {3} but has {4}" + ". "
-                + "Bukkit will attempt to fix this, but there may be additional damage that we cannot recover.", new Object[]{pos.getX(), pos.getY(), pos.getZ(), org.bukkit.Material.getBlockMaterial(Block.getIdFromBlock(type)).toString(), found});
-        if (type instanceof ITileEntityProvider) {
-            TileEntity replacement = ((ITileEntityProvider) type).createNewTileEntity(this, type.getMetaFromState(this.getBlockState(pos)));
-            replacement.world = this;
-            this.setTileEntity(pos, replacement);
-            return replacement;
-        } else {
-            this.getServer().getLogger().severe("Don't know how to fix for this type... Can't do anything! :(");
-            return found;
-        }
+        return super.getTileEntity(pos); // CatServer - not fix te
     }
 
     private boolean canSpawn(int x, int z) {
