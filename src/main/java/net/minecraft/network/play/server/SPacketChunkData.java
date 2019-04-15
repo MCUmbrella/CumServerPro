@@ -144,7 +144,7 @@ public class SPacketChunkData implements Packet<INetHandlerPlayClient>
             buf.writeBytes(chunkIn.getBiomeArray());
         }
 
-        length = buf.writerIndex();
+        length = buf.writerIndex() + 1;
         return i;
     }
 
