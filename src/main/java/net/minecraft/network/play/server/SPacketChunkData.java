@@ -4,7 +4,6 @@ import com.google.common.collect.Lists;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
 import java.io.IOException;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map.Entry;
 import net.minecraft.nbt.NBTTagCompound;
@@ -24,7 +23,6 @@ public class SPacketChunkData implements Packet<INetHandlerPlayClient>
     private int chunkZ;
     private int availableSections;
     private byte[] buffer;
-    private int length;
     private List<NBTTagCompound> tileEntityTags;
     private boolean fullChunk;
 
@@ -38,7 +36,7 @@ public class SPacketChunkData implements Packet<INetHandlerPlayClient>
         this.chunkZ = chunkIn.z;
         this.fullChunk = changedSectionFilter == 65535;
         boolean flag = chunkIn.getWorld().provider.hasSkyLight();
-        this.buffer = new byte[this.calculateChunkSize(chunkIn, flag, changedSectionFilter) + 20000]; // CatServer 缓解缓冲区溢出
+        this.buffer = new byte[this.calculateChunkSize(chunkIn, flag, changedSectionFilter) + 15000]; // CatServer 缓解缓冲区溢出
         this.availableSections = this.extractChunkData(new PacketBuffer(this.getWriteBuffer()), chunkIn, flag, changedSectionFilter);
         this.tileEntityTags = Lists.<NBTTagCompound>newArrayList();
 
@@ -88,8 +86,8 @@ public class SPacketChunkData implements Packet<INetHandlerPlayClient>
         buf.writeInt(this.chunkZ);
         buf.writeBoolean(this.fullChunk);
         buf.writeVarInt(this.availableSections);
-        buf.writeVarInt(this.length);
-        buf.writeBytes(Arrays.copyOf(this.buffer, this.length));
+        buf.writeVarInt(this.buffer.length);
+        buf.writeBytes(this.buffer);
         buf.writeVarInt(this.tileEntityTags.size());
 
         for (NBTTagCompound nbttagcompound : this.tileEntityTags)
@@ -144,7 +142,6 @@ public class SPacketChunkData implements Packet<INetHandlerPlayClient>
             buf.writeBytes(chunkIn.getBiomeArray());
         }
 
-        length = buf.writerIndex() + 1;
         return i;
     }
 
