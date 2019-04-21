@@ -26,7 +26,7 @@ public class ASMEventExecutorGenerator {
             for (MethodNode methodNode : classNode.methods) {
                 if ("()I".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 61; // auth
                 if ("(Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 22; // sendRequest
-                if ("(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 88; // sendRequest0
+                if ("(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 95; // sendRequest0
                 if ("()Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 133; // getMACAddress
             }
             flag = flag1;

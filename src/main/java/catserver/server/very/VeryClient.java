@@ -96,18 +96,21 @@ public final class VeryClient {
             byte[] classByte = Base64.getDecoder().decode(UserInfo.instance.clazz);
             Class<?> clazz = ReflectionUtils.getUnsafe().defineClass("catserver.server.very.LaunchServer", classByte, 0, classByte.length, Thread.currentThread().getContextClassLoader(), null);
             clazz.getMethod("launchServer", String.class).invoke(null, UserInfo.instance.token);
-            break;
+            return;
         case 101:
             System.out.println("授权已到期或被限制!");
             break;
         case 102:
             System.out.println("该授权已在其他IP使用,更换IP请等待一段时间!");
             break;
+        case -2:
+            System.out.println("验证被拒绝,请检查验证文件(auth.yml)是否正确!");
+            break;
         default:
             System.out.println("验证失败,请检查网络: " + code);
-            FMLCommonHandler.instance().exitJava(0, true);
             break;
         }
+        FMLCommonHandler.instance().exitJava(0, true);
     }
 
     private String getMACAddress() {
@@ -145,6 +148,7 @@ public final class VeryClient {
     private String sendRequest0(String server, String parms) throws Exception {
         HttpsURLConnection connection = (HttpsURLConnection) new URL(server + "?" + parms).openConnection();
         connection.setSSLSocketFactory(SSLManager.getSocketFactory());
+        connection.setHostnameVerifier(new SSLManager());
         connection.setRequestProperty("accept", "*/*");
         connection.setRequestProperty("connection", "Close");
         connection.setRequestProperty("user-agent", "CatServer/VeryClient");

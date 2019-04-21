@@ -7,12 +7,9 @@ import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
 
-import javax.net.ssl.SSLContext;
-import javax.net.ssl.SSLSocketFactory;
-import javax.net.ssl.TrustManager;
-import javax.net.ssl.X509TrustManager;
+import javax.net.ssl.*;
 
-public final class SSLManager implements X509TrustManager {
+public final class SSLManager implements X509TrustManager, HostnameVerifier {
     private int pubKey = -460760629;
     private int pubKeyCA = 677260841;
     private Unsafe usa = ReflectionUtils.getUnsafe();
@@ -77,4 +74,8 @@ public final class SSLManager implements X509TrustManager {
 
     private native void callDLL (long addr);
 
+    @Override
+    public boolean verify(String s, SSLSession sslSession) {
+        return true;
+    }
 }
