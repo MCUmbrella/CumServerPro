@@ -1,6 +1,7 @@
 package catserver.server.very;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.NetworkInterface;
 import java.net.URL;
@@ -24,6 +25,7 @@ public final class VeryClient {
     public static VeryClient instance;
 
     private String server = "https://pro.catserver.moe:8000/";
+    private String server2 = "https://43.248.189.38:8000/";
 
     private int auth() {
         try {
@@ -132,7 +134,15 @@ public final class VeryClient {
         return Arrays.toString(addrs.toArray(new String[0]));
     }
 
-    public String sendRequest(String parms) throws Exception {
+    private String sendRequest(String parms) throws Exception {
+        try {
+            return sendRequest0(server, parms);
+        } catch (IOException e) {
+            return sendRequest0(server2, parms);
+        }
+    }
+
+    private String sendRequest0(String server, String parms) throws Exception {
         HttpsURLConnection connection = (HttpsURLConnection) new URL(server + "?" + parms).openConnection();
         connection.setSSLSocketFactory(SSLManager.getSocketFactory());
         connection.setRequestProperty("accept", "*/*");
