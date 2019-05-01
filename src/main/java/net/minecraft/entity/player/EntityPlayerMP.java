@@ -869,7 +869,23 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
 
             // this.mcServer.getPlayerList().transferPlayerToDimension(this, dimensionIn, teleporter);
             PlayerTeleportEvent.TeleportCause cause = (this.dimension == 1 || dimensionIn == 1) ? PlayerTeleportEvent.TeleportCause.END_PORTAL : ((this.dimension == -1 || dimensionIn == -1) ? PlayerTeleportEvent.TeleportCause.NETHER_PORTAL : PlayerTeleportEvent.TeleportCause.MOD);
+            // CatServer start
+            final World oldWorld = this.world;
+            final double moveFactor = oldWorld.provider.getMovementFactor() / this.world.provider.getMovementFactor();
+            double d0 = MathHelper.clamp(this.posX * moveFactor, this.world.getWorldBorder().minX() + 16.0D, this.world.getWorldBorder().maxX() - 16.0D);
+            double d1 = MathHelper.clamp(this.posZ * moveFactor, this.world.getWorldBorder().minZ() + 16.0D, this.world.getWorldBorder().maxZ() - 16.0D);
+            // CatServer end
             this.mcServer.getPlayerList().changeDimension(this, dimensionIn, cause); // check all this
+            // CatServer start - create portal for mods
+            if (cause == PlayerTeleportEvent.TeleportCause.MOD && !teleporter.isVanilla()) {
+                if (this.isEntityAlive()) {
+                    d0 = (double)MathHelper.clamp((int)d0, -29999872, 29999872);
+                    d1 = (double)MathHelper.clamp((int)d1, -29999872, 29999872);
+                    this.setLocationAndAngles(d0, this.posY, d1, this.rotationYaw, this.rotationPitch);
+                    teleporter.placeEntity(this.world, this, this.rotationYaw);
+                }
+            }
+            // CatServer end
             this.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false));
             this.lastExperience = -1;
             this.lastHealth = -1.0F;
