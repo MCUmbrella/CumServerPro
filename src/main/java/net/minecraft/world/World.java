@@ -3522,8 +3522,9 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         IBlockState iblockstate1 = this.getBlockState(pos);
         AxisAlignedBB axisalignedbb = skipCollisionCheck ? null : blockIn.getDefaultState().getCollisionBoundingBox(this, pos);
 
+        if (!((placer instanceof EntityPlayer) || !net.minecraftforge.event.ForgeEventFactory.onBlockPlace(placer, new net.minecraftforge.common.util.BlockSnapshot(this, pos, blockIn.getDefaultState()), sidePlacedOn).isCanceled())) return false;
         boolean defaultReturn;
-        if (axisalignedbb != Block.NULL_AABB && !this.checkNoEntityCollision(axisalignedbb.offset(pos), placer))
+        if (axisalignedbb != Block.NULL_AABB && !this.checkNoEntityCollision(axisalignedbb.offset(pos)))  // Forge: Remove second parameter, we patch placer to be non-null, passing it here skips collision checks for the placer
         {
             defaultReturn = false;
         }
@@ -3533,7 +3534,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         }
         else
         {
-            defaultReturn = iblockstate1.getBlock().isReplaceable(this, pos) && blockIn.canPlaceBlockOnSide(this, pos, sidePlacedOn);
+            defaultReturn = iblockstate1.getBlock().isReplaceable(this, pos)  && blockIn.canPlaceBlockOnSide(this, pos, sidePlacedOn);
         }
         BlockCanBuildEvent event = new BlockCanBuildEvent(this.getWorld().getBlockAt(pos.getX(), pos.getY(), pos.getZ()), CraftMagicNumbers.getId(blockIn), defaultReturn);
         this.getServer().getPluginManager().callEvent(event);
