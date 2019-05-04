@@ -33,6 +33,7 @@ public class CatServer {
     public static boolean entityMoveAsync = true;
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
+    public static boolean keepSpawnInMemory = true;
     public static boolean disableUpdateGameProfile = true;
     public static boolean modMob = false;
     public static boolean entityAI = true;
@@ -108,6 +109,7 @@ public class CatServer {
         entityMoveAsync = getOrWriteBooleanConfig("async.entityMove", hopperAsync);
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
+        keepSpawnInMemory = getOrWriteBooleanConfig("world.keepSpawnInMemory", keepSpawnInMemory);
         disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
         disableUpdateGameProfile = getOrWriteBooleanConfig("disableUpdateGameProfile", disableUpdateGameProfile);
         worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 15) * 1000000;
