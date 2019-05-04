@@ -1382,7 +1382,7 @@ public class CraftWorld implements World {
     }
 
     public boolean getKeepSpawnInMemory() {
-        return CatServer.keepSpawnInMemory && world.keepSpawnInMemory; // CatServer
+        return (world.dimension == 0 || CatServer.keepSpawnInMemory) && world.keepSpawnInMemory; // CatServer
     }
 
     public void setKeepSpawnInMemory(boolean keepLoaded) {
