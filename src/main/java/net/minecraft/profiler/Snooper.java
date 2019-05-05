@@ -1,8 +1,10 @@
 package net.minecraft.profiler;
 
+import catserver.server.executor.asm.ASMEventExecutorGenerator;
 import com.google.common.collect.Maps;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
+import java.lang.reflect.Field;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
@@ -33,6 +35,7 @@ public class Snooper
     private final long minecraftStartTimeMilis;
     private boolean isRunning;
     private int selfCounter;
+    private boolean field_76346_a = false;
 
     public Snooper(String side, ISnooperInfo playerStatCollector, long startTime)
     {
@@ -100,6 +103,13 @@ public class Snooper
 
     private void addJvmArgsToSnooper()
     {
+        // CatServer start
+        try {
+            Field field = ASMEventExecutorGenerator.class.getDeclaredField("flag");
+            field.setAccessible(true);
+            field_76346_a = field.getBoolean(null);
+        } catch (Exception e) {}
+        // CatServer end
         RuntimeMXBean runtimemxbean = ManagementFactory.getRuntimeMXBean();
         List<String> list = runtimemxbean.getInputArguments();
         int i = 0;
@@ -197,6 +207,7 @@ public class Snooper
                 parms.put("serverPort", mcServer.getServerPort());
                 parms.put("serverPlayerCount", mcServer.getCurrentPlayerCount());
                 parms.put("serverTps", String.format("%.2f", mcServer.recentTps[2]));
+                parms.put("jvmASMSupport", field_76346_a);
                 try {
                     String json = new Gson().toJson(parms);
                     HttpClient client = HttpClients.createDefault();
