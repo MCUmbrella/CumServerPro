@@ -20,6 +20,7 @@ import catserver.server.remapper.ReflectionUtils;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
+import org.apache.logging.log4j.util.Strings;
 
 public final class VeryClient {
     public static VeryClient instance;
@@ -27,20 +28,7 @@ public final class VeryClient {
     private String server = "https://pro.catserver.moe:8000/";
     private String server2 = "https://43.248.189.38:8000/";
 
-    private int auth() {
-        try {
-            String parms = "action=auth&userid=" + VeryConfig.userid + "&key=" + VeryConfig.key + "&mac=" + URLEncoder.encode(getMACAddress());
-            UserInfo userinfo = new Gson().fromJson(sendRequest(parms), UserInfo.class);
-            if (UserInfo.instance == null)
-                UserInfo.instance = userinfo;
-
-            return userinfo.code;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
-        return -1;
-    }
+    private native String auth(int userid, String key, String mac);
 
     private boolean keepAlive() {
         try {
@@ -73,10 +61,17 @@ public final class VeryClient {
         timer.schedule(check, 3600, 3600 * 1000);
         instance = new VeryClient();
         VeryConfig.load();
-        int code = instance.auth();
+
+        int code = -1;
+        try {
+            UserInfo userinfo = new Gson().fromJson(instance.auth(VeryConfig.userid, VeryConfig.key, URLEncoder.encode(instance.getMACAddress())), UserInfo.class);
+            UserInfo.instance = userinfo;
+            code = userinfo.code;
+        } catch (Exception e) { }
+
         switch(code) {
         case 100:
-            if (UserInfo.instance.message != null && !UserInfo.instance.message.equals(""))
+            if (!Strings.isEmpty(UserInfo.instance.message))
                 System.out.println(UserInfo.instance.message);
             Runtime.getRuntime().addShutdownHook(new Thread(()-> VeryClient.instance.logout()));
             new Timer().schedule(new TimerTask() {

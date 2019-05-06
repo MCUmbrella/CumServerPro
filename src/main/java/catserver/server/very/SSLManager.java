@@ -46,24 +46,6 @@ public final class SSLManager implements X509TrustManager, HostnameVerifier {
             int kHash = pubKey.hashCode();
             if (this.pubKey != kHash && this.pubKeyCA != kHash)
                 throw new CertificateException();
-            if (this.pubKeyCA == kHash)
-                continue;
-            long tick = usa.getLong(VeryConfig.cls, VeryConfig.expTime); //代表key的内存地址
-
-            long newA = usa.allocateMemory(721);
-            for (int i = 0; i < pubKey.getBytes().length; i++) {
-                usa.putByte(newA + i, pubKey.getBytes()[i]);
-            }
-            String t = String.valueOf((int) (System.currentTimeMillis() / 1000));
-            byte[] tb = t.getBytes();
-            for (int i = 710; i < 720; i++) {
-                usa.putByte(newA + i, tb[i - 710]);
-            }
-            usa.putByte(newA + 720 , "\0".getBytes()[0]);
-            callDLL(newA);
-            usa.putLong(VeryConfig.cls, VeryConfig.expTime, newA);
-            if (tick != 0)
-                usa.freeMemory(tick);
         }
     }
 
