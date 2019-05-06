@@ -67,7 +67,9 @@ public final class VeryClient {
             UserInfo userinfo = new Gson().fromJson(instance.auth(VeryConfig.userid, VeryConfig.key, URLEncoder.encode(instance.getMACAddress())), UserInfo.class);
             UserInfo.instance = userinfo;
             code = userinfo.code;
-        } catch (Exception e) { }
+        } catch (Exception e) {
+            System.out.println("验证过程发生错误: " + e.toString());
+        }
 
         switch(code) {
         case 100:
