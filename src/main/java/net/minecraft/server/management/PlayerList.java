@@ -77,7 +77,6 @@ import net.minecraftforge.common.network.ForgeMessage;
 import net.minecraftforge.common.network.ForgeNetworkHandler;
 import net.minecraftforge.fml.common.network.FMLEmbeddedChannel;
 import net.minecraftforge.fml.common.network.FMLOutboundHandler;
-import net.minecraftforge.fml.relauncher.ServerLaunchWrapper;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.logging.log4j.LogManager;

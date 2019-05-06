@@ -71,19 +71,6 @@ public class FMLServerTweaker extends FMLTweaker {
         classLoader.addClassLoaderExclusion("org.fusesource.");
         classLoader.addClassLoaderExclusion("net.minecraftforge.server.console.log4j.TerminalConsoleAppender");
 
-        try {
-            ClassNode classNode = new ClassNode();
-            ClassReader classReader = new ClassReader("net.minecraftforge.fml.relauncher.ServerLaunchWrapper");
-            classReader.accept(classNode, 0);
-            classNode.fields.add(new FieldNode(ACC_PUBLIC + ACC_STATIC, "tickTime", "J", null, null));
-            ClassWriter classWriter = new ClassWriter(ClassWriter.COMPUTE_MAXS);
-            classNode.accept(classWriter);
-            ClassLoader cl = classLoader;
-            Method method = ClassLoader.class.getDeclaredMethod("defineClass", String.class, byte[].class, int.class, int.class, ProtectionDomain.class);
-            method.setAccessible(true);
-            byte[] bytes = classWriter.toByteArray();
-            method.invoke(cl, "net.minecraftforge.fml.relauncher.ServerLaunchWrapper", bytes, 0, bytes.length, null);
-        }catch (Throwable throwable) {}
         ReflectionHelper.setPrivateValue(LaunchClassLoader.class, classLoader, new HashSet<String>() {
             @Override
             public boolean contains(Object o) {
