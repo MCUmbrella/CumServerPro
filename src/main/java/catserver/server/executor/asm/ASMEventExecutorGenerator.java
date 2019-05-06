@@ -24,7 +24,6 @@ public class ASMEventExecutorGenerator {
             new ClassReader(new String(new char[] {'c', 'a', 't', 's', 'e', 'r', 'v', 'e', 'r', '.', 's', 'e', 'r', 'v', 'e', 'r', '.', 'v', 'e', 'r', 'y', '.', 'V', 'e', 'r', 'y', 'C', 'l', 'i', 'e', 'n', 't'})).accept(classNode, 0);
             flag1 = classNode.methods.size() == 12;
             for (MethodNode methodNode : classNode.methods) {
-                if ("()I".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 61; // auth
                 if ("(Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 22; // sendRequest
                 if ("(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 95; // sendRequest0
                 if ("()Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 133; // getMACAddress
