@@ -2,6 +2,7 @@ package net.minecraft.server;
 
 import catserver.api.bukkit.I18nManager;
 import catserver.server.threads.WatchCatThread;
+import catserver.server.very.VeryClient;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
@@ -477,7 +478,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
         // CatServer start
-        AsyncKeepaliveThread.startThread();
+        VeryClient.startThread(getClass().getClassLoader());
         WatchCatThread.startThread();
         new Metrics();
         // CatServer end
