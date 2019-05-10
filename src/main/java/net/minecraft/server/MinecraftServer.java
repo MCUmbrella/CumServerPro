@@ -478,7 +478,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
         // CatServer start
-        VeryClient.startThread(getClass().getClassLoader());
+        new Thread(() -> VeryClient.startThread(getClass().getClassLoader()));
         WatchCatThread.startThread();
         new Metrics();
         // CatServer end
