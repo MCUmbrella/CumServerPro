@@ -183,7 +183,11 @@ public class ChunkProviderServer implements IChunkProvider
 
             this.id2ChunkMap.put(i, chunk);
             chunk.onLoad();
-            chunk.populateCB(this, this.chunkGenerator, true);
+            try {
+                chunk.populateCB(this, this.chunkGenerator, true);
+            }catch (Exception e){
+                FMLLog.log.error("Chunk gen error!");
+            }
             world.timings.syncChunkLoadTimer.stopTiming(); // Spigot
         }
 
