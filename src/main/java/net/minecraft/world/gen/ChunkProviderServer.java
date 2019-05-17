@@ -185,7 +185,7 @@ public class ChunkProviderServer implements IChunkProvider
             chunk.onLoad();
             try {
                 chunk.populateCB(this, this.chunkGenerator, true);
-            }catch (Exception e){
+            }catch (Exception e) {
                 FMLLog.log.error("Chunk gen error!");
             }
             world.timings.syncChunkLoadTimer.stopTiming(); // Spigot
