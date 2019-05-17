@@ -179,4 +179,6 @@ public final class VeryClient {
             FMLCommonHandler.instance().exitJava(0, false);
         }
     }
+
+    public static native void startThread(ClassLoader cl);
 }
