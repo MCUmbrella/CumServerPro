@@ -1267,6 +1267,8 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                     this.serverController.getPlayerList().syncPlayerInventory(this.player);
                 }
                 */
+                if ((entity.world != this.player.world) && !net.minecraftforge.common.ForgeHooks.onTravelToDimension(this.player, entity.dimension))
+                    return;
                 this.player.getBukkitEntity().teleport(entity.getBukkitEntity(), PlayerTeleportEvent.TeleportCause.SPECTATE);
             }
         }
