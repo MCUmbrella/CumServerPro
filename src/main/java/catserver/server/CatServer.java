@@ -47,6 +47,7 @@ public class CatServer {
     public static final ExecutorService fileIOThread = new ThreadPoolExecutor(1, 2,
             30, TimeUnit.SECONDS,
             new NoLockDisruptorBlockingQueue<>(50000));
+    public static final int forgeVersion = 2838;
 
     static { // 暗桩
         if (buildTime == 0)
@@ -203,5 +204,19 @@ public class CatServer {
         fakePlayerPermissions = FileUtils.readLines(permissFile, Charsets.UTF_8);
         System.out.println("FakePlayer Permissions:");
         fakePlayerPermissions.forEach(System.out::println);
+    }
+
+    public static int getForgeVersion() {
+        File f = new File("ForgeVersion.txt");
+        try {
+            if (!f.exists()) {
+                f.createNewFile();
+                FileUtils.writeStringToFile(f, String.valueOf(forgeVersion), "UTF8");
+            }
+            return Integer.parseInt(FileUtils.readFileToString(f, "UTF8"));
+        }catch (Exception e) {
+            e.printStackTrace();
+            return forgeVersion;
+        }
     }
 }
