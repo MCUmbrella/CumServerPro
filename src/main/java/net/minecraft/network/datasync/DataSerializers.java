@@ -14,7 +14,6 @@ import net.minecraft.util.IntIdentityHashBiMap;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Rotations;
 import net.minecraft.util.text.ITextComponent;
-import net.minecraftforge.fml.common.FMLLog;
 
 public class DataSerializers
 {
@@ -305,21 +304,21 @@ public class DataSerializers
             return value.copy();
         }
     };
-    @Deprecated // Forge: ONLY FOR VANILLA - mods should use the Forge registry
+
     public static void registerSerializer(DataSerializer<?> serializer)
     {
-        if (REGISTRY.add(serializer) >= 256) FMLLog.log.error("Vanilla DataSerializer ID limit exceeded");
+        REGISTRY.add(serializer);
     }
 
     @Nullable
     public static DataSerializer<?> getSerializer(int id)
     {
-        return net.minecraftforge.common.ForgeHooks.getSerializer(id, REGISTRY);
+        return (DataSerializer)REGISTRY.get(id);
     }
 
     public static int getSerializerId(DataSerializer<?> serializer)
     {
-        return net.minecraftforge.common.ForgeHooks.getSerializerId(serializer, REGISTRY);
+        return REGISTRY.getId(serializer);
     }
 
     static
