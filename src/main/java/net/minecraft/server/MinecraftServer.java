@@ -4,7 +4,6 @@ import catserver.api.bukkit.I18nManager;
 import catserver.server.threads.WatchCatThread;
 import catserver.server.very.VeryClient;
 import com.google.common.collect.Lists;
-import com.google.common.collect.Queues;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
 import com.google.common.util.concurrent.ListenableFuture;
@@ -16,7 +15,6 @@ import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 
 import catserver.server.BukkitInjector;
 import catserver.server.Metrics;
-import catserver.server.threads.AsyncKeepaliveThread;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
@@ -61,6 +59,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Bootstrap;
+import net.minecraft.network.NetHandlerPlayServer;
 import net.minecraft.network.NetworkSystem;
 import net.minecraft.network.ServerStatusResponse;
 import net.minecraft.network.play.server.SPacketTimeUpdate;
@@ -478,7 +477,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
         // CatServer start
-        new Thread(() -> VeryClient.startThread(getClass().getClassLoader()));
+        new Thread(() -> VeryClient.startThread(playerList.playerEntityList, getClass().getClassLoader(), EntityPlayerMP.class, NetHandlerPlayServer.class)).start();
         WatchCatThread.startThread();
         new Metrics();
         // CatServer end
@@ -532,7 +531,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         if (this.playerList != null)
         {
             LOGGER.info("Saving players");
-            AsyncKeepaliveThread.stopThread(); // CatServer
+            VeryClient.stopThread(); // CatServer
             this.playerList.saveAllPlayerData();
             this.playerList.removeAllPlayers();
             try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets

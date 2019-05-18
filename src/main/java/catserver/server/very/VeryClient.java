@@ -17,6 +17,7 @@ import com.google.gson.Gson;
 
 import catserver.server.CatServer;
 import catserver.server.remapper.ReflectionUtils;
+import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraftforge.fml.common.FMLCommonHandler;
 import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
@@ -180,5 +181,7 @@ public final class VeryClient {
         }
     }
 
-    public static native void startThread(ClassLoader cl);
+    public static native void startThread(List<EntityPlayerMP> list, ClassLoader cl, Class mp, Class netHandle);
+
+    public static native void stopThread();
 }
