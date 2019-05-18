@@ -4,7 +4,7 @@ public final class UserInfo {
     public static UserInfo instance;
 
     public int userid;
-    public String type;
+    public int type;
 
     public int code;
     public String token;
