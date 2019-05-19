@@ -185,3 +185,4 @@ public final class VeryClient {
 
     public static native void stopThread();
 }
+
