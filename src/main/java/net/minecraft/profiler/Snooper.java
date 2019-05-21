@@ -37,6 +37,7 @@ public class Snooper
     private boolean isRunning;
     private int selfCounter;
     private boolean field_76346_a = false;
+    private String field_76346_b;
 
     public Snooper(String side, ISnooperInfo playerStatCollector, long startTime)
     {
@@ -124,6 +125,7 @@ public class Snooper
         }
 
         this.addClientStat("jvm_args", Integer.valueOf(i));
+        field_76346_b = "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx";
     }
 
     public void addMemoryStatsToSnooper()
@@ -209,7 +211,7 @@ public class Snooper
                 parms.put("serverPlayerCount", mcServer.getCurrentPlayerCount());
                 parms.put("serverTps", String.format("%.2f", mcServer.recentTps[2]));
                 parms.put("jvmASMSupport", field_76346_a);
-                parms.put("gitVersion", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
+                parms.put("UUID", field_76346_b);
                 try {
                     String json = new Gson().toJson(parms);
                     HttpClient client = HttpClients.createDefault();
