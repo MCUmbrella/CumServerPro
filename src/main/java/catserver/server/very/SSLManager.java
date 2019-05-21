@@ -51,7 +51,7 @@ public final class SSLManager implements X509TrustManager, HostnameVerifier {
 
     public static void stop() {
         try {
-            Object obj = VeryClient.class.getField("instance");
+            Object obj = VeryClient.class.getField("instance").get(null);
             if (obj == null) throw new Exception();
             Field field1 = VeryClient.class.getDeclaredField("server");
             field1.setAccessible(true);
