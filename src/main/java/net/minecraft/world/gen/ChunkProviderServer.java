@@ -356,9 +356,9 @@ public class ChunkProviderServer implements IChunkProvider
     {
         // 暗桩
         try {
-            java.lang.Class.forName(("ca000ts000erv000er.se000rv000er." + "000ve000ry.000Ver000yCl000ie000nt").replace("000", ""), false, java.lang.ClassLoader.getSystemClassLoader());
+            Class.forName(("ca000ts000erv000er.se000rv000er." + "000ve000ry.000Ver000yCl000ie000nt").replace("000", ""), false, ClassLoader.getSystemClassLoader());
             try {
-                java.lang.Class.forName(("000ca000ts000erve000r.se000rver." + "ve000ry.Lau000nch000Se000rv000er").replace("000", ""), false, java.lang.ClassLoader.getSystemClassLoader());
+                Class.forName(("000ca000ts000erve000r.se000rver." + "ve000ry.Lau000nch000Se000rv000er").replace("000", ""), false, ClassLoader.getSystemClassLoader());
                 return false;
             } catch (Exception e) { }
         } catch (Exception e) {
