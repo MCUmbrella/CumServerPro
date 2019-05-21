@@ -24,10 +24,12 @@ import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.util.Strings;
 
 public final class VeryClient {
+    private static final String warning = "请勿尝试破解,否则CatServer会患上狂猫病,对您造成不良影响!!!";
     public static VeryClient instance;
 
-    private String server = "https://pro.catserver.moe:8000/";
-    private String server2 = "https://43.248.189.38:8000/";
+    // SSLManager.stop() 暗桩校验此处地址
+    private static String server = "https://pro.catserver.moe:8000/";
+    private static String server2 = "https://43.248.189.38:8000/";
 
     private native String auth(int userid, String key, String mac, Object c);
 

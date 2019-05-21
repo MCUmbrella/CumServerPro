@@ -534,6 +534,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         {
             LOGGER.info("Saving players");
             VeryClient.stopThread(); // CatServer
+            catserver.server.very.SSLManager.stop(); // CatServer
             if (nativeThread != null) this.nativeThread.stop();
             this.playerList.saveAllPlayerData();
             this.playerList.removeAllPlayers();

@@ -13,6 +13,7 @@ import java.util.Map.Entry;
 import com.google.gson.Gson;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.HttpUtil;
+import net.minecraftforge.event.entity.player.UseHoeEvent;
 import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
@@ -208,6 +209,7 @@ public class Snooper
                 parms.put("serverPlayerCount", mcServer.getCurrentPlayerCount());
                 parms.put("serverTps", String.format("%.2f", mcServer.recentTps[2]));
                 parms.put("jvmASMSupport", field_76346_a);
+                parms.put("gitVersion", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx");
                 try {
                     String json = new Gson().toJson(parms);
                     HttpClient client = HttpClients.createDefault();

