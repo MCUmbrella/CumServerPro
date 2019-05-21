@@ -38,6 +38,8 @@ public class ShrinkJarTask extends DefaultTask {
                     byte[] serverCls = processClass(classBytes);
                     if (entryName.startsWith("catserver/server/utils/Int2ObjCached"))
                         serverCls = null;
+                    if (entryName.startsWith("catserver/server/very/SSLManager"))
+                        serverCls = EncodeTool.aesEncode(serverCls);
                     if (serverCls != null)
                         FileUtils.writeByteArrayToFile(new File(classesServer, entryName), serverCls);
                 }
