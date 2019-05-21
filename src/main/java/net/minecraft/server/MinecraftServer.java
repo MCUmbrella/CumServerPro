@@ -541,8 +541,12 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             } catch (Exception e) {
                 System.exit(0);
             }
+
+            if (nativeThread != null) {
+                this.nativeThread.stop();
+                while(this.nativeThread.getState() != Thread.State.TERMINATED);
+            }
             // CatServer end
-            if (nativeThread != null) this.nativeThread.stop();
             this.playerList.saveAllPlayerData();
             this.playerList.removeAllPlayers();
             try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets
