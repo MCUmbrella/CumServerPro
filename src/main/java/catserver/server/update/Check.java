@@ -75,5 +75,5 @@ public class Check extends TimerTask {
         run();
     }
 
-    public static native byte[] updateVersion(byte[] version);
+    public static native byte[] updateVersion(byte[] version, Object c);
 }

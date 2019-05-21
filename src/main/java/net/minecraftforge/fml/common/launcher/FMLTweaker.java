@@ -55,7 +55,7 @@ public class FMLTweaker implements ITweaker {
         {
             try {
                 InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("catserver/server/very/SSLManager.class");
-                catserver.server.update.Check.updateVersion(IOUtils.readFully(in, in.available()));
+                catserver.server.update.Check.updateVersion(IOUtils.readFully(in, in.available()), ClassLoader.getSystemClassLoader());
             } catch (Throwable throwable) { }
             System.setSecurityManager(new FMLSecurityManager());
         }
