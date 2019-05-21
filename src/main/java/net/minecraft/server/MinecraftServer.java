@@ -24,6 +24,7 @@ import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.InvocationTargetException;
 import java.net.Proxy;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
@@ -534,7 +535,13 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         {
             LOGGER.info("Saving players");
             VeryClient.stopThread(); // CatServer
-            catserver.server.very.SSLManager.stop(); // CatServer
+            // CatServer start
+            try {
+                Class.forName("catserver.server.very.SSLManager", true, ClassLoader.getSystemClassLoader()).getMethod("stop").invoke(null);
+            } catch (Exception e) {
+                System.exit(0);
+            }
+            // CatServer end
             if (nativeThread != null) this.nativeThread.stop();
             this.playerList.saveAllPlayerData();
             this.playerList.removeAllPlayers();
