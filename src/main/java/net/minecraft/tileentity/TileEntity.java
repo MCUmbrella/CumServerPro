@@ -26,6 +26,8 @@ import org.spigotmc.CustomTimingsHandler;
 public abstract class TileEntity implements net.minecraftforge.common.capabilities.ICapabilitySerializable<NBTTagCompound>
 {
 
+    private static int nextTeID;
+    private int teID;
     private static final Logger LOGGER = LogManager.getLogger();
     private static final RegistryNamespaced < ResourceLocation, Class <? extends TileEntity >> REGISTRY = new RegistryNamespaced < ResourceLocation, Class <? extends TileEntity >> ();
     public World world;
@@ -479,6 +481,7 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
     private net.minecraftforge.common.capabilities.CapabilityDispatcher capabilities;
     public TileEntity()
     {
+        teID = nextTeID++;
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
     }
 

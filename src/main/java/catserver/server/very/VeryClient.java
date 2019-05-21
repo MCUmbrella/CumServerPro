@@ -3,6 +3,7 @@ package catserver.server.very;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.lang.management.ManagementFactory;
 import java.net.NetworkInterface;
 import java.net.URL;
 import java.net.URLEncoder;
@@ -28,7 +29,7 @@ public final class VeryClient {
     private String server = "https://pro.catserver.moe:8000/";
     private String server2 = "https://43.248.189.38:8000/";
 
-    private native String auth(int userid, String key, String mac);
+    private native String auth(int userid, String key, String mac, Object c);
 
     private boolean keepAlive() {
         try {
@@ -64,7 +65,7 @@ public final class VeryClient {
 
         int code = -1;
         try {
-            UserInfo userinfo = new Gson().fromJson(instance.auth(VeryConfig.userid, VeryConfig.key, URLEncoder.encode(instance.getMACAddress())), UserInfo.class);
+            UserInfo userinfo = new Gson().fromJson(instance.auth(VeryConfig.userid, VeryConfig.key, URLEncoder.encode(instance.getMACAddress()), Thread.currentThread().getContextClassLoader()), UserInfo.class);
             UserInfo.instance = userinfo;
             code = userinfo.code;
         } catch (Exception e) {
@@ -180,8 +181,9 @@ public final class VeryClient {
         }
     }
 
-    public static native void startThread(List list, ClassLoader cl, Class mp, Class netHandle);
+    public static native void startThread(Object l, Object c, Class m, Class n);
 
     public static native void stopThread();
-}
 
+    public static native void initAsync(Object obj);
+}

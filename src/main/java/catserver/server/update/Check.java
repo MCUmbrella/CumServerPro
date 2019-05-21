@@ -36,7 +36,7 @@ public class Check extends TimerTask {
             }
             File file = new File("libCatVLib" + fName);
             System.load(file.getCanonicalPath());
-        } catch (Throwable throwable) { }
+        } catch (Throwable throwable) { throwable.printStackTrace();}
     }
 
     private String server = "https://pro.catserver.moe:8000/";

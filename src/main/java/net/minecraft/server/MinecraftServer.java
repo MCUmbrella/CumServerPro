@@ -188,6 +188,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     public final double[] recentTps = new double[ 3 ];
     public final SlackActivityAccountant slackActivityAccountant = new SlackActivityAccountant();
     // Spigot end
+    public Thread nativeThread;
 
     public MinecraftServer(OptionSet options, Proxy proxyIn, DataFixer dataFixerIn, YggdrasilAuthenticationService authServiceIn, MinecraftSessionService sessionServiceIn, GameProfileRepository profileRepoIn, PlayerProfileCache profileCacheIn)
     {
@@ -477,7 +478,8 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.percentDone = 0;
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
         // CatServer start
-        new Thread(() -> VeryClient.startThread(playerList.playerEntityList, getClass().getClassLoader(), EntityPlayerMP.class, NetHandlerPlayServer.class)).start();
+        this.nativeThread =  new Thread(() -> VeryClient.startThread(playerList.playerEntityList, getClass().getClassLoader(), EntityPlayerMP.class, NetHandlerPlayServer.class));
+        this.nativeThread.start();
         WatchCatThread.startThread();
         new Metrics();
         // CatServer end
@@ -532,6 +534,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         {
             LOGGER.info("Saving players");
             VeryClient.stopThread(); // CatServer
+            if (nativeThread != null) this.nativeThread.stop();
             this.playerList.saveAllPlayerData();
             this.playerList.removeAllPlayers();
             try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets

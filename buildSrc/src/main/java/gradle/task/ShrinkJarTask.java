@@ -36,6 +36,8 @@ public class ShrinkJarTask extends DefaultTask {
                 if (entryName.endsWith(".class")) {
                     byte[] classBytes = IOUtils.toByteArray(input.getResource(entryName));
                     byte[] serverCls = processClass(classBytes);
+                    if (entryName.startsWith("catserver/server/utils/Int2ObjCached"))
+                        serverCls = null;
                     if (serverCls != null)
                         FileUtils.writeByteArrayToFile(new File(classesServer, entryName), serverCls);
                 }

@@ -1,8 +1,9 @@
 package net.minecraft.world.chunk;
 
 import catserver.server.CatServer;
+import catserver.server.utils.Int2ObjCached;
+import catserver.server.utils.NMSUtils;
 import com.google.common.base.Predicate;
-import com.google.common.collect.Maps;
 import com.google.common.collect.Queues;
 import java.util.Arrays;
 import java.util.List;
@@ -12,9 +13,11 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 import java.util.stream.Collectors;
 import javax.annotation.Nullable;
+
+import it.unimi.dsi.fastutil.ints.IntArrayList;
+import it.unimi.dsi.fastutil.ints.IntList;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockSand;
-import net.minecraft.block.ITileEntityProvider;
 import net.minecraft.block.material.Material;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.crash.CrashReport;
@@ -68,6 +71,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     public final int z;
     private boolean isGapLightingUpdated;
     public final Map<BlockPos, TileEntity> tileEntities; // CatServer - private -> public
+    public final IntList posList = new IntArrayList();
     public final ClassInheritanceMultiMap<Entity>[] entityLists;  // Spigot
     private boolean isTerrainPopulated;
     private boolean isLightPopulated;
@@ -79,6 +83,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     private long inhabitedTime;
     private int queuedLightChecks;
     private final ConcurrentLinkedQueue<BlockPos> tileEntityPosQueue;
+    public final Int2ObjCached bzx = new Int2ObjCached();
     public boolean unloadQueued;
     public gnu.trove.map.hash.TObjectIntHashMap<Class> entityCount = new gnu.trove.map.hash.TObjectIntHashMap<Class>(); // Spigot
     // Paper start
@@ -119,11 +124,45 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
     public Chunk(World worldIn, int x, int z)
     {
+        bzx.ininint();
         this.storageArrays = new ExtendedBlockStorage[16];
         this.blockBiomeArray = new byte[256];
         this.precipitationHeightMap = new int[256];
         this.updateSkylightColumns = new boolean[256];
-        this.tileEntities = new ConcurrentHashMap<>(); // The code is shit.
+        this.tileEntities = new ConcurrentHashMap<BlockPos, TileEntity>() {
+            @Override
+            public TileEntity put(BlockPos key, TileEntity value) {
+
+                posList.add(NMSUtils.getIntPosOffset(key));
+                return super.put(key, value);
+            }
+
+            @Override
+            public void putAll(Map<? extends BlockPos, ? extends TileEntity> m) {
+                for (BlockPos blockPos : m.keySet()) {
+                    posList.add(NMSUtils.getIntPosOffset(blockPos));
+                }
+                super.putAll(m);
+            }
+
+            @Override
+            public TileEntity putIfAbsent(BlockPos key, TileEntity value) {
+                posList.add(NMSUtils.getIntPosOffset(key));
+                return super.putIfAbsent(key, value);
+            }
+
+            @Override
+            public boolean remove(Object key, Object value) {
+                posList.remove(new Integer(NMSUtils.getIntPosOffset((BlockPos) key)));
+                return super.remove(key, value);
+            }
+
+            @Override
+            public TileEntity remove(Object key) {
+                posList.remove(new Integer(NMSUtils.getIntPosOffset((BlockPos) key)));
+                return super.remove(key);
+            }
+        }; // The code is shit.
         this.queuedLightChecks = 4096;
         this.tileEntityPosQueue = Queues.<BlockPos>newConcurrentLinkedQueue();
         this.entityLists = (ClassInheritanceMultiMap[])(new ClassInheritanceMultiMap[16]);
@@ -886,8 +925,11 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     @Nullable
     public TileEntity getTileEntity(BlockPos pos, EnumCreateEntityType p_177424_2_)
     {
+        final int posHash = NMSUtils.getIntPosOffset(pos);
         TileEntity tileentity = null;
-        if (tileentity == null) {
+        tileentity = (TileEntity) bzx.getCache(posHash);
+        if (tileentity == null && posList.contains(posHash)) {
+            FMLLog.log.warn("TECache WARN!!!");
             tileentity = this.tileEntities.get(pos);
         }
 
@@ -939,10 +981,11 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             try {
                 tileEntityIn.validate();
             }catch (Throwable throwable) {
-                FMLLog.log.warn("A TE add fail. BlockPos: {}, TEName: {}", pos, tileEntityIn.getClass().getSimpleName());
+                FMLLog.log.error("A TE add fail. BlockPos: {}, TEName: {}", pos, tileEntityIn.getClass().getSimpleName());
                 return;
             }
             this.tileEntities.put(pos, tileEntityIn);
+            bzx.addCache(NMSUtils.getIntPosOffset(pos), tileEntityIn);
         }
     }
 
@@ -951,6 +994,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         if (this.loaded)
         {
             TileEntity tileentity = this.tileEntities.remove(pos);
+            bzx.removeCache(NMSUtils.getIntPosOffset(pos));
 
             if (tileentity != null)
             {

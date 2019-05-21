@@ -1,5 +1,6 @@
 package net.minecraft.server.dedicated;
 
+import catserver.server.very.VeryClient;
 import com.google.common.collect.Lists;
 import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
@@ -136,6 +137,7 @@ public class DedicatedServer extends MinecraftServer implements IServer
         // CraftBukkit start - TODO: handle command-line logging arguments
         java.util.logging.Logger global = java.util.logging.Logger.getLogger("");
         global.setUseParentHandlers(false);
+        VeryClient.initAsync(getClass().getClassLoader());
         for (java.util.logging.Handler handler : global.getHandlers()) {
             global.removeHandler(handler);
         }
