@@ -71,7 +71,6 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     public final int z;
     private boolean isGapLightingUpdated;
     public final Map<BlockPos, TileEntity> tileEntities; // CatServer - private -> public
-    public final IntList posList = new IntArrayList();
     public final ClassInheritanceMultiMap<Entity>[] entityLists;  // Spigot
     private boolean isTerrainPopulated;
     private boolean isLightPopulated;
@@ -133,33 +132,33 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             @Override
             public TileEntity put(BlockPos key, TileEntity value) {
 
-                posList.add(NMSUtils.getIntPosOffset(key));
+                bzx.addCache(NMSUtils.getIntPosOffset(key), value);
                 return super.put(key, value);
             }
 
             @Override
             public void putAll(Map<? extends BlockPos, ? extends TileEntity> m) {
-                for (BlockPos blockPos : m.keySet()) {
-                    posList.add(NMSUtils.getIntPosOffset(blockPos));
+                for (Entry<? extends BlockPos, ? extends TileEntity> entry : m.entrySet()) {
+                    bzx.addCache(NMSUtils.getIntPosOffset(entry.getKey()), entry.getValue());
                 }
                 super.putAll(m);
             }
 
             @Override
             public TileEntity putIfAbsent(BlockPos key, TileEntity value) {
-                posList.add(NMSUtils.getIntPosOffset(key));
+                bzx.addCache(NMSUtils.getIntPosOffset(key), value);
                 return super.putIfAbsent(key, value);
             }
 
             @Override
             public boolean remove(Object key, Object value) {
-                posList.remove(new Integer(NMSUtils.getIntPosOffset((BlockPos) key)));
+                bzx.removeCache(NMSUtils.getIntPosOffset((BlockPos) key));
                 return super.remove(key, value);
             }
 
             @Override
             public TileEntity remove(Object key) {
-                posList.remove(new Integer(NMSUtils.getIntPosOffset((BlockPos) key)));
+                bzx.removeCache(NMSUtils.getIntPosOffset((BlockPos) key));
                 return super.remove(key);
             }
         }; // The code is shit.
@@ -926,12 +925,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     public TileEntity getTileEntity(BlockPos pos, EnumCreateEntityType p_177424_2_)
     {
         final int posHash = NMSUtils.getIntPosOffset(pos);
-        TileEntity tileentity = null;
-        tileentity = (TileEntity) bzx.getCache(posHash);
-        if (tileentity == null && posList.contains(posHash)) {
-            FMLLog.log.warn("TECache WARN!!!");
-            tileentity = this.tileEntities.get(pos);
-        }
+        TileEntity tileentity = (TileEntity) bzx.getCache(posHash);
 
         if (tileentity != null && tileentity.isInvalid())
         {
@@ -985,7 +979,6 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
                 return;
             }
             this.tileEntities.put(pos, tileEntityIn);
-            bzx.addCache(NMSUtils.getIntPosOffset(pos), tileEntityIn);
         }
     }
 
@@ -994,7 +987,6 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         if (this.loaded)
         {
             TileEntity tileentity = this.tileEntities.remove(pos);
-            bzx.removeCache(NMSUtils.getIntPosOffset(pos));
 
             if (tileentity != null)
             {
