@@ -34,10 +34,7 @@ import net.minecraft.enchantment.EnchantmentProtection;
 import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.item.EntityBoat;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.passive.EntityHorse;
-import net.minecraft.entity.passive.EntityTameable;
-import net.minecraft.entity.passive.EntityVillager;
-import net.minecraft.entity.passive.EntityWolf;
+import net.minecraft.entity.passive.*;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.init.Blocks;
@@ -289,7 +286,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
         }
         nmsEntity = this.getClass().getName().startsWith("net.minecraft.");
-        if ((CatServer.modMob || nmsEntity) && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof EntityVillager || this instanceof EntityHorse || this instanceof EntityWolf || this instanceof EntityItem)) {
+        if ((CatServer.modMob || nmsEntity) && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof EntityVillager || this instanceof EntityHorse || this instanceof EntityWolf || this instanceof EntityItem || this instanceof EntityOcelot)) {
             canAsync = true;
         }
     }
