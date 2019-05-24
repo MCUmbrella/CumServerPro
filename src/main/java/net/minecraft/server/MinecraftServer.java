@@ -292,7 +292,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         vanillaCommandManager.registerVanillaCommands();
         this.convertMapIfNeeded(saveName);
         this.setUserMessage("menu.loadingLevel");
-        this.worlds = new WorldServer[3];
 
         WorldSettings worldsettings = new WorldSettings(seed, this.getGameType(), this.canStructuresSpawn(), this.isHardcore(), type);
         worldsettings.setGeneratorOptions(generatorOptions);
