@@ -1672,11 +1672,10 @@ public abstract class EntityLivingBase extends Entity
                 return false;
             }
 
-            // CatServer start - move from EntityPlayer
+            // CatServer start - move from EntityPlayer to apply player armor
+            f = (float) event.getFinalDamage();
             if (human) {
                 f = net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory, damagesource, event.getFinalDamage());
-            } else {
-                f = (float) event.getFinalDamage();
             }
             if (f <= 0) return false;
             // CatServer end
