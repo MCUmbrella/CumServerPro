@@ -110,7 +110,7 @@ public final class VeryClient {
             System.out.println("验证失败,请检查网络: " + code);
             break;
         }
-        FMLCommonHandler.instance().exitJava(0, true);
+        FMLCommonHandler.instance().handleExit(0);
     }
 
     private String getMACAddress() {
@@ -174,12 +174,12 @@ public final class VeryClient {
                     try {
                         serverClass.getMethod(CatServer.isDev() ? "stopServer" : "func_71260_j").invoke(mcServer);
                     } catch (Exception e) {}
-                    FMLCommonHandler.instance().exitJava(0, false);
+                    FMLCommonHandler.instance().handleExit(0);
                 }
             });
         } catch (Exception e) {
             e.printStackTrace();
-            FMLCommonHandler.instance().exitJava(0, false);
+            FMLCommonHandler.instance().handleExit(0);
         }
     }
 
