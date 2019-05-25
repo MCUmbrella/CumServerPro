@@ -286,7 +286,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
         }
         nmsEntity = this.getClass().getName().startsWith("net.minecraft.");
-        if ((CatServer.modMob || nmsEntity) && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof IMerchant || this instanceof EntityHorse || this instanceof EntityItem || this instanceof EntityTameable)) {
+        if ((CatServer.modMob || nmsEntity) && !(this instanceof EntityPlayer || this instanceof EntityBoat || this instanceof IMerchant || this instanceof EntityHorse || this instanceof EntityItem || this instanceof IEntityOwnable)) {
             canAsync = true;
         }
     }
