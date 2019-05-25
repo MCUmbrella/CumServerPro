@@ -949,43 +949,35 @@ public class ForgeHooks
         world.captureTreeGeneration = false;
         // CraftBukkit end
 
-        if (ret == EnumActionResult.SUCCESS)
-        {
+        if (ret == EnumActionResult.SUCCESS) {
             // save new item data
             int newMeta = itemstack.getItemDamage();
             int newSize = itemstack.getCount();
             NBTTagCompound newNBT = null;
-            if (itemstack.getTagCompound() != null)
-            {
+            if (itemstack.getTagCompound() != null) {
                 newNBT = itemstack.getTagCompound().copy();
             }
             BlockEvent.PlaceEvent placeEvent = null;
             @SuppressWarnings("unchecked")
-            List<BlockSnapshot> blockSnapshots = (List<BlockSnapshot>)world.capturedBlockSnapshots.clone();
+            List<BlockSnapshot> blockSnapshots = (List<BlockSnapshot>) world.capturedBlockSnapshots.clone();
             world.capturedBlockSnapshots.clear();
 
             // make sure to set pre-placement item data for event
             itemstack.setItemDamage(meta);
             itemstack.setCount(size);
-            if (nbt != null)
-            {
+            if (nbt != null) {
                 itemstack.setTagCompound(nbt);
             }
-            if (blockSnapshots.size() > 1)
-            {
+            if (blockSnapshots.size() > 1) {
                 placeEvent = ForgeEventFactory.onPlayerMultiBlockPlace(player, blockSnapshots, side, hand);
-            }
-            else if (blockSnapshots.size() == 1)
-            {
+            } else if (blockSnapshots.size() == 1) {
                 placeEvent = ForgeEventFactory.onPlayerBlockPlace(player, blockSnapshots.get(0), side, hand);
             }
 
-            if (placeEvent != null && placeEvent.isCanceled())
-            {
+            if (placeEvent != null && placeEvent.isCanceled()) {
                 ret = EnumActionResult.FAIL; // cancel placement
                 // revert back all captured blocks
-                for (BlockSnapshot blocksnapshot : Lists.reverse(blockSnapshots))
-                {
+                for (BlockSnapshot blocksnapshot : Lists.reverse(blockSnapshots)) {
                     world.restoringBlockSnapshots = true;
                     blocksnapshot.restore(true, false);
                     world.restoringBlockSnapshots = false;
@@ -993,19 +985,15 @@ public class ForgeHooks
 
                 world.worldCapture.restore(); // CatServer
                 ((org.bukkit.craftbukkit.entity.CraftPlayer) player.getBukkitEntity()).updateInventory(); // CatServer - update inventory
-            }
-            else
-            {
+            } else {
                 // Change the stack to its new content
                 itemstack.setItemDamage(newMeta);
                 itemstack.setCount(newSize);
-                if (nbt != null)
-                {
+                if (nbt != null) {
                     itemstack.setTagCompound(newNBT);
                 }
 
-                for (BlockSnapshot snap : blockSnapshots)
-                {
+                for (BlockSnapshot snap : blockSnapshots) {
                     int updateFlag = snap.getFlag();
                     IBlockState oldBlock = snap.getReplacedBlock();
                     IBlockState newBlock = world.getBlockState(snap.getPos());
@@ -1046,6 +1034,8 @@ public class ForgeHooks
 
                 world.worldCapture.apply(); // CatServer
             }
+        } else { // not call BlockPlaceEvent (PASS,FAIL)
+            world.worldCapture.apply(); // CatServer
         }
         world.capturedBlockSnapshots.clear();
 
