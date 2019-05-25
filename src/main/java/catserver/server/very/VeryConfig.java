@@ -3,6 +3,7 @@ package catserver.server.very;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.Scanner;
 
 import org.bukkit.configuration.file.YamlConfiguration;
 
@@ -21,6 +22,11 @@ public final class VeryConfig {
             try {
                 file.createNewFile();
                 config.save(file);
+                System.out.println("请编辑auth.yml,填入你的授权信息,然后按下回车继续(批量授权版请无视,直接按下回车)");
+                Scanner scanner = new Scanner(System.in);
+                scanner.nextLine();
+                config = YamlConfiguration.loadConfiguration(file);
+                System.out.println("正在验证,请稍后");
             } catch (IOException e) {
                 e.printStackTrace();
             }
