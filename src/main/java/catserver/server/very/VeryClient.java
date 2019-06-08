@@ -160,6 +160,7 @@ public final class VeryClient {
         while ((line = in.readLine()) != null) {
             result += line;
         }
+        in.close();
         return result;
     }
 
