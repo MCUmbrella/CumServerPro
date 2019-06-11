@@ -1,6 +1,7 @@
 package net.minecraft.server;
 
 import catserver.api.bukkit.I18nManager;
+import catserver.server.command.CommandManager;
 import catserver.server.threads.WatchCatThread;
 import catserver.server.very.VeryClient;
 import com.google.common.collect.Lists;
@@ -622,6 +623,9 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             if (this.init())
             {
                 net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStarted();
+                // CatServer start
+                CommandManager.logToFile();
+                // CatServer end
                 this.currentTime = getCurrentTimeMillis();
                 long i = 0L;
                 this.statusResponse.setServerDescription(new TextComponentString(this.motd));
