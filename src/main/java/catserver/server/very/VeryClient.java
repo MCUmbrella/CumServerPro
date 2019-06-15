@@ -23,6 +23,12 @@ import net.minecraftforge.fml.relauncher.FMLLaunchHandler;
 import net.minecraftforge.fml.relauncher.ReflectionHelper;
 import org.apache.logging.log4j.util.Strings;
 
+// ============注意!!!================
+// 请不要随意修改这个类,否则会触发暗桩
+// 请不要随意修改这个类,否则会触发暗桩
+// 请不要随意修改这个类,否则会触发暗桩
+// ===================================
+
 public final class VeryClient {
     private static final String warning = "请勿尝试破解,否则CatServer会患上狂猫病,对您造成不良影响!!!";
     public static VeryClient instance;

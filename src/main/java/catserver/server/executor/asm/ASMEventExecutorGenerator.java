@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.Random;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import net.minecraftforge.fml.common.FMLLog;
 import org.bukkit.plugin.EventExecutor;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
@@ -25,10 +26,14 @@ public class ASMEventExecutorGenerator {
             flag1 = classNode.methods.size() == 15 && classNode.fields.size() == 4;
             for (MethodNode methodNode : classNode.methods) {
                 if ("(Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 22; // sendRequest
-                if ("(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 95; // sendRequest0
+                if ("(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 99; // sendRequest0
                 if ("()Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 133; // getMACAddress
+                // System.out.println(methodNode.desc + " " + methodNode.instructions.size());
             }
             flag = flag1;
+            if (flag) {
+                FMLLog.getLogger().debug("ASM-Support");
+            }
         } catch (IOException e) {}
     }
 
