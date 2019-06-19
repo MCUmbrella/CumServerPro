@@ -29,8 +29,10 @@ public class CatServer {
 	private static final String native_verson = "v1_12_R1";
     public static YamlConfiguration config;
     public static File configFile;
+
     public static boolean hopperAsync = false;
     public static boolean entityMoveAsync = true;
+    public static boolean ic2TEAsync = false;
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
     public static boolean keepSpawnInMemory = true;
@@ -44,6 +46,7 @@ public class CatServer {
     public static boolean chunkStats = false;
     public static int buildTime = 0;
     public static boolean fakePlayerEventPass = false;
+
     public static final ExecutorService fileIOThread = new ThreadPoolExecutor(1, 2,
             30, TimeUnit.SECONDS,
             new NoLockDisruptorBlockingQueue<>(50000));
@@ -107,6 +110,7 @@ public class CatServer {
         }
         hopperAsync = getOrWriteBooleanConfig("async.hopper", hopperAsync);
         entityMoveAsync = getOrWriteBooleanConfig("async.entityMove", hopperAsync);
+        ic2TEAsync = getOrWriteBooleanConfig("async.ic2TE", ic2TEAsync);
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         keepSpawnInMemory = getOrWriteBooleanConfig("world.keepSpawnInMemory", keepSpawnInMemory);

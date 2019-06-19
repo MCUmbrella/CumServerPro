@@ -3,6 +3,7 @@ package net.minecraft.world;
 import catserver.server.CatServer;
 import catserver.server.WorldCapture;
 import catserver.server.command.ChunkStats;
+import catserver.server.threads.AsyncTileEntityThread;
 import catserver.server.utils.EntityMoveTask;
 import catserver.server.utils.HopperTask;
 import catserver.server.utils.ThreadSafeList;
@@ -2131,13 +2132,20 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                         });
                         tileentity.tickTimer.startTiming(); // Spigot
                         net.minecraftforge.server.timings.TimeTracker.TILE_ENTITY_UPDATE.trackStart(tileentity);
-                        if (CatServer.chunkStats) {
-                            long start = System.nanoTime();
-                            ((ITickable)tileentity).update();
-                            ChunkStats.addTime(this.getChunkFromBlockCoords(tileentity.getPos()), System.nanoTime() - start);
+
+                        // CatServer start
+                        long start = 0;
+                        if (CatServer.chunkStats) start = System.nanoTime();
+
+                        if (CatServer.ic2TEAsync && tileentity.getClass().getName().startsWith("ic2.core.block") ) {
+                            AsyncTileEntityThread.submit((ITickable) tileentity);
                         } else {
                             ((ITickable)tileentity).update();
                         }
+                        // CatServer end
+
+                        if (CatServer.chunkStats) ChunkStats.addTime(this.getChunkFromBlockCoords(tileentity.getPos()), System.nanoTime() - start);
+
                         net.minecraftforge.server.timings.TimeTracker.TILE_ENTITY_UPDATE.trackEnd(tileentity);
                         this.profiler.endSection();
                     }
@@ -2179,6 +2187,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                 }
             }
         }
+        AsyncTileEntityThread.waitComplete(); // CatServer
 
         timings.tileEntityTick.stopTiming(); // Spigot
         timings.tileEntityPending.startTiming(); // Spigot
