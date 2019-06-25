@@ -954,6 +954,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             this.profiler.endSection();
             worldserver.explosionDensityCache.clear(); // Paper - Optimize explosions
 
+            if (worldTickTimes.get(id) != null) // CatServer - check world in tickTime list
             worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
         }
 
