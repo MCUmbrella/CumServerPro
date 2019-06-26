@@ -32,7 +32,7 @@ public class CatServer {
 
     public static boolean hopperAsync = false;
     public static boolean entityMoveAsync = true;
-    public static boolean ic2TEAsync = false;
+    public static boolean MekTEAsync = false;
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
     public static boolean keepSpawnInMemory = true;
@@ -110,7 +110,7 @@ public class CatServer {
         }
         hopperAsync = getOrWriteBooleanConfig("async.hopper", hopperAsync);
         entityMoveAsync = getOrWriteBooleanConfig("async.entityMove", hopperAsync);
-        ic2TEAsync = getOrWriteBooleanConfig("async.ic2TE", ic2TEAsync);
+        MekTEAsync = getOrWriteBooleanConfig("async.MekTE", MekTEAsync);
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         keepSpawnInMemory = getOrWriteBooleanConfig("world.keepSpawnInMemory", keepSpawnInMemory);

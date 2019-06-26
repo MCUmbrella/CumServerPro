@@ -10,8 +10,8 @@ async:
   modMob: false
   #生物AI是否异步
   entityAI: true
-  #IC2的TileEntity是否异步(测试功能)
-  ic2TE: false
+  #Mekanism(通用机械)的TileEntity是否异步(测试功能)
+  MekTE: false
 check:
   #服务器卡顿线程检查
   threadLag: true

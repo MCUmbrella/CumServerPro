@@ -16,7 +16,7 @@ public class AsyncTileEntityThread {
     private static List<Future> futures = new ArrayList<>();
 
     static {
-        if (CatServer.ic2TEAsync) {
+        if (CatServer.MekTEAsync) {
             teThreadPool = Executors.newSingleThreadExecutor();
             FMLLog.warning("TileEntity异步功能已开启,该功能为测试功能,可能会造成无法预料的问题(包括但不限于刷物品、插件异常、崩溃、数据丢失损坏等)");
             FMLLog.warning("若无特殊情况请在catserver.yml里关闭,开启该功能将不接受任何崩服反馈!");
@@ -43,7 +43,7 @@ public class AsyncTileEntityThread {
     }
 
     public static void waitComplete() {
-        if (!CatServer.ic2TEAsync) return;
+        if (!CatServer.MekTEAsync) return;
         try {
             for(Future future : futures) {
                 future.get();

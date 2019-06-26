@@ -2137,7 +2137,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                         long start = 0;
                         if (CatServer.chunkStats) start = System.nanoTime();
 
-                        if (CatServer.ic2TEAsync && tileentity.getClass().getName().startsWith("ic2.core.block") ) {
+                        if (CatServer.MekTEAsync && tileentity.getClass().getName().startsWith("mekanism.common.tile.") ) {
                             AsyncTileEntityThread.submit((ITickable) tileentity);
                         } else {
                             ((ITickable)tileentity).update();
