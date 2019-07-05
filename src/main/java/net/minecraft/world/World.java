@@ -59,11 +59,7 @@ import net.minecraft.util.IntHashMap;
 import net.minecraft.util.ReportedException;
 import net.minecraft.util.SoundCategory;
 import net.minecraft.util.SoundEvent;
-import net.minecraft.util.math.AxisAlignedBB;
-import net.minecraft.util.math.BlockPos;
-import net.minecraft.util.math.MathHelper;
-import net.minecraft.util.math.RayTraceResult;
-import net.minecraft.util.math.Vec3d;
+import net.minecraft.util.math.*;
 import net.minecraft.village.VillageCollection;
 import net.minecraft.world.biome.Biome;
 import net.minecraft.world.biome.BiomeProvider;
@@ -2105,6 +2101,33 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         }
 
         int tilesThisCycle = 0;
+        List<ChunkPos> canUpdateChunkPos = new ArrayList<>();
+
+        for (EntityPlayer player : playerEntities) {
+            ChunkPos plChunkPos = new ChunkPos(new BlockPos(player.posX, player.posY, player.posZ));
+            canUpdateChunkPos.add(plChunkPos);
+            if (this instanceof WorldServer) {
+                for (int i = 1; i < ((WorldServer)this).getPlayerChunkMap().playerViewRadius; i++) {
+                    ChunkPos chunkPos1 = new ChunkPos(plChunkPos.x - i, plChunkPos.z);
+                    ChunkPos chunkPos2 = new ChunkPos(plChunkPos.x, plChunkPos.z - i);
+                    ChunkPos chunkPos3 = new ChunkPos(plChunkPos.x + i, plChunkPos.z);
+                    ChunkPos chunkPos4 = new ChunkPos(plChunkPos.x, plChunkPos.z + i);
+                    ChunkPos chunkPos5 = new ChunkPos(plChunkPos.x + i, plChunkPos.z + i);
+                    ChunkPos chunkPos6 = new ChunkPos(plChunkPos.x - i, plChunkPos.z - i);
+                    ChunkPos chunkPos7 = new ChunkPos(plChunkPos.x + i, plChunkPos.z - i);
+                    ChunkPos chunkPos8 = new ChunkPos(plChunkPos.x - i, plChunkPos.z + i);
+                    canUpdateChunkPos.add(chunkPos1);
+                    canUpdateChunkPos.add(chunkPos2);
+                    canUpdateChunkPos.add(chunkPos3);
+                    canUpdateChunkPos.add(chunkPos4);
+                    canUpdateChunkPos.add(chunkPos5);
+                    canUpdateChunkPos.add(chunkPos6);
+                    canUpdateChunkPos.add(chunkPos7);
+                    canUpdateChunkPos.add(chunkPos8);
+                }
+            }
+        }
+
         for (tileLimiter.initTick();
              tilesThisCycle < this.tickableTileEntities.size() && (tilesThisCycle % 10 != 0 || tileLimiter.shouldContinue());
              tileTickPosition++, tilesThisCycle++) {
@@ -2121,7 +2144,10 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             if (!tileentity.isInvalid() && tileentity.hasWorld())
             {
                 BlockPos blockpos = tileentity.getPos();
-
+                ChunkPos cuChunkPos = new ChunkPos(blockpos);
+                if (! canUpdateChunkPos.contains(cuChunkPos)) {
+                    continue;
+                }
                 if (this.isBlockLoaded(blockpos, false) && this.worldBorder.contains(blockpos)) //Forge: Fix TE's getting an extra tick on the client side....
                 {
                     try

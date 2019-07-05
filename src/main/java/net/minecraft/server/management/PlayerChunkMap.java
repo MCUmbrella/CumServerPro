@@ -46,7 +46,7 @@ public class PlayerChunkMap
     private final List<PlayerChunkMapEntry> pendingSendToPlayers = new ThreadSafeList<>(true); // CatServer - Async comp
     private final List<PlayerChunkMapEntry> entriesWithoutChunks = new ThreadSafeList<>(true); // CatServer - Async comp
     private final List<PlayerChunkMapEntry> entries = new ThreadSafeList<>(true); // CatServer - Async comp
-    private int playerViewRadius;
+    public int playerViewRadius;
     private long previousTotalWorldTime;
     private boolean sortMissingChunks = true;
     private boolean sortSendToPlayers = true;
