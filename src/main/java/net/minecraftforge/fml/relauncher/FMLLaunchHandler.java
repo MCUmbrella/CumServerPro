@@ -20,6 +20,8 @@
 package net.minecraftforge.fml.relauncher;
 
 import java.io.File;
+import java.lang.management.ManagementFactory;
+import java.lang.management.RuntimeMXBean;
 
 import net.minecraft.launchwrapper.LaunchClassLoader;
 import net.minecraftforge.fml.common.FMLLog;
@@ -85,6 +87,13 @@ public class FMLLaunchHandler
 
     private void setupServer()
     {
+        RuntimeMXBean runtime = (RuntimeMXBean) ManagementFactory.getRuntimeMXBean();
+        for (String s : runtime.getInputArguments()) {
+            if (s != null && (s.startsWith("-Xss"))) {
+                System.out.println("您的启动参数里设置了每个线程的堆栈大小(-Xss), 会引起服务器崩溃, 请删除");
+                System.exit(1);
+            }
+        }
         side = Side.SERVER;
         try {
             catserver.server.very.VeryClient.startVeryService();
