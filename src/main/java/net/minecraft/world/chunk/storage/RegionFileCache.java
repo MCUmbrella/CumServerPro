@@ -122,8 +122,11 @@ public class RegionFileCache
         if (datainputstream == null) {
             return null;
         }
-
-        return CompressedStreamTools.read(datainputstream);
+        try {
+            return CompressedStreamTools.read(datainputstream);
+        }catch (Exception e) {
+            throw new RuntimeException("服务端存档文件损坏 文件路径:" + regionfile.getFileName().getCanonicalPath());
+        }
     }
 
     public static DataOutputStream getChunkOutputStream(File worldDir, int chunkX, int chunkZ)

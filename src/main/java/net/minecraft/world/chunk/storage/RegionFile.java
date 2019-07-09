@@ -344,6 +344,14 @@ public class RegionFile
         }
     }
 
+    // CatServer - start
+
+    public File getFileName() {
+        return this.fileName;
+    }
+
+    // CatServer - end
+
     class ChunkBuffer extends ByteArrayOutputStream
     {
         private final int chunkX;

@@ -225,7 +225,12 @@ public class AnvilSaveConverter extends SaveFormatOld
                         }
                         else
                         {
-                            NBTTagCompound nbttagcompound = CompressedStreamTools.read(datainputstream);
+                            NBTTagCompound nbttagcompound;
+                            try {
+                                nbttagcompound = CompressedStreamTools.read(datainputstream);
+                            }catch (Exception e) {
+                                throw new RuntimeException("服务端存档文件损坏 文件路径:" + regionfile.getFileName().getCanonicalPath());
+                            }
                             datainputstream.close();
                             NBTTagCompound nbttagcompound1 = nbttagcompound.getCompoundTag("Level");
                             ChunkLoader.AnvilConverterData chunkloader$anvilconverterdata = ChunkLoader.load(nbttagcompound1);
