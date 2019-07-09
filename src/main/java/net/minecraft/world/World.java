@@ -74,6 +74,7 @@ import net.minecraft.world.storage.WorldInfo;
 import net.minecraft.world.storage.WorldSavedData;
 import net.minecraft.world.storage.loot.LootTableManager;
 import net.minecraftforge.common.DimensionManager;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.bukkit.Bukkit;
@@ -1610,6 +1611,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                     }
                 }
             }
+        }catch (Exception e) {
+            FMLLog.log.warn("Failed to getCollisionBoxes!");
         }
         finally
         {
