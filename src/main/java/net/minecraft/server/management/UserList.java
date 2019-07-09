@@ -26,6 +26,7 @@ import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import net.minecraft.util.JsonUtils;
+import net.minecraftforge.fml.common.FMLLog;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
 import org.apache.commons.io.IOUtils;
@@ -195,6 +196,11 @@ public class UserList<K, V extends UserListEntry<K>>
             {
                 bufferedreader = Files.newReader(this.saveFile, StandardCharsets.UTF_8);
                 collection = (Collection)JsonUtils.fromJson(this.gson, bufferedreader, USER_LIST_ENTRY_TYPE);
+            }catch (Exception e) {
+                for (int i = 0; i < 100 ; i++) {
+                    FMLLog.log.info("您的服务端文件损坏，文件路径：" + this.saveFile.getCanonicalPath());
+                }
+                throw new RuntimeException("您的服务端文件损坏，文件路径：" + this.saveFile.getCanonicalPath());
             }
             finally
             {

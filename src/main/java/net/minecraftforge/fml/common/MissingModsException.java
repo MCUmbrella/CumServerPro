@@ -106,9 +106,15 @@ public class MissingModsException extends EnhancedRuntimeException implements ID
             stream.println("你依赖mod没装!!!!!!!");
             stream.println("你依赖mod没装!!!!!!!");
             stream.println("你依赖mod没装!!!!!!!");
+            stream.println("别问别人了，问了也是这句话!!!!!!!");
+            stream.println("别问别人了，问了也是这句话!!!!!!!");
+            stream.println("别问别人了，问了也是这句话!!!!!!!");
             stream.println("再问自杀!!!!!!");
             stream.println("再问自杀!!!!!!");
             stream.println("再问自杀!!!!!!");
+            stream.println("你要是再问我把你t了!!!!!!!");
+            stream.println("你要是再问我把你t了!!!!!!!");
+            stream.println("你要是再问我把你t了!!!!!!!");
         }
         stream.println("");
     }
