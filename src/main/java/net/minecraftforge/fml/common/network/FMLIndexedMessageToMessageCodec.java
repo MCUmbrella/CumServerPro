@@ -126,7 +126,7 @@ public abstract class FMLIndexedMessageToMessageCodec<A> extends MessageToMessag
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) throws Exception
     {
-        FMLLog.log.error("FMLIndexedMessageCodec exception caught", cause);
-        super.exceptionCaught(ctx, cause);
+        FMLLog.log.debug("FMLIndexedMessageCodec exception caught", cause);
+        //super.exceptionCaught(ctx, cause);
     }
 }
