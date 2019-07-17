@@ -713,7 +713,7 @@ public class CraftingHelper {
                 }
                 catch (JsonParseException e)
                 {
-                    FMLLog.log.error("Parsing error loading recipe {}", key, e);
+                    FMLLog.log.debug("Parsing error loading recipe {}", key, e);
                     return false;
                 }
                 catch (IOException e)

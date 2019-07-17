@@ -85,7 +85,7 @@ public class CraftingManager
                 {
                     if (!"jar".equals(uri.getScheme()))
                     {
-                        LOGGER.error("Unsupported scheme " + uri + " trying to list all recipes");
+                        LOGGER.debug("Unsupported scheme " + uri + " trying to list all recipes");
                         boolean flag2 = false;
                         return flag2;
                     }
@@ -118,13 +118,13 @@ public class CraftingManager
                             }
                             catch (JsonParseException jsonparseexception)
                             {
-                                LOGGER.error("Parsing error loading recipe " + resourcelocation, (Throwable)jsonparseexception);
+                                LOGGER.debug("Parsing error loading recipe " + resourcelocation, (Throwable)jsonparseexception);
                                 flag = false;
                                 return flag;
                             }
                             catch (IOException ioexception)
                             {
-                                LOGGER.error("Couldn't read recipe " + resourcelocation + " from " + path1, (Throwable)ioexception);
+                                LOGGER.debug("Couldn't read recipe " + resourcelocation + " from " + path1, (Throwable)ioexception);
                                 flag = false;
                                 return flag;
                             }
@@ -139,12 +139,12 @@ public class CraftingManager
                 return true;
             }
 
-            LOGGER.error("Couldn't find .mcassetsroot");
+            LOGGER.debug("Couldn't find .mcassetsroot");
             flag1 = false;
         }
         catch (IOException | URISyntaxException urisyntaxexception)
         {
-            LOGGER.error("Couldn't get a list of all recipe files", (Throwable)urisyntaxexception);
+            LOGGER.debug("Couldn't get a list of all recipe files", (Throwable)urisyntaxexception);
             flag1 = false;
             return flag1;
         }
