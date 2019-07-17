@@ -252,7 +252,7 @@ public class NetworkModHolder
             catch (NoSuchMethodException ignored) {}
             catch (Exception e)
             {
-                FMLLog.log.warn("The declared version check handler method {} on network mod id {} is not accessible", networkCheckHandlerMethod, container.getModId(), e);
+                FMLLog.log.debug("The declared version check handler method {} on network mod id {} is not accessible", networkCheckHandlerMethod, container.getModId(), e);
             }
         }
         if (this.checkHandler != null)

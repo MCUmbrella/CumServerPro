@@ -182,7 +182,7 @@ public class FunctionManager implements ITickable
                     }
                     catch (Throwable throwable)
                     {
-                        LOGGER.error("Couldn't read custom function " + resourcelocation + " from " + file1, throwable);
+                        LOGGER.debug("Couldn't read custom function " + resourcelocation + " from " + file1, throwable);
                     }
                 }
             }

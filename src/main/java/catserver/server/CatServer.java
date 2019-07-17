@@ -20,6 +20,8 @@ import java.lang.reflect.Field;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -86,7 +88,7 @@ public class CatServer {
 
     public static boolean asyncCatch(String reason) {
         if (Thread.currentThread() != MinecraftServer.getServerInst().primaryThread) {
-            FMLLog.warning("Try to asynchronously " + reason + ", caught!");
+            FMLLog.getLogger().debug("Try to asynchronously " + reason + ", caught!", new RuntimeException());
             return true;
         }
         return false;
@@ -203,5 +205,14 @@ public class CatServer {
         fakePlayerPermissions = FileUtils.readLines(permissFile, Charsets.UTF_8);
         System.out.println("FakePlayer Permissions:");
         fakePlayerPermissions.forEach(System.out::println);
+    }
+
+    public static void watchdogForceExitTask() {
+        MinecraftServer.getServerInst().primaryThread.suspend();
+        new Timer("WatchdogForceExitTask").schedule(new TimerTask() {
+            public void run() {
+                Runtime.getRuntime().exit(0);
+            }
+        }, 300 * 1000);
     }
 }

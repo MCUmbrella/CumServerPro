@@ -141,9 +141,11 @@ public class LibraryManager
 
             if (!comp.endsWith("/org/apache/maven/maven-artifact/"))
             {
+                /*
                 FMLLog.log.error("Apache Maven library folder was not in the format expected. Using default libraries directory.");
                 FMLLog.log.error("Full: {}", new File(source.getLocation().toURI()));
                 FMLLog.log.error("Trimmed: {}", comp);
+                 */
                 return new File(minecraftHome, "libraries");
             }
             //     maven-artifact  /maven          /apache         /org            /libraries

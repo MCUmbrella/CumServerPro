@@ -109,7 +109,7 @@ public class AdvancementManager
 
                         if (advancement$builder == null)
                         {
-                            LOGGER.error("Couldn't load custom advancement " + resourcelocation + " from " + file1 + " as it's empty or null");
+                            LOGGER.debug("Couldn't load custom advancement " + resourcelocation + " from " + file1 + " as it's empty or null");
                         }
                         else
                         {
@@ -118,12 +118,12 @@ public class AdvancementManager
                     }
                     catch (IllegalArgumentException | JsonParseException jsonparseexception)
                     {
-                        LOGGER.error("Parsing error loading custom advancement " + resourcelocation, (Throwable)jsonparseexception);
+                        LOGGER.debug("Parsing error loading custom advancement " + resourcelocation, (Throwable)jsonparseexception);
                         this.hasErrored = true;
                     }
                     catch (IOException ioexception)
                     {
-                        LOGGER.error("Couldn't read custom advancement " + resourcelocation + " from " + file1, (Throwable)ioexception);
+                        LOGGER.debug("Couldn't read custom advancement " + resourcelocation + " from " + file1, (Throwable)ioexception);
                         this.hasErrored = true;
                     }
                 }
@@ -153,7 +153,7 @@ public class AdvancementManager
                 {
                     if (!"jar".equals(uri.getScheme()))
                     {
-                        LOGGER.error("Unsupported scheme " + uri + " trying to list all built-in advancements (NYI?)");
+                        LOGGER.debug("Unsupported scheme " + uri + " trying to list all built-in advancements (NYI?)");
                         this.hasErrored = true;
                         return;
                     }
@@ -191,12 +191,12 @@ public class AdvancementManager
                             }
                             catch (JsonParseException jsonparseexception)
                             {
-                                LOGGER.error("Parsing error loading built-in advancement " + resourcelocation, (Throwable)jsonparseexception);
+                                LOGGER.debug("Parsing error loading built-in advancement " + resourcelocation, (Throwable)jsonparseexception);
                                 this.hasErrored = true;
                             }
                             catch (IOException ioexception)
                             {
-                                LOGGER.error("Couldn't read advancement " + resourcelocation + " from " + path1, (Throwable)ioexception);
+                                LOGGER.debug("Couldn't read advancement " + resourcelocation + " from " + path1, (Throwable)ioexception);
                                 this.hasErrored = true;
                             }
                             finally
@@ -210,12 +210,12 @@ public class AdvancementManager
                 return;
             }
 
-            LOGGER.error("Couldn't find .mcassetsroot");
+            LOGGER.debug("Couldn't find .mcassetsroot");
             this.hasErrored = true;
         }
         catch (IOException | URISyntaxException urisyntaxexception)
         {
-            LOGGER.error("Couldn't get a list of all built-in advancement files", (Throwable)urisyntaxexception);
+            LOGGER.debug("Couldn't get a list of all built-in advancement files", (Throwable)urisyntaxexception);
             this.hasErrored = true;
             return;
         }
