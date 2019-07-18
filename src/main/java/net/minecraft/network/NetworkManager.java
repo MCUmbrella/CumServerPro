@@ -356,7 +356,7 @@ public class NetworkManager extends SimpleChannelInboundHandler<Packet<?>> {
     public void checkDisconnected() {
         if (this.channel != null && !this.channel.isOpen()) {
             if (this.disconnected) {
-                LOGGER.warn("handleDisconnection() called twice");
+                // LOGGER.warn("handleDisconnection() called twice");
             } else {
                 this.disconnected = true;
 
