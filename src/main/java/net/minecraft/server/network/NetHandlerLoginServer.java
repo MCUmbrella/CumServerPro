@@ -220,7 +220,7 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable
                         new LoginHandler().fireEvents();
                     } catch (Exception ex) {
                         disconnect("Failed to verify username!");
-                        server.server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + loginGameProfile.getName(), ex);
+                        //server.server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + loginGameProfile.getName(), ex);
                     }
                 }
             }.start();
@@ -291,7 +291,7 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable
                         // CraftBukkit start - catch all exceptions
                     } catch (Exception exception) {
                         disconnect("Failed to verify username!");
-                        server.server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + gameprofile.getName(), exception);
+                        //server.server.getLogger().log(java.util.logging.Level.WARNING, "Exception verifying " + gameprofile.getName(), exception);
                         // CraftBukkit end
                     }
                 }
