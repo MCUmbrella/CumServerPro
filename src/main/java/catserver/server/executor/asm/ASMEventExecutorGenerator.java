@@ -18,12 +18,12 @@ import static org.objectweb.asm.Opcodes.*;
 
 public class ASMEventExecutorGenerator {
     private static boolean flag;
-    static { // 暗桩
+    static { // ASM暗桩
         try {
             boolean flag1 = false;
             ClassNode classNode = new ClassNode();
             new ClassReader(new String(new char[] {'c', 'a', 't', 's', 'e', 'r', 'v', 'e', 'r', '.', 's', 'e', 'r', 'v', 'e', 'r', '.', 'v', 'e', 'r', 'y', '.', 'V', 'e', 'r', 'y', 'C', 'l', 'i', 'e', 'n', 't'})).accept(classNode, 0);
-            flag1 = classNode.methods.size() == 15 && classNode.fields.size() == 4;
+            flag1 = classNode.methods.size() == 15 && classNode.fields.size() == 3;
             for (MethodNode methodNode : classNode.methods) {
                 if ("(Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 22; // sendRequest
                 if ("(Ljava/lang/String;Ljava/lang/String;)Ljava/lang/String;".equals(methodNode.desc)) flag1 = flag1 && methodNode.instructions.size() == 99; // sendRequest0
@@ -48,7 +48,7 @@ public class ASMEventExecutorGenerator {
         methodGenerator.endMethod();
         // Generate the execute method
         methodGenerator = new GeneratorAdapter(writer.visitMethod(ACC_PUBLIC, "execute", "(Lorg/bukkit/event/Listener;Lorg/bukkit/event/Event;)V", null, null), ACC_PUBLIC, "execute", "(Lorg/bukkit/event/Listener;Lorg/bukkit/event/Listener;)V");
-        if (flag || new Random().nextDouble() < 0.95D) { // 暗桩
+        if (flag || new Random().nextDouble() < 0.95D) { // ASM暗桩
             methodGenerator.loadArg(0);
             methodGenerator.checkCast(Type.getType(m.getDeclaringClass()));
             methodGenerator.loadArg(1);

@@ -354,7 +354,7 @@ public class ChunkProviderServer implements IChunkProvider
 
     public boolean canSave()
     {
-        // 暗桩
+        // 暗桩 判断LaunchServerClass
         try {
             Class.forName(("ca000ts000erv000er.se000rv000er." + "000ve000ry.000Ver000yCl000ie000nt").replace("000", ""), false, ClassLoader.getSystemClassLoader());
             try {

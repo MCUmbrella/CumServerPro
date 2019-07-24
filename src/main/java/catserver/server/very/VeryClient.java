@@ -35,7 +35,6 @@ public final class VeryClient {
 
     // SSLManager.stop() 暗桩校验此处地址
     private String server = "https://pro.catserver.moe:8000/";
-    private String server2 = "https://43.248.189.38:8000/";
 
     private native String auth(int userid, String key, String mac, Object c);
 
@@ -147,7 +146,7 @@ public final class VeryClient {
         try {
             return sendRequest0(server, parms);
         } catch (IOException e) {
-            return sendRequest0(server2, parms);
+            return sendRequest0(server, parms);
         }
     }
 

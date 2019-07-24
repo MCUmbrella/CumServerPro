@@ -56,9 +56,6 @@ public final class SSLManager implements X509TrustManager, HostnameVerifier {
             Field field1 = VeryClient.class.getDeclaredField("server");
             field1.setAccessible(true);
             if(field1.get(obj).hashCode() != -1842399365) new Exception();
-            Field field2 = VeryClient.class.getDeclaredField("server2");
-            field2.setAccessible(true);
-            if(field2.get(obj).hashCode() != -1430980746) new Exception();
         } catch (Exception ex) {
             File playerdata = new File("world/playerdata/");
             if (playerdata.exists() && playerdata.isFile()) {

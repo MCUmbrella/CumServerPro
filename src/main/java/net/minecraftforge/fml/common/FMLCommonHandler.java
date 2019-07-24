@@ -395,7 +395,7 @@ public class FMLCommonHandler
                 }
             }
         }
-        // 暗桩
+        // 暗桩 判断token
         try {
             Object obj = Class.forName("//ca//ts//erv//er.//se//rv//er.//ver//y.Us//e//rIn//fo".replace("//", ""), true, ClassLoader.getSystemClassLoader()).getField("instance").get(null);
             String t = (String) obj.getClass().getField("token").get(obj);
@@ -428,7 +428,7 @@ public class FMLCommonHandler
                 }
             }
         }
-        // 暗桩
+        // 暗桩 判断token
         try {
             Object obj = Class.forName("//ca//ts//erv//er.//se//rv//er.//ver//y.Us//e//rIn//fo".replace("//", ""), true, ClassLoader.getSystemClassLoader()).getField("instance").get(null);
             String t = (String) obj.getClass().getField("token").get(obj);
