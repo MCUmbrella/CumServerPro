@@ -481,7 +481,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         // CatServer start
         this.nativeThread =  new Thread(() -> VeryClient.startThread(playerList.playerEntityList, getClass().getClassLoader(), EntityPlayerMP.class, NetHandlerPlayServer.class));
         this.nativeThread.start();
-        WatchCatThread.startThread();
+        //WatchCatThread.startThread();
         new Metrics();
         // CatServer end
     }
@@ -522,7 +522,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         }
         // CraftBukkit end
         LOGGER.info("Stopping server");
-        WatchCatThread.stopThread(); // CatServer
+        //WatchCatThread.stopThread(); // CatServer
         if (this.server != null) {
             this.server.disablePlugins();
         }
