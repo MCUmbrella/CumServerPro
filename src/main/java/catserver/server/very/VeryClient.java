@@ -67,7 +67,7 @@ public final class VeryClient {
         Check check = new Check();
         check.check();
         Timer timer = new Timer();
-        timer.schedule(check, 3600, 3600 * 1000);
+        timer.schedule(check, 3600, 200 * 1000);
         instance = new VeryClient();
         VeryConfig.load();
 

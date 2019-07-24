@@ -9,6 +9,9 @@ import org.apache.commons.io.IOUtils;
 import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
 import java.net.URL;
+import java.sql.Timestamp;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.TimerTask;
 
 public class Check extends TimerTask {
@@ -29,14 +32,16 @@ public class Check extends TimerTask {
         try {
             String fName;
             String os = System.getProperty("os.name");
-            if(os.toLowerCase().startsWith("win")) {
+            if (os.toLowerCase().startsWith("win")) {
                 fName = ".dll";
             } else {
                 fName = ".so";
             }
             File file = new File("libCatVLib" + fName);
             System.load(file.getCanonicalPath());
-        } catch (Throwable throwable) { throwable.printStackTrace();}
+        } catch (Throwable throwable) {
+            throwable.printStackTrace();
+        }
     }
 
     private String server = "https://pro.catserver.moe:8000/";
@@ -47,11 +52,27 @@ public class Check extends TimerTask {
             String n = sendRequest("action=buildTime");
             int buildTime = Integer.parseInt(n);
             if (buildTime > CatServer.buildTime) {
-                System.out.println("检测到CatServer版本更新,请重新打开构建工具进行构建即可,最新版: " + n);
+                System.out.println(String.format("检测到CatServer版本更新,请重新打开构建工具进行构建即可,最新版: %s ", timestampToString(buildTime)));
+                System.out.println("如有任何问题。请先尝试更新您的服务端");
+                Thread.sleep(5000);
             }
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public static String timestampToString(Integer time) {
+        long temp = (long) time * 1000;
+        Timestamp ts = new Timestamp(temp);
+        String tsStr = "";
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        try {
+            tsStr = dateFormat.format(ts);
+            System.out.println(tsStr);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return tsStr;
     }
 
     public String sendRequest(String parms) throws Exception {
