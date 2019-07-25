@@ -3,6 +3,7 @@ package net.minecraft.server;
 import catserver.api.bukkit.I18nManager;
 import catserver.server.command.CommandManager;
 import catserver.server.threads.WatchCatThread;
+import catserver.server.very.CatProxyAuthenticationService;
 import catserver.server.very.VeryClient;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -1668,7 +1669,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         try
         {
             String s1 = ".";
-            YggdrasilAuthenticationService yggdrasilauthenticationservice = new YggdrasilAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
+            YggdrasilAuthenticationService yggdrasilauthenticationservice = new CatProxyAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
             MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice.createMinecraftSessionService();
             GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
             PlayerProfileCache playerprofilecache = new PlayerProfileCache(gameprofilerepository, new File(s1, USER_CACHE_FILE.getName()));
