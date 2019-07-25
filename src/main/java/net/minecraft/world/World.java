@@ -1936,7 +1936,34 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
     {
         this.profiler.startSection("entities");
         this.profiler.startSection("global");
+        List<ChunkPos> canUpdateChunkPos = new ArrayList<>();
 
+        for (EntityPlayer player : playerEntities) {
+            ChunkPos plChunkPos = new ChunkPos(new BlockPos(player.posX, player.posY, player.posZ));
+            canUpdateChunkPos.add(plChunkPos);
+            if (this instanceof WorldServer) {
+                for (int i = 1; i < ((WorldServer)this).getPlayerChunkMap().playerViewRadius; i++) {
+                    ChunkPos chunkPos1 = new ChunkPos(plChunkPos.x - i, plChunkPos.z);
+                    ChunkPos chunkPos2 = new ChunkPos(plChunkPos.x, plChunkPos.z - i);
+                    ChunkPos chunkPos3 = new ChunkPos(plChunkPos.x + i, plChunkPos.z);
+                    ChunkPos chunkPos4 = new ChunkPos(plChunkPos.x, plChunkPos.z + i);
+                    ChunkPos chunkPos5 = new ChunkPos(plChunkPos.x + i, plChunkPos.z + i);
+                    ChunkPos chunkPos6 = new ChunkPos(plChunkPos.x - i, plChunkPos.z - i);
+                    ChunkPos chunkPos7 = new ChunkPos(plChunkPos.x + i, plChunkPos.z - i);
+                    ChunkPos chunkPos8 = new ChunkPos(plChunkPos.x - i, plChunkPos.z + i);
+                    canUpdateChunkPos.add(chunkPos1);
+                    canUpdateChunkPos.add(chunkPos2);
+                    canUpdateChunkPos.add(chunkPos3);
+                    canUpdateChunkPos.add(chunkPos4);
+                    canUpdateChunkPos.add(chunkPos5);
+                    canUpdateChunkPos.add(chunkPos6);
+                    canUpdateChunkPos.add(chunkPos7);
+                    canUpdateChunkPos.add(chunkPos8);
+                }
+            }
+        }
+
+        final int theWorldPlayerSize = playerEntities.size();
         for (int i = 0; i < this.weatherEffects.size(); ++i)
         {
             Entity entity = this.weatherEffects.get(i);
@@ -2013,8 +2040,13 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         for (entityLimiter.initTick();
                 entitiesThisCycle < loadedEntityList.size() && (entitiesThisCycle % 10 != 0 || entityLimiter.shouldContinue());
                 tickPosition++, entitiesThisCycle++) {
+            if (theWorldPlayerSize < 1) continue; // CatServer - Don't update Entity For no body world
             tickPosition = (tickPosition < loadedEntityList.size()) ? tickPosition : 0;
             Entity entity2 = (Entity) this.loadedEntityList.get(this.tickPosition);
+            ChunkPos cuChunkPos = new ChunkPos(entity2.getPosition());
+            if (! canUpdateChunkPos.contains(cuChunkPos)) {
+                continue;
+            }
             // CraftBukkit end
             Entity entity3 = entity2.getRidingEntity();
 
@@ -2103,36 +2135,11 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         }
 
         int tilesThisCycle = 0;
-        List<ChunkPos> canUpdateChunkPos = new ArrayList<>();
-
-        for (EntityPlayer player : playerEntities) {
-            ChunkPos plChunkPos = new ChunkPos(new BlockPos(player.posX, player.posY, player.posZ));
-            canUpdateChunkPos.add(plChunkPos);
-            if (this instanceof WorldServer) {
-                for (int i = 1; i < ((WorldServer)this).getPlayerChunkMap().playerViewRadius; i++) {
-                    ChunkPos chunkPos1 = new ChunkPos(plChunkPos.x - i, plChunkPos.z);
-                    ChunkPos chunkPos2 = new ChunkPos(plChunkPos.x, plChunkPos.z - i);
-                    ChunkPos chunkPos3 = new ChunkPos(plChunkPos.x + i, plChunkPos.z);
-                    ChunkPos chunkPos4 = new ChunkPos(plChunkPos.x, plChunkPos.z + i);
-                    ChunkPos chunkPos5 = new ChunkPos(plChunkPos.x + i, plChunkPos.z + i);
-                    ChunkPos chunkPos6 = new ChunkPos(plChunkPos.x - i, plChunkPos.z - i);
-                    ChunkPos chunkPos7 = new ChunkPos(plChunkPos.x + i, plChunkPos.z - i);
-                    ChunkPos chunkPos8 = new ChunkPos(plChunkPos.x - i, plChunkPos.z + i);
-                    canUpdateChunkPos.add(chunkPos1);
-                    canUpdateChunkPos.add(chunkPos2);
-                    canUpdateChunkPos.add(chunkPos3);
-                    canUpdateChunkPos.add(chunkPos4);
-                    canUpdateChunkPos.add(chunkPos5);
-                    canUpdateChunkPos.add(chunkPos6);
-                    canUpdateChunkPos.add(chunkPos7);
-                    canUpdateChunkPos.add(chunkPos8);
-                }
-            }
-        }
 
         for (tileLimiter.initTick();
              tilesThisCycle < this.tickableTileEntities.size() && (tilesThisCycle % 10 != 0 || tileLimiter.shouldContinue());
              tileTickPosition++, tilesThisCycle++) {
+            if (theWorldPlayerSize < 1) continue; // CatServer - Don't update Entity For no body world
             tileTickPosition = (tileTickPosition < tickableTileEntities.size()) ? tileTickPosition : 0;
             TileEntity tileentity = (TileEntity) this.tickableTileEntities.get(tileTickPosition);
             // Spigot start
