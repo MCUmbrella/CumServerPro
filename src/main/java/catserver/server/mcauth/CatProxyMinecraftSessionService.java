@@ -1,4 +1,4 @@
-package catserver.server.very;
+package catserver.server.mcauth;
 
 import catserver.server.CatServer;
 import com.mojang.authlib.GameProfile;

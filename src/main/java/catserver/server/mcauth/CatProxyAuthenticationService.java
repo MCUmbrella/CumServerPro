@@ -1,4 +1,4 @@
-package catserver.server.very;
+package catserver.server.mcauth;
 
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
