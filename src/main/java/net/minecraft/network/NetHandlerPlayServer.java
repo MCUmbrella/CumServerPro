@@ -2454,14 +2454,10 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             this.disconnect(new TextComponentTranslation("disconnect.spam"));
             return;
         }
-        List<String> list = Lists.newArrayList();
-
-        for (String s : this.serverController.getTabCompletions(this.player, packetIn.getMessage(), packetIn.getTargetBlock(), packetIn.hasTargetBlock()))
-        {
-            list.add(s);
-        }
-
-        this.player.connection.sendPacket(new SPacketTabComplete(list.toArray(new String[list.size()])));
+        //CatServer - start 删除不必要的实例
+        List<String> list = this.serverController.getTabCompletions(this.player, packetIn.getMessage(), packetIn.getTargetBlock(), packetIn.hasTargetBlock());
+        //CatServer - end
+        this.player.connection.sendPacket(new SPacketTabComplete(list.toArray(new String[0])));
     }
 
     public void processClientSettings(CPacketClientSettings packetIn)
