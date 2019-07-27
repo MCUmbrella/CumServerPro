@@ -44,9 +44,7 @@ public final class VeryClient {
             if (ret.contains("invalidtoken"))
                 safeStopServer();
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { }
 
         return false;
     }
@@ -55,9 +53,7 @@ public final class VeryClient {
         try {
             sendRequest("action=logout&token=" + UserInfo.instance.token);
             return true;
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (Exception e) { }
 
         return false;
     }
@@ -89,11 +85,12 @@ public final class VeryClient {
                 public void run() {
                     if (!VeryClient.instance.keepAlive()) {
                         failCount++;
-                        System.out.println("授权服务器心跳包连接失败,重试次数: %c/15".replace("%c", String.valueOf(failCount)));
+                        if (failCount % 5 == 0 || failCount > 20)
+                            System.out.println(String.format("授权服务器心跳包连接失败,重试次数: %s/25", String.valueOf(failCount)));
                     } else {
                         failCount = 0;
                     }
-                    if (failCount >= 15)
+                    if (failCount >= 25) // 2 hour
                         VeryClient.instance.safeStopServer();
                 }
             }, 300*1000, 300*1000);
