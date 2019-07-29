@@ -647,8 +647,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
                     return null;
                 }
 
-                //extendedblockstorage = new ExtendedBlockStorage(j >> 4 << 4, this.world.provider.hasSkyLight()); 麻将脑子有坑？
-                extendedblockstorage = new ExtendedBlockStorage(j, this.world.provider.hasSkyLight());
+                extendedblockstorage = new ExtendedBlockStorage(j4 << 4, this.world.provider.hasSkyLight());
                 this.storageArrays[j4] = extendedblockstorage;
                 flag = j >= i1;
             }
@@ -764,7 +763,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
         if (extendedblockstorage == NULL_BLOCK_STORAGE)
         {
-            extendedblockstorage = new ExtendedBlockStorage(j, this.world.provider.hasSkyLight()); // 麻将又抽风了
+            extendedblockstorage = new ExtendedBlockStorage(j >> 4 << 4, this.world.provider.hasSkyLight());
             this.storageArrays[j4] = extendedblockstorage;
             this.generateSkylightMap();
         }
