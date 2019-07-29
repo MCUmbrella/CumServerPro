@@ -298,13 +298,14 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         {
             for (int k = 0; k < 16; ++k)
             {
-                this.precipitationHeightMap[j + (k << 4)] = -999;
+                int k4 = k << 4;
+                this.precipitationHeightMap[j + k4] = -999;
 
                 for (int l = i + 16; l > 0; --l)
                 {
                     if (this.getBlockLightOpacity(j, l - 1, k) != 0)
                     {
-                        this.heightMap[k << 4 | j] = l;
+                        this.heightMap[k4 | j] = l;
 
                         if (l < this.heightMapMinimum)
                         {
@@ -436,7 +437,8 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
     private void relightBlock(int x, int y, int z)
     {
-        int i = this.heightMap[z << 4 | x] & 255;
+        int z4 = z << 4;
+        int i = this.heightMap[z4 | x] & 255;
         int j = i;
 
         if (y > i)
@@ -452,7 +454,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         if (j != i)
         {
             this.world.markBlocksDirtyVertical(x + this.x * 16, z + this.z * 16, j, i);
-            this.heightMap[z << 4 | x] = j;
+            this.heightMap[z4 | x] = j;
             int k = this.x * 16 + x;
             int l = this.z * 16 + z;
 
@@ -560,6 +562,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
     public IBlockState getBlockState(final int x, final int y, final int z)
     {
+        int i = y >> 4;
         if (this.world.getWorldType() == WorldType.DEBUG_ALL_BLOCK_STATES)
         {
             IBlockState iblockstate = null;
@@ -580,9 +583,9 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
         {
             try
             {
-                if (y >= 0 && y >> 4 < this.storageArrays.length)
+                if (y >= 0 && i < this.storageArrays.length)
                 {
-                    ExtendedBlockStorage extendedblockstorage = this.storageArrays[y >> 4];
+                    ExtendedBlockStorage extendedblockstorage = this.storageArrays[i];
 
                     if (extendedblockstorage != NULL_BLOCK_STORAGE)
                     {
@@ -613,6 +616,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     {
         int i = pos.getX() & 15;
         int j = pos.getY();
+        int j4 = j >> 4;
         int k = pos.getZ() & 15;
         int l = k << 4 | i;
 
@@ -633,7 +637,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             Block block = state.getBlock();
             Block block1 = iblockstate.getBlock();
             int k1 = iblockstate.getLightOpacity(this.world, pos); // Relocate old light value lookup here, so that it is called before TE is removed.
-            ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
+            ExtendedBlockStorage extendedblockstorage = this.storageArrays[j4];
             boolean flag = false;
 
             if (extendedblockstorage == NULL_BLOCK_STORAGE)
@@ -643,8 +647,9 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
                     return null;
                 }
 
-                extendedblockstorage = new ExtendedBlockStorage(j >> 4 << 4, this.world.provider.hasSkyLight());
-                this.storageArrays[j >> 4] = extendedblockstorage;
+                //extendedblockstorage = new ExtendedBlockStorage(j >> 4 << 4, this.world.provider.hasSkyLight()); 麻将脑子有坑？
+                extendedblockstorage = new ExtendedBlockStorage(j, this.world.provider.hasSkyLight());
+                this.storageArrays[j4] = extendedblockstorage;
                 flag = j >= i1;
             }
 
@@ -753,13 +758,14 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     {
         int i = pos.getX() & 15;
         int j = pos.getY();
+        int j4 = j >> 4;
         int k = pos.getZ() & 15;
         ExtendedBlockStorage extendedblockstorage = this.storageArrays[j >> 4];
 
         if (extendedblockstorage == NULL_BLOCK_STORAGE)
         {
-            extendedblockstorage = new ExtendedBlockStorage(j >> 4 << 4, this.world.provider.hasSkyLight());
-            this.storageArrays[j >> 4] = extendedblockstorage;
+            extendedblockstorage = new ExtendedBlockStorage(j, this.world.provider.hasSkyLight()); // 麻将又抽风了
+            this.storageArrays[j4] = extendedblockstorage;
             this.generateSkylightMap();
         }
 
