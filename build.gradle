@@ -140,7 +140,7 @@ task jar_server(type: Jar) {
         attributes(
                 "Implementation-Title": rootProject.name,
                 "Implementation-Version": "git-" + version,
-                "Main-Class": "net.minecraftforge.fml.relauncher.ServerLaunchWrapper",
+                "Main-Class": "catserver.server.CatServerLaunch",
                 "TweakClass": "net.minecraftforge.fml.common.launcher.FMLTweaker",
                 "Class-Path": configurations.compile.collect { 'libraries/' + it.getName() }.join(' '),
         )
