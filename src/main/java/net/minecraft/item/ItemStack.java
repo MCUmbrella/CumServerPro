@@ -128,21 +128,6 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
         this.updateEmptyState();
         this.forgeInit();
     }
-    public ItemStack(Item itemIn, int amount, int meta, @Nullable NBTTagCompound capNBT, int animationsToGo)
-    {
-        this.capNBT = capNBT;
-        this.item = itemIn;
-        this.itemDamage = meta;
-        this.stackSize = amount;
-        this.animationsToGo = animationsToGo;
-
-        if (this.itemDamage < 0)
-        {
-            this.itemDamage = 0;
-        }
-
-        this.updateEmptyState();
-    }
 
     private void updateEmptyState()
     {
@@ -473,7 +458,8 @@ public final class ItemStack implements net.minecraftforge.common.capabilities.I
 
     public ItemStack copy()
     {
-        ItemStack itemstack = new ItemStack(this.item, this.stackSize, this.itemDamage, this.capabilities != null ? this.capabilities.serializeNBT() : null, this.getAnimationsToGo());
+        ItemStack itemstack = new ItemStack(this.item, this.stackSize, this.itemDamage, this.capabilities != null ? this.capabilities.serializeNBT() : null);
+        itemstack.setAnimationsToGo(this.getAnimationsToGo());
 
         if (this.stackTagCompound != null)
         {
