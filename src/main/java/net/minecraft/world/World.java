@@ -1381,7 +1381,7 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
         // CatServer start
         if (this.restoringBlockSnapshots) return true;
-        if (worldCapture.isCapture() && this.captureBlockSnapshots && !(entity instanceof EntityPlayer)) {
+        if (worldCapture.isCapture() && WorldCapture.canCapture(entity)) {
             worldCapture.addEntitySnap(entity, spawnReason);
             return true;
         }

@@ -3,6 +3,7 @@ package catserver.server;
 import com.google.common.collect.Lists;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityEnderCrystal;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -22,6 +23,8 @@ public class WorldCapture {
 
     private List<EntitySnap> entitySnap = Lists.newArrayList();
     private List<ItemSnap> itemSnap = Lists.newArrayList();
+
+    private static Class<?>[] excludeEntities = new Class<?>[] {EntityPlayer.class, EntityEnderCrystal.class};
 
     public WorldCapture(WorldServer world) {
         this.world = world;
@@ -43,7 +46,7 @@ public class WorldCapture {
     }
 
     public boolean isCapture() {
-        return this.capture;
+        return this.capture && world.captureBlockSnapshots;
     }
 
     public void apply() {
@@ -107,5 +110,13 @@ public class WorldCapture {
                 isApply = true;
             }
         }
+    }
+
+    public static boolean canCapture(Entity entity) {
+        for (Class<?> excludeEntity : excludeEntities) {
+            if (excludeEntity.isAssignableFrom(entity.getClass()))
+                return false;
+        }
+        return true;
     }
 }
