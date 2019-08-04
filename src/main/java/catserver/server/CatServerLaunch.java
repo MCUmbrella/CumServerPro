@@ -3,14 +3,13 @@ package catserver.server;
 import catserver.server.utils.Md5Utils;
 
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.*;
 import java.nio.channels.Channels;
 import java.nio.channels.ReadableByteChannel;
-import java.util.Scanner;
+import java.util.*;
 
 public class CatServerLaunch {
-    private static String[] librariesSources = new String[] {"http://sv.catserver.moe:8001/dl/", "http://sv2.catserver.moe:8001/dl/"};
+    private static List<String> librariesSources = new ArrayList<>(Arrays.asList("http://sv.catserver.moe:8001/dl/", "http://sv2.catserver.moe:8001/dl/"));
     private static boolean huanlin = false;
     private static boolean update = false;
     private static boolean disable = false;
@@ -82,8 +81,9 @@ public class CatServerLaunch {
     }
 
     private static boolean tryDownload(File file, String md5) {
-        for (String librariesSource : librariesSources) {
-            String downloadUrl = librariesSource + file.getName();
+        Iterator<String> iterator = librariesSources.iterator();
+        while(iterator.hasNext()) {
+            String downloadUrl = iterator.next() + file.getName();
             try {
                 downloadFile(downloadUrl, file);
                 if (!file.exists() || (md5 != null && !Md5Utils.getFileMD5String(file).equals(md5))) {
@@ -93,6 +93,7 @@ public class CatServerLaunch {
                 return true;
             } catch (IOException e) {
                 System.out.println(String.format("下载文件失败(HTTP状态: %s), 你也可以手动下载: %s", e.toString(), downloadUrl));
+                if (e instanceof ConnectException || e instanceof SocketTimeoutException) iterator.remove();
             }
         }
         return false;
@@ -101,11 +102,12 @@ public class CatServerLaunch {
     private static void downloadFile(String downloadUrl, File saveFile) throws IOException {
         URL url = new URL(downloadUrl);
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+        connection.setConnectTimeout(8000);
         connection.setRequestMethod("GET");
 
         System.out.println(String.format("正在下载文件 %s 大小: %s", saveFile.getName(), getSize(connection.getContentLengthLong())));
 
-        ReadableByteChannel rbc = Channels.newChannel(url.openStream());
+        ReadableByteChannel rbc = Channels.newChannel(connection.getInputStream());
         FileOutputStream fos = new FileOutputStream(saveFile);
         fos.getChannel().transferFrom(rbc, 0, Long.MAX_VALUE);
         rbc.close();
