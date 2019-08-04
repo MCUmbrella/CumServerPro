@@ -4,6 +4,7 @@ import java.lang.reflect.Constructor;
 import java.util.Arrays;
 import java.util.Map;
 
+import catserver.server.remapper.PluginHook;
 import org.apache.commons.lang.Validate;
 import org.bukkit.map.MapView;
 import org.bukkit.material.Bed;
@@ -710,6 +711,7 @@ public enum Material {
      */
     @Deprecated
     public static Material getMaterial(final int id) {
+        if (PluginHook.isHookToBlockMaterial()) return getBlockMaterial(id);
         if (byId.length > id && id >= 0) {
             return byId[id];
         } else {
