@@ -36,6 +36,7 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
     private int blockMetadata = -1;
     protected Block blockType;
     public CustomTimingsHandler tickTimer = org.bukkit.craftbukkit.SpigotTimings.getTileEntityTimings(this); // Spigot
+    public boolean skipTick = false;
 
     public static void register(String id, Class <? extends TileEntity > clazz)
     {

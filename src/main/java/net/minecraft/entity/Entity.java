@@ -242,6 +242,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     // Spigot end
     public boolean canAsync = false;
     public boolean nmsEntity = false;
+    public boolean skipTick = false;
 
     public Entity(World worldIn)
     {
