@@ -1938,8 +1938,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.profiler.startSection("entities");
         this.profiler.startSection("global");
 
-        boolean checkSkipTick = MinecraftServer.currentTick % 50 == 0;
-        boolean shouldSkipTick = MinecraftServer.currentTick % 5 > 0;
+        boolean checkSkipTick = CatServer.enableSkipTick && MinecraftServer.currentTick % 50 == 0;
+        boolean shouldSkipTick = CatServer.enableSkipTick && MinecraftServer.currentTick % 5 > 0;
 
         final int theWorldPlayerSize = playerEntities.size();
         for (int i = 0; i < this.weatherEffects.size(); ++i)

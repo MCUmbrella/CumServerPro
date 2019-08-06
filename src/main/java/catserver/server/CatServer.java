@@ -36,6 +36,7 @@ public class CatServer {
     public static boolean threadLag = true;
     public static boolean chunkGenAsync = false;
     public static boolean keepSpawnInMemory = true;
+    public static boolean enableSkipTick = true;
     public static boolean disableUpdateGameProfile = true;
     public static boolean modMob = false;
     public static boolean entityAI = true;
@@ -98,6 +99,7 @@ public class CatServer {
         threadLag = getOrWriteBooleanConfig("check.threadLag", threadLag);
         chunkGenAsync = getOrWriteBooleanConfig("async.chunkGen", chunkGenAsync);
         keepSpawnInMemory = getOrWriteBooleanConfig("world.keepSpawnInMemory", keepSpawnInMemory);
+        enableSkipTick = getOrWriteBooleanConfig("world.enableSkipTick", enableSkipTick);
         disableForgeGenWorld = getOrWriteStringListConfig("world.worldGen.disableForgeGenWorld", disableForgeGenWorld);
         disableUpdateGameProfile = getOrWriteBooleanConfig("disableUpdateGameProfile", disableUpdateGameProfile);
         worldGenMaxTickTime = getOrWriteStringLongConfig("maxTickTime.worldGen", 15) * 1000000;
