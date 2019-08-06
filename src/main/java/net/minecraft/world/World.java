@@ -1938,7 +1938,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
         this.profiler.startSection("entities");
         this.profiler.startSection("global");
 
-        boolean checkSkipTick = MinecraftServer.currentTick % 5 == 0;
+        boolean checkSkipTick = MinecraftServer.currentTick % 50 == 0;
+        boolean shouldSkipTick = MinecraftServer.currentTick % 5 > 0;
 
         final int theWorldPlayerSize = playerEntities.size();
         for (int i = 0; i < this.weatherEffects.size(); ++i)
@@ -2022,11 +2023,12 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
             Entity entity2 = (Entity) this.loadedEntityList.get(this.tickPosition);
             // CatServer start
             if (this instanceof WorldServer) {
-                if (!checkSkipTick) {
+                if (checkSkipTick) {
                     WorldServer worldServer = (WorldServer) this;
                     ChunkPos chunkPos = new ChunkPos(entity2.getPosition());
                     entity2.skipTick = !worldServer.getPlayerChunkMap().contains(chunkPos.x, chunkPos.z);
-                } else if (entity2.skipTick) continue;
+                }
+                if (shouldSkipTick && entity2.skipTick) continue;
             }
             // CatServer end
             // CraftBukkit end
@@ -2137,11 +2139,12 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
                 BlockPos blockpos = tileentity.getPos();
                 // CatServer start
                 if (this instanceof WorldServer) {
-                    if (!checkSkipTick) {
+                    if (checkSkipTick) {
                         WorldServer worldServer = (WorldServer) this;
                         ChunkPos chunkPos = new ChunkPos(blockpos);
                         tileentity.skipTick = !worldServer.getPlayerChunkMap().contains(chunkPos.x, chunkPos.z);
-                    } else if (tileentity.skipTick) continue;
+                    }
+                    if (shouldSkipTick && tileentity.skipTick) continue;
                 }
                 // CatServer end
                 if (this.isBlockLoaded(blockpos, false) && this.worldBorder.contains(blockpos)) //Forge: Fix TE's getting an extra tick on the client side....
