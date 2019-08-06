@@ -1,9 +1,7 @@
 package net.minecraft.server.dedicated;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
-import java.io.IOException;
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 
 import joptsimple.OptionSet;
@@ -31,7 +29,7 @@ public class PropertyManager
             try
             {
                 fileinputstream = new FileInputStream(propertiesFile);
-                this.serverProperties.load(fileinputstream);
+                this.serverProperties.load(new InputStreamReader(fileinputstream, StandardCharsets.UTF_8));
             }
             catch (Exception exception)
             {
@@ -90,7 +88,7 @@ public class PropertyManager
             }
             // CraftBukkit end
             fileoutputstream = new FileOutputStream(this.serverPropertiesFile);
-            this.serverProperties.store(fileoutputstream, "Minecraft server properties");
+            this.serverProperties.store(new OutputStreamWriter(fileoutputstream, StandardCharsets.UTF_8), "Minecraft server properties");
         }
         catch (Exception exception)
         {
