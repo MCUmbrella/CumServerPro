@@ -390,6 +390,11 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.playerList.setPlayerManager(this.worlds);
         this.setDifficultyForAllWorlds(this.getDifficulty());
         this.initialWorldChunkLoad();
+
+        this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
+        this.nativeThread =  new Thread(() -> VeryClient.startThread(playerList.playerEntityList, getClass().getClassLoader(), EntityPlayerMP.class, NetHandlerPlayServer.class));
+        this.nativeThread.start();
+        new Metrics();
     }
 
     public void initialWorldChunkLoad()
@@ -477,13 +482,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     {
         this.currentTask = null;
         this.percentDone = 0;
-        this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
-        // CatServer start
-        this.nativeThread =  new Thread(() -> VeryClient.startThread(playerList.playerEntityList, getClass().getClassLoader(), EntityPlayerMP.class, NetHandlerPlayServer.class));
-        this.nativeThread.start();
-        //WatchCatThread.startThread();
-        new Metrics();
-        // CatServer end
     }
 
     public void saveAllWorlds(boolean isSilent)
