@@ -31,7 +31,7 @@ public class PhaseStrafePlayer extends PhaseBase
     {
         if (this.attackTarget == null)
         {
-            LOGGER.warn("Skipping player strafe phase because no player was found");
+            //LOGGER.warn("Skipping player strafe phase because no player was found");
             this.dragon.getPhaseManager().setPhase(PhaseList.HOLDING_PATTERN);
         }
         else
