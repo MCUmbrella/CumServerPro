@@ -136,7 +136,7 @@ public abstract class TileEntity implements net.minecraftforge.common.capabiliti
         }
         else
         {
-            LOGGER.warn("Skipping BlockEntity with id {}", (Object)s);
+            //LOGGER.warn("Skipping BlockEntity with id {}", (Object)s);
         }
 
         return tileentity;

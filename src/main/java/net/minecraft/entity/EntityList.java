@@ -214,7 +214,7 @@ public class EntityList
 
         if (entity == null)
         {
-            LOGGER.warn("Skipping Entity with id {}", (Object)resourcelocation);
+            //LOGGER.warn("Skipping Entity with id {}", (Object)resourcelocation);
         }
         else
         {

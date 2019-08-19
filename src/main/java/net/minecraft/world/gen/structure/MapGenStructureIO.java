@@ -64,7 +64,7 @@ public class MapGenStructureIO
         }
         else
         {
-            LOGGER.warn("Skipping Structure with id {}", (Object)tagCompound.getString("id"));
+            //LOGGER.warn("Skipping Structure with id {}", (Object)tagCompound.getString("id"));
         }
 
         return structurestart;
@@ -85,8 +85,8 @@ public class MapGenStructureIO
         }
         catch (Exception exception)
         {
-            LOGGER.warn("Failed Piece with id {}", (Object)tagCompound.getString("id"));
-            exception.printStackTrace();
+            //LOGGER.warn("Failed Piece with id {}", (Object)tagCompound.getString("id"));
+            //exception.printStackTrace();
         }
 
         if (structurecomponent != null)
@@ -95,7 +95,7 @@ public class MapGenStructureIO
         }
         else
         {
-            LOGGER.warn("Skipping Piece with id {}", (Object)tagCompound.getString("id"));
+            //LOGGER.warn("Skipping Piece with id {}", (Object)tagCompound.getString("id"));
         }
 
         return structurecomponent;
