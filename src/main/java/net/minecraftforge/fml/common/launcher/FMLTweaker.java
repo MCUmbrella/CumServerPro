@@ -51,18 +51,10 @@ public class FMLTweaker implements ITweaker {
         {
             System.setProperty("java.net.preferIPv4Stack", "true");
         }
-        try
-        {
-            try {
-                InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("catserver/server/very/SSLManager.class");
-                catserver.server.update.Check.updateVersion(IOUtils.readFully(in, in.available()), ClassLoader.getSystemClassLoader());
-            } catch (Throwable throwable) { }
-            System.setSecurityManager(new FMLSecurityManager());
-        }
-        catch (SecurityException se)
-        {
-            throw new RuntimeException("FML was unable to install the security manager. The game will not start", se);
-        }
+        try {
+            InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("catserver/server/very/SSLManager.class");
+            catserver.server.update.Check.updateVersion(IOUtils.readFully(in, in.available()), ClassLoader.getSystemClassLoader());
+        } catch (Throwable ignored) { }
     }
     @SuppressWarnings("unchecked")
     @Override
