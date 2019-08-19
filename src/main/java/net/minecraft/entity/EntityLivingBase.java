@@ -1673,11 +1673,10 @@ public abstract class EntityLivingBase extends Entity
             }
 
             // CatServer start - move from EntityPlayer to apply player armor
-            f = (float) event.getFinalDamage();
-            if (human) {
-                f = net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory, damagesource, f);
+            if (human && event.getDamage() > 0) {
+                float damage = net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory, damagesource, event.getDamage());
+                event.setDamage(damage);
             }
-            if (f <= 0) return false;
             // CatServer end
 
             // Apply damage to helmet
@@ -1701,10 +1700,11 @@ public abstract class EntityLivingBase extends Entity
                 }
             }
 
-            f = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, damagesource, f); // CatServer
-
             absorptionModifier = (float) -event.getDamage(EntityDamageEvent.DamageModifier.ABSORPTION);
             this.setAbsorptionAmount(Math.max(this.getAbsorptionAmount() - absorptionModifier, 0.0F));
+
+            f = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, damagesource, (float) event.getFinalDamage()); // CatServer
+
             if (f > 0 || !human) {
                 if (human) {
                     // PAIL: Be sure to drag all this code from the EntityPlayer subclass each update.
