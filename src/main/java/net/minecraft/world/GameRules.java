@@ -1,12 +1,12 @@
 package net.minecraft.world;
 
-import java.util.LinkedHashMap;
+import java.util.HashMap;
 import java.util.Set;
 import net.minecraft.nbt.NBTTagCompound;
 
 public class GameRules
 {
-    private final LinkedHashMap<String, Value> rules = new LinkedHashMap<>(128, 0.75f, true);
+    private final HashMap<String, Value> rules = new HashMap<>();
 
     public GameRules()
     {
