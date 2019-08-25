@@ -18,10 +18,7 @@ import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
 import java.lang.reflect.Field;
 import java.nio.charset.Charset;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
@@ -202,5 +199,17 @@ public class CatServer {
                 Runtime.getRuntime().exit(0);
             }
         }, 300 * 1000);
+    }
+
+    public static boolean isSendDataSerializers(Map<String, String> modList) {
+        String forgeVersion = modList.get("forge");
+        if (forgeVersion != null) {
+            try {
+                if (Integer.valueOf(forgeVersion.split("\\.")[3]) < 2826) {
+                    return false;
+                }
+            } catch (Exception ignored) {}
+        }
+        return true;
     }
 }
