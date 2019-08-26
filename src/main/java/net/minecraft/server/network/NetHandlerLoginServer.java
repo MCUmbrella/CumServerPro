@@ -135,8 +135,6 @@ public class NetHandlerLoginServer implements INetHandlerLoginServer, ITickable
                 this.loginGameProfile.getProperties().put( property.getName(), property );
             }
         }
-
-        this.loginGameProfile = new GameProfile( uuid, this.loginGameProfile.getName() );
     }
     // Spigot end
 
