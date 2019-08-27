@@ -481,7 +481,7 @@ public final class SimplePluginManager implements PluginManager {
     public void callEvent(Event event) {
         if (CatServer.fakePlayerEventPass && event instanceof PlayerEvent && ((PlayerEvent) event).getPlayer() instanceof CraftFuckPlayer) // CatServer
             return;
-        if (event.isAsynchronous() || !Bukkit.isPrimaryThread()) { // CatServer
+        if (event.isAsynchronous() || !server.isPrimaryThread()) { // CatServer
             if (Thread.holdsLock(this)) {
                 throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from inside synchronized code.");
             }
