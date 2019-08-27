@@ -14,7 +14,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
     private final Map < Class<?>, List<T >> map = new ConcurrentHashMap<>();
     private final Set < Class<? >> knownKeys = new ConcurrentSet<>();
     private final Class<T> baseClass;
-    private final List<T> values = new ArrayList<>();
+    private final List<T> values = new CopyOnWriteArrayList<>();
 
     public ClassInheritanceMultiMap(Class<T> baseClassIn)
     {
