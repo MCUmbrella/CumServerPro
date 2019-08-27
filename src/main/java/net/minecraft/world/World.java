@@ -365,7 +365,8 @@ public abstract class World implements IBlockAccess, net.minecraftforge.common.c
 
     public boolean isOutsideBuildHeight(BlockPos pos)
     {
-        return pos.y < 0 || pos.y > 255;
+        final int yyy = pos.getY();
+        return yyy < 0 || yyy > 255;
     }
 
     public boolean isAirBlock(BlockPos pos)

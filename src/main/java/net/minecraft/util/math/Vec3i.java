@@ -8,7 +8,7 @@ public class Vec3i implements Comparable<Vec3i>
 {
     public static final Vec3i NULL_VECTOR = new Vec3i(0, 0, 0);
     private final int x;
-    public final int y;
+    private final int y;
     private final int z;
 
     public Vec3i(int xIn, int yIn, int zIn)
