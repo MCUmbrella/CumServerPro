@@ -1,5 +1,6 @@
 package net.minecraft.util;
 
+import catserver.server.utils.ThreadSafeList;
 import com.google.common.collect.Iterators;
 import io.netty.util.internal.ConcurrentSet;
 
@@ -14,7 +15,7 @@ public class ClassInheritanceMultiMap<T> extends AbstractSet<T>
     private final Map < Class<?>, List<T >> map = new ConcurrentHashMap<>();
     private final Set < Class<? >> knownKeys = new ConcurrentSet<>();
     private final Class<T> baseClass;
-    private final List<T> values = new CopyOnWriteArrayList<>();
+    private final List<T> values = new ThreadSafeList<>(false);
 
     public ClassInheritanceMultiMap(Class<T> baseClassIn)
     {

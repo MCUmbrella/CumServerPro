@@ -153,7 +153,12 @@ public class FMLNetworkHandler
             return null;
         }
 
-        return channelPair.get(Side.SERVER).generatePacketFrom(new FMLMessage.EntitySpawnMessage(er, entity, er.getContainer()));
+        try {
+            return channelPair.get(Side.SERVER).generatePacketFrom(new FMLMessage.EntitySpawnMessage(er, entity, er.getContainer()));
+        }catch (Exception e) {
+            FMLLog.log.error("Cannot gen pack for Entity {} in world:{}, x:{}, y:{}, z:{} at class {}", entity.getName(), entity.world.getWorld().getName(), entity.posX, entity.posY, entity.posZ, entity.getClass().getName());
+            return null;
+        }
     }
 
     @Nullable

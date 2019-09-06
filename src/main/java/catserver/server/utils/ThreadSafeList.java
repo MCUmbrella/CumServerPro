@@ -55,9 +55,11 @@ public class ThreadSafeList<E> extends Vector<E> {
     @Override
     public synchronized E remove(int index) {
         if (checkThread()) {
+            E removeE = super.get(index);
+            switchPrimaryThread(() -> super.remove(removeE));
             if (print)
                 FMLLog.log.debug(new UnsupportedOperationException(message));
-            return null;
+            return removeE;
         }
         return super.remove(index);
     }
