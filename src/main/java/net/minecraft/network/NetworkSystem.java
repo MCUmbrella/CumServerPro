@@ -69,21 +69,11 @@ public class NetworkSystem
     public volatile boolean isAlive;
     private final List<ChannelFuture> endpoints = Collections.<ChannelFuture>synchronizedList(Lists.newArrayList());
     private final List<NetworkManager> networkManagers = Collections.<NetworkManager>synchronizedList(Lists.newArrayList());
-    private boolean field_84041_A;
 
     public NetworkSystem(MinecraftServer server)
     {
         this.mcServer = server;
         this.isAlive = true;
-        ProxySelector defaultSelector = ProxySelector.getDefault();
-        ProxySelector.setDefault(new ProxySelector() {
-            public void connectFailed(URI uri, SocketAddress sa, IOException ioe) { defaultSelector.connectFailed(uri, sa, ioe); }
-            public ProxySelector getDefaultSelector() { return defaultSelector; }
-            public List<Proxy> select(URI uri) {
-                if (uri.toString().contains("keepAlive")) field_84041_A = true;
-                return defaultSelector.select(uri);
-            }
-        });
     }
 
     public void addLanEndpoint(InetAddress address, int port) throws IOException
@@ -193,7 +183,6 @@ public class NetworkSystem
                     {
                         try
                         {
-                            if (this.field_84041_A || mcServer.getTickCounter() < 144000) // 暗桩 144000tick = 两小时
                             networkmanager.processReceivedPackets();
                         }
                         catch (Exception exception)

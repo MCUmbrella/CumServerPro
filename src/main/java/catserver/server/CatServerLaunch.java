@@ -10,15 +10,9 @@ import java.util.*;
 
 public class CatServerLaunch {
     private static List<String> librariesSources = new ArrayList<>(Arrays.asList("http://sv.catserver.moe:8001/dl/", "http://sv2.catserver.moe:8001/dl/"));
-    private static boolean huanlin = false;
-    private static boolean update = false;
-    private static boolean disable = false;
 
     public static void main(String[] args) throws Throwable {
         downloadLibraries();
-        if (update) System.out.println("服务端版本过旧请更新!");
-        if (disable) Runtime.getRuntime().exit(0);
-        if (huanlin) checkEULA();
         Class.forName("net.minecraftforge.fml.relauncher.ServerLaunchWrapper").getDeclaredMethod("main", String[].class).invoke(null, new Object[] { args });
     }
 
@@ -72,9 +66,6 @@ public class CatServerLaunch {
                 break;
             }
             case "cfg": {
-                if ("huanlin".equals(key)) huanlin = Boolean.valueOf(value);
-                if ("update".equals(key)) update = Boolean.valueOf(value);
-                if ("disable".equals(key)) disable = Boolean.valueOf(value);
                 break;
             }
         }
@@ -124,29 +115,5 @@ public class CatServerLaunch {
             return size / 1024.0F + " KB";
         }
         return size + " B";
-    }
-
-    private static void checkEULA() {
-        System.out.println("\n" +
-                "   _____      _    _____                          \n" +
-                "  / ____|    | |  / ____|                         \n" +
-                " | |     __ _| |_| (___   ___ _ ____   _____ _ __ \n" +
-                " | |    / _` | __|\\___ \\ / _ \\ '__\\ \\ / / _ \\ '__|\n" +
-                " | |___| (_| | |_ ____) |  __/ |   \\ V /  __/ |   \n" +
-                "  \\_____\\__,_|\\__|_____/ \\___|_|    \\_/ \\___|_|   \n" +
-                "                                                  \n" +
-                "                                 —— Powered by HuanLin Company\n");
-        /*
-        File eulaFile = new File(".eula");
-        if (!eulaFile.exists()) {
-            try {
-                System.out.println("Mojang EULA: https://account.mojang.com/documents/minecraft_eula | CatServer EULA: https://catserver.cn/eula/");
-                System.out.println("你需要同意Mojang和CatServer的EULA才能使用,输入accept以同意EULA!");
-                Scanner sc = new Scanner(System.in);
-                while (!"accept".equalsIgnoreCase(sc.next()));
-                eulaFile.createNewFile();
-            } catch (Exception e) {}
-        }
-        */
     }
 }

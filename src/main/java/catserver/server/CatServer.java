@@ -1,7 +1,6 @@
 package catserver.server;
 
 import catserver.server.remapper.ReflectionUtils;
-import catserver.server.very.VeryConfig;
 import com.conversantmedia.util.concurrent.NoLockDisruptorBlockingQueue;
 import net.minecraft.server.MinecraftServer;
 import net.minecraftforge.fml.common.FMLLog;
@@ -83,7 +82,7 @@ public class CatServer {
         if (configFile.exists()) {
             config = YamlConfiguration.loadConfiguration(configFile);
         } else {
-            config = YamlConfiguration.loadConfiguration(new InputStreamReader(VeryConfig.class.getClassLoader().getResourceAsStream("configurations/catserver.yml")));
+            config = YamlConfiguration.loadConfiguration(new InputStreamReader(CatServer.class.getClassLoader().getResourceAsStream("configurations/catserver.yml")));
             try {
                 configFile.createNewFile();
                 config.save(configFile);
@@ -183,7 +182,7 @@ public class CatServer {
         File permissFile = new File("fakePlayerPermission.txt");
         if (! permissFile.exists()) {
             permissFile.createNewFile();
-            InputStreamReader inputStreamReader = new InputStreamReader(VeryConfig.class.getClassLoader().getResourceAsStream("configurations/fakePlayerPermission.txt"));
+            InputStreamReader inputStreamReader = new InputStreamReader(CatServer.class.getClassLoader().getResourceAsStream("configurations/fakePlayerPermission.txt"));
             List<String> lines = IOUtils.readLines(inputStreamReader);
             FileUtils.writeLines(permissFile, lines);
         }

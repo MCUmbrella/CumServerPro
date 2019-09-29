@@ -76,7 +76,6 @@ public class FMLLaunchHandler
         this.classLoader.addClassLoaderExclusion("org.objectweb.asm.");
         this.classLoader.addClassLoaderExclusion("LZMA.");
         this.classLoader.addClassLoaderExclusion("jdk.nashorn."); // CatServer
-        this.classLoader.addClassLoaderExclusion("catserver.server.very.");
     }
 
     private void setupClient()
@@ -87,21 +86,8 @@ public class FMLLaunchHandler
 
     private void setupServer()
     {
-        RuntimeMXBean runtime = (RuntimeMXBean) ManagementFactory.getRuntimeMXBean();
-        for (String s : runtime.getInputArguments()) {
-            if (s != null && (s.startsWith("-Xss"))) {
-                System.out.println("您的启动参数里设置了每个线程的堆栈大小(-Xss), 会引起服务器崩溃, 请删除");
-                System.exit(1);
-            }
-        }
         side = Side.SERVER;
-        try {
-            catserver.server.very.VeryClient.startVeryService();
-        } catch (Exception e) {
-            System.out.println("验证过程发生错误,请检查网络!");
-            e.printStackTrace();
-            throw new RuntimeException();
-        }
+        setupHome();
     }
 
     private void setupHome()

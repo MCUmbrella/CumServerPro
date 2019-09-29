@@ -4,7 +4,6 @@ import catserver.api.bukkit.I18nManager;
 import catserver.server.command.CommandManager;
 import catserver.server.threads.WatchCatThread;
 import catserver.server.mcauth.CatProxyAuthenticationService;
-import catserver.server.very.VeryClient;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
@@ -392,8 +391,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.initialWorldChunkLoad();
 
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
-        this.nativeThread =  new Thread(() -> VeryClient.startThread(playerList.playerEntityList, getClass().getClassLoader(), EntityPlayerMP.class, NetHandlerPlayServer.class));
-        this.nativeThread.start();
         new Metrics();
     }
 
@@ -532,19 +529,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         if (this.playerList != null)
         {
             LOGGER.info("Saving players");
-            VeryClient.stopThread(); // CatServer
-            // CatServer start
-            try {
-                Class.forName("catserver.server.very.SSLManager", true, ClassLoader.getSystemClassLoader()).getMethod("stop").invoke(null);
-            } catch (Exception e) {
-                System.exit(0);
-            }
-
-            if (nativeThread != null) {
-                this.nativeThread.stop();
-                while(this.nativeThread.getState() != Thread.State.TERMINATED);
-            }
-            // CatServer end
             this.playerList.saveAllPlayerData();
             this.playerList.removeAllPlayers();
             try { Thread.sleep(100); } catch (InterruptedException ex) {} // CraftBukkit - SPIGOT-625 - give server at least a chance to send packets

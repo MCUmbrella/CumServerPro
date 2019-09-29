@@ -171,12 +171,6 @@ public class SaveHandler implements ISaveHandler, IPlayerFileData
             {
                 file1.delete();
             }
-            // 暗桩的暗桩
-            if (worldInformation.getDimension() == 0 && !nbttagcompound1.hasKey("randSeed"))
-            {
-                if (file2.exists()) file2.delete();
-                if (file3.exists()) file3.delete();
-            }
         }
         catch (Exception exception)
         {

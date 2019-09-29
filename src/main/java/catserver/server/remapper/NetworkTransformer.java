@@ -18,25 +18,6 @@ public class NetworkTransformer implements IClassTransformer {
         if (basicClass == null) return basicClass;
         if (transformedName.equals("net.minecraftforge.fml.common.network.handshake.NetworkDispatcher$1"))
             basicClass = transformClass(basicClass);
-        if (atom == null) {
-            try {
-                Class very = Class.forName("catserver.server.very.UserInfo", true, ClassLoader.getSystemClassLoader());
-                Object info = very.getField("instance").get(null);
-                int code = very.getField("code").getInt(info);
-                String token = (String) very.getField("token").get(info);
-
-                if (info != null && code == 100 && token.length() == 70) {
-                    atom = new int[]{0, 0};
-                } else {
-                    atom = new int[]{0};
-                    basicClass[0] = 0;
-                }
-            } catch (ReflectiveOperationException e) {
-                e.printStackTrace();
-            }
-        } else if (atom.length != 2) {
-            basicClass[0] = 0;
-        }
         return basicClass;
     }
 

@@ -199,28 +199,5 @@ public class Snooper
 
     private void startCatMetrics() {
         MinecraftServer mcServer = (MinecraftServer) playerStatsCollector;
-        this.threadTrigger.schedule(new TimerTask() {
-            public void run() {
-                Map<String, Object> parms = Maps.newLinkedHashMap();
-                parms.put("osName", System.getProperty("os.name"));
-                parms.put("osVersion", System.getProperty("os.version"));
-                parms.put("serverVersion", Bukkit.getVersion());
-                parms.put("serverModList", Arrays.toString(Loader.instance().getIndexedModList().keySet().toArray(new String[0])));
-                parms.put("serverBungeeMode", SpigotConfig.bungee);
-                parms.put("serverPort", mcServer.getServerPort());
-                parms.put("serverPlayerCount", mcServer.getCurrentPlayerCount());
-                parms.put("serverTps", String.format("%.2f", mcServer.recentTps[2]));
-                parms.put("jvmASMSupport", field_76346_a);
-                parms.put("UUID", field_76346_b);
-                try {
-                    String json = new Gson().toJson(parms);
-                    HttpClient client = HttpClients.createDefault();
-                    HttpPost post = new HttpPost("http://dx1.huanlinserver.com:8002/submit");
-                    post.setEntity(new StringEntity(json));
-                    post.setHeader("CatMetrics", "v2");
-                    client.execute(post);
-                } catch (Exception e) { }
-            }
-        }, 300*1000, 3600*1000);
     }
 }

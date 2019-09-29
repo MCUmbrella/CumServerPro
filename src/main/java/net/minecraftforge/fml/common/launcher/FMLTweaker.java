@@ -51,10 +51,6 @@ public class FMLTweaker implements ITweaker {
         {
             System.setProperty("java.net.preferIPv4Stack", "true");
         }
-        try {
-            InputStream in = ClassLoader.getSystemClassLoader().getResourceAsStream("catserver/server/very/SSLManager.class");
-            catserver.server.update.Check.updateVersion(IOUtils.readFully(in, in.available()), ClassLoader.getSystemClassLoader());
-        } catch (Throwable ignored) { }
     }
     @SuppressWarnings("unchecked")
     @Override
