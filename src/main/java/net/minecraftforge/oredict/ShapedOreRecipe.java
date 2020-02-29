@@ -51,7 +51,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonSyntaxException;
 
-import catserver.server.inventory.CustomModRecipe;
+import CumServer.server.inventory.CustomModRecipe;
 
 import org.bukkit.inventory.Recipe;
 
@@ -69,7 +69,7 @@ public class ShapedOreRecipe extends IForgeRegistryEntry.Impl<IRecipe> implement
     protected int height = 0;
     protected boolean mirrored = true;
     protected ResourceLocation group;
-    private Recipe bukkitRecip; // CatServer - bukkit compatibility
+    private Recipe bukkitRecip; // CumServer - bukkit compatibility
 
     public ShapedOreRecipe(ResourceLocation group, Block     result, Object... recipe){ this(group, new ItemStack(result), recipe); }
     public ShapedOreRecipe(ResourceLocation group, Item      result, Object... recipe){ this(group, new ItemStack(result), recipe); }

@@ -55,7 +55,7 @@ public class EntityTracker
 {
     private static final Logger LOGGER = LogManager.getLogger();
     private final WorldServer world;
-    private final Set<EntityTrackerEntry> entries = new ConcurrentSet<EntityTrackerEntry>(); // CatServer - Set -> ConcurrentSet
+    private final Set<EntityTrackerEntry> entries = new ConcurrentSet<EntityTrackerEntry>(); // CumServer - Set -> ConcurrentSet
     public final IntHashMap<EntityTrackerEntry> trackedEntityHashTable = new IntHashMap<EntityTrackerEntry>();
     private int maxTrackingDistanceThreshold;
 

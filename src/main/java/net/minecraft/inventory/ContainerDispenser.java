@@ -8,7 +8,7 @@ import org.bukkit.craftbukkit.inventory.CraftInventoryView;
 
 public class ContainerDispenser extends Container
 {
-    public final IInventory dispenserInventory; // CatServer - private -> public
+    public final IInventory dispenserInventory; // CumServer - private -> public
     private CraftInventoryView bukkitEntity = null;
     private InventoryPlayer player;
 

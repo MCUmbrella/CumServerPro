@@ -592,13 +592,13 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
         ITextComponent chatmessage = this.getCombatTracker().getDeathMessage();
 
         String deathmessage = chatmessage.getFormattedText();
-        // CatServer start - handle drop items in Bukkit
+        // CumServer start - handle drop items in Bukkit
         captureDrops = true;
         org.bukkit.event.entity.PlayerDeathEvent deathEvent = CraftEventFactory.callPlayerDeathEvent(this, loot,
                 this.getCombatTracker().getDeathMessage().getFormattedText(),
                 this.world.getGameRules().getBoolean("keepInventory"));
         captureDrops = false;
-        // CatServer end
+        // CumServer end
         String deathMessage = deathEvent.getDeathMessage();
 
         if (deathMessage != null && deathMessage.length() > 0 && flag) { // TODO: allow plugins to override?
@@ -869,14 +869,14 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
 
             // this.mcServer.getPlayerList().transferPlayerToDimension(this, dimensionIn, teleporter);
             PlayerTeleportEvent.TeleportCause cause = (this.dimension == 1 || dimensionIn == 1) ? PlayerTeleportEvent.TeleportCause.END_PORTAL : ((this.dimension == -1 || dimensionIn == -1) ? PlayerTeleportEvent.TeleportCause.NETHER_PORTAL : PlayerTeleportEvent.TeleportCause.MOD);
-            // CatServer start
+            // CumServer start
             final World oldWorld = this.world;
             final double moveFactor = oldWorld.provider.getMovementFactor() / this.world.provider.getMovementFactor();
             double d0 = MathHelper.clamp(this.posX * moveFactor, this.world.getWorldBorder().minX() + 16.0D, this.world.getWorldBorder().maxX() - 16.0D);
             double d1 = MathHelper.clamp(this.posZ * moveFactor, this.world.getWorldBorder().minZ() + 16.0D, this.world.getWorldBorder().maxZ() - 16.0D);
-            // CatServer end
+            // CumServer end
             this.mcServer.getPlayerList().changeDimension(this, dimensionIn, cause); // check all this
-            // CatServer start - create portal for mods
+            // CumServer start - create portal for mods
             if (cause == PlayerTeleportEvent.TeleportCause.MOD && !teleporter.isVanilla()) {
                 if (this.isEntityAlive()) {
                     d0 = (double)MathHelper.clamp((int)d0, -29999872, 29999872);
@@ -885,7 +885,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
                     teleporter.placeEntity(this.world, this, this.rotationYaw);
                 }
             }
-            // CatServer end
+            // CumServer end
             this.connection.sendPacket(new SPacketEffect(1032, BlockPos.ORIGIN, 0, false));
             this.lastExperience = -1;
             this.lastHealth = -1.0F;
@@ -1238,7 +1238,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
         this.connection.sendPacket(new SPacketSetSlot(-1, -1, this.inventory.getItemStack()));
         // CraftBukkit start - Send a Set Slot to update the crafting result slot
         InventoryView bukkitView = containerToSend.getBukkitView();
-        if (bukkitView != null && java.util.EnumSet.of(InventoryType.CRAFTING,InventoryType.WORKBENCH).contains(bukkitView.getType())) { // CatServer - mods bypass
+        if (bukkitView != null && java.util.EnumSet.of(InventoryType.CRAFTING,InventoryType.WORKBENCH).contains(bukkitView.getType())) { // CumServer - mods bypass
             this.connection.sendPacket(new SPacketSetSlot(containerToSend.windowId, 0, containerToSend.getSlot(0).getStack()));
         }
         // CraftBukkit end
@@ -1906,7 +1906,7 @@ public class EntityPlayerMP extends EntityPlayer implements IContainerListener
             this.addExperience(this.newExp);
         }
         this.keepLevel = false;
-        getEntityData().getKeySet().removeIf(tag -> !PERSISTED_NBT_TAG.equals(tag)); // CatServer - reset custom data
+        getEntityData().getKeySet().removeIf(tag -> !PERSISTED_NBT_TAG.equals(tag)); // CumServer - reset custom data
     }
 
     @Override

@@ -7,7 +7,7 @@ import net.minecraft.item.crafting.FurnaceRecipes;
 import net.minecraft.item.crafting.IRecipe;
 import org.bukkit.inventory.Recipe;
 
-import catserver.server.inventory.CustomModRecipe;
+import CumServer.server.inventory.CustomModRecipe;
 
 public class RecipeIterator implements Iterator<Recipe> {
     private final Iterator<IRecipe> recipes;
@@ -28,7 +28,7 @@ public class RecipeIterator implements Iterator<Recipe> {
     public Recipe next() {
         if (recipes.hasNext()) {
             removeFrom = recipes;
-            // CatServer - handle custom recipe classes without Bukkit API equivalents
+            // CumServer - handle custom recipe classes without Bukkit API equivalents
             IRecipe recipe = recipes.next();
             try {
                 return recipe.toBukkitRecipe();

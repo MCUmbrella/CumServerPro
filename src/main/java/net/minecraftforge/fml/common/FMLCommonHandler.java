@@ -382,7 +382,7 @@ public class FMLCommonHandler
 
     public void handleWorldDataSave(SaveHandler handler, WorldInfo worldInfo, NBTTagCompound tagCompound)
     {
-        if (worldInfo.getDimension() != 0) return; // CatServer
+        if (worldInfo.getDimension() != 0) return; // CumServer
         for (ModContainer mc : Loader.instance().getModList())
         {
             if (mc instanceof InjectedModContainer)
@@ -403,7 +403,7 @@ public class FMLCommonHandler
         {
             return;
         }
-        if (handlerSet.contains(handler) || DimensionManager.getWorld(0) != null) // CatServer
+        if (handlerSet.contains(handler) || DimensionManager.getWorld(0) != null) // CumServer
         {
             return;
         }

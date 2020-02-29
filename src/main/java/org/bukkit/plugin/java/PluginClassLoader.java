@@ -21,11 +21,11 @@ import org.apache.commons.lang.Validate;
 import org.bukkit.plugin.InvalidPluginException;
 import org.bukkit.plugin.PluginDescriptionFile;
 
-import catserver.server.CatServer;
-import catserver.server.remapper.CatServerRemapper;
-import catserver.server.remapper.ClassInheritanceProvider;
-import catserver.server.remapper.MappingLoader;
-import catserver.server.remapper.ReflectionTransformer;
+import CumServer.server.CumServer;
+import CumServer.server.remapper.CumServerRemapper;
+import CumServer.server.remapper.ClassInheritanceProvider;
+import CumServer.server.remapper.MappingLoader;
+import CumServer.server.remapper.ReflectionTransformer;
 import net.md_5.specialsource.JarMapping;
 import net.md_5.specialsource.JarRemapper;
 import net.md_5.specialsource.provider.ClassLoaderProvider;
@@ -49,7 +49,7 @@ final class PluginClassLoader extends URLClassLoader {
     private JavaPlugin pluginInit;
     private IllegalStateException pluginState;
 
-    private CatServerRemapper remapper;
+    private CumServerRemapper remapper;
     private JarMapping jarMapping;
 
     PluginClassLoader(final JavaPluginLoader loader, final ClassLoader parent, final PluginDescriptionFile description, final File dataFolder, final File file) throws IOException, InvalidPluginException, MalformedURLException {
@@ -69,7 +69,7 @@ final class PluginClassLoader extends URLClassLoader {
         provider.add(new ClassInheritanceProvider());
         provider.add(new ClassLoaderProvider(this));
         jarMapping.setFallbackInheritanceProvider(provider);
-        remapper = new CatServerRemapper(jarMapping);
+        remapper = new CumServerRemapper(jarMapping);
 
         try {
             Class<?> jarClass;
@@ -216,10 +216,10 @@ final class PluginClassLoader extends URLClassLoader {
         return result;
     }
 
-    // CatServer - can't get the package because no class below the package, remap it
+    // CumServer - can't get the package because no class below the package, remap it
     protected Package getPackage(String name) {
         if ("org.bukkit.craftbukkit".equals(name))
-            name = "org.bukkit.craftbukkit." + CatServer.getNativeVersion();
+            name = "org.bukkit.craftbukkit." + CumServer.getNativeVersion();
         return super.getPackage(name);
     }
 }

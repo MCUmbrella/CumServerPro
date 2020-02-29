@@ -1,6 +1,6 @@
 package net.minecraft.world.storage;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import java.io.DataInputStream;
@@ -112,7 +112,7 @@ public class MapStorage
             File file1 = this.saveHandler.getMapFileFromName(data.mapName);
             if (file1 != null)
             {
-                CatServer.fileIOThread.submit(() -> {
+                CumServer.fileIOThread.submit(() -> {
                     try {
                         NBTTagCompound nbttagcompound = new NBTTagCompound();
                         nbttagcompound.setTag("data", data.writeToNBT(new NBTTagCompound()));

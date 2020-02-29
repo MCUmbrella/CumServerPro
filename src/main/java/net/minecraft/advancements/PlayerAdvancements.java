@@ -39,7 +39,7 @@ public class PlayerAdvancements
     };
     private final MinecraftServer server;
     private final File progressFile;
-    public final Map<Advancement, AdvancementProgress> progress = Maps.<Advancement, AdvancementProgress>newLinkedHashMap(); // CatServer - private -> public
+    public final Map<Advancement, AdvancementProgress> progress = Maps.<Advancement, AdvancementProgress>newLinkedHashMap(); // CumServer - private -> public
     private final Set<Advancement> visible = Sets.<Advancement>newLinkedHashSet();
     private final Set<Advancement> visibilityChanged = Sets.<Advancement>newLinkedHashSet();
     private final Set<Advancement> progressChanged = Sets.<Advancement>newLinkedHashSet();

@@ -220,14 +220,14 @@ public class BlockEvent extends Event
             super(blockSnapshot, placedAgainst, player);
             this.player = player;
             this.hand = hand;
-            // CatServer start - call BlockPlaceEvent
+            // CumServer start - call BlockPlaceEvent
             BlockPos pos = super.getPos();
             org.bukkit.craftbukkit.block.CraftBlockState blockstate = org.bukkit.craftbukkit.block.CraftBlockState.getBlockState(getWorld(), pos.getX(), pos.getY(), pos.getZ());
             org.bukkit.event.block.BlockPlaceEvent bukkitEvent = CraftEventFactory.callBlockPlaceEvent(getWorld(), player, hand , blockstate, pos.getX(), pos.getY(),pos.getZ());
             if (bukkitEvent.isCancelled() || !bukkitEvent.canBuild()) {
                 this.setCanceled(true);
             }
-            // CatServer end
+            // CumServer end
             if (DEBUG)
             {
                 System.out.printf("Created PlaceEvent - [PlacedBlock: %s ][PlacedAgainst: %s ][ItemStack: %s ][Player: %s ][Hand: %s]\n", getPlacedBlock(), placedAgainst, player.getHeldItem(hand), player, hand);

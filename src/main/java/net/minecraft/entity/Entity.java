@@ -1,7 +1,7 @@
 package net.minecraft.entity;
 
-import catserver.server.CatServer;
-import catserver.server.utils.EntityMoveTask;
+import CumServer.server.CumServer;
+import CumServer.server.utils.EntityMoveTask;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
@@ -178,7 +178,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     protected Random rand;
     public int ticksExisted;
     public int fire;
-    public boolean inWater; // CatServer - protected -> public
+    public boolean inWater; // CumServer - protected -> public
     public int hurtResistantTime;
     protected boolean firstUpdate;
     protected boolean isImmuneToFire;
@@ -282,12 +282,12 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         this.dataManager.register(SILENT, Boolean.valueOf(false));
         this.dataManager.register(NO_GRAVITY, Boolean.valueOf(false));
         this.entityInit();
-        if(!(this instanceof EntityPlayer)) { // CatServer - move to EntityPlayer
+        if(!(this instanceof EntityPlayer)) { // CumServer - move to EntityPlayer
         net.minecraftforge.common.MinecraftForge.EVENT_BUS.post(new net.minecraftforge.event.entity.EntityEvent.EntityConstructing(this));
         capabilities = net.minecraftforge.event.ForgeEventFactory.gatherCapabilities(this);
         }
         nmsEntity = this.getClass().getName().startsWith("net.minecraft.");
-        if ((CatServer.modMob || nmsEntity) && (this instanceof EntityLivingBase) && !(this instanceof EntityPlayer || this instanceof IMerchant || this instanceof AbstractHorse || this instanceof IEntityOwnable)) {
+        if ((CumServer.modMob || nmsEntity) && (this instanceof EntityLivingBase) && !(this instanceof EntityPlayer || this instanceof IMerchant || this instanceof AbstractHorse || this instanceof IEntityOwnable)) {
             canAsync = true;
         }
     }
@@ -296,7 +296,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     private NBTTagCompound customEntityData;
     public boolean captureDrops = false;
     public java.util.ArrayList<EntityItem> capturedDrops = new java.util.ArrayList<EntityItem>();
-    public net.minecraftforge.common.capabilities.CapabilityDispatcher capabilities; // CatServer - private -> public
+    public net.minecraftforge.common.capabilities.CapabilityDispatcher capabilities; // CumServer - private -> public
 
     public int getEntityId()
     {
@@ -739,7 +739,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
     public void move(MoverType type, double x, double y, double z)
     {
         org.bukkit.craftbukkit.SpigotTimings.entityMoveTimer.startTiming(); // Spigot
-        if (CatServer.entityMoveAsync && canAsync) {
+        if (CumServer.entityMoveAsync && canAsync) {
             world.addEntityMoveQueue(new EntityMoveTask(this, type, x, y, z, System.currentTimeMillis()));
         } else {
             move0(type, x, y, z, false);
@@ -2550,7 +2550,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
         return 300;
     }
 
-    //@SideOnly(Side.CLIENT) CatServer - allow mods invoke it on server
+    //@SideOnly(Side.CLIENT) CumServer - allow mods invoke it on server
     public void setVelocity(double x, double y, double z)
     {
         this.motionX = x;
@@ -2715,7 +2715,7 @@ public abstract class Entity implements ICommandSender, net.minecraftforge.commo
 
     public void onStruckByLightning(EntityLightningBolt lightningBolt)
     {
-        if (lightningBolt == null) lightningBolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true); // CatServer - if null, create EntityLightningBolt for Bukkit
+        if (lightningBolt == null) lightningBolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true); // CumServer - if null, create EntityLightningBolt for Bukkit
         final org.bukkit.entity.Entity thisBukkitEntity = this.getBukkitEntity();
         final org.bukkit.entity.Entity stormBukkitEntity = lightningBolt.getBukkitEntity();
         final PluginManager pluginManager = Bukkit.getPluginManager();

@@ -1,10 +1,10 @@
 package net.minecraft.world;
 
-import catserver.server.CatServer;
-import catserver.server.WorldCapture;
-import catserver.server.threads.HopperThread;
-import catserver.server.utils.CatTreeSet;
-import catserver.server.utils.HopperTask;
+import CumServer.server.CumServer;
+import CumServer.server.WorldCapture;
+import CumServer.server.threads.HopperThread;
+import CumServer.server.utils.CumTreeSet;
+import CumServer.server.utils.HopperTask;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
@@ -98,7 +98,7 @@ public class WorldServer extends World implements IThreadListener
     public EntityTracker entityTracker;
     private final PlayerChunkMap playerChunkMap;
     private final Set<NextTickListEntry> pendingTickListEntriesHashSet = Sets.<NextTickListEntry>newHashSet();
-    private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new CatTreeSet<>();
+    private final TreeSet<NextTickListEntry> pendingTickListEntriesTreeSet = new CumTreeSet<>();
     private final Map<UUID, Entity> entitiesByUuid = Maps.<UUID, Entity>newHashMap();
     public boolean disableLevelSaving;
     private boolean allPlayersSleeping;
@@ -133,7 +133,7 @@ public class WorldServer extends World implements IThreadListener
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
         this.getWorldBorder().setSize(server.getMaxWorldSize());
-        // CatServer start - if overworld has loaded, use its mapstorage
+        // CumServer start - if overworld has loaded, use its mapstorage
         WorldServer overworld = DimensionManager.getWorld(0);
         if (overworld != null)
         {
@@ -145,7 +145,7 @@ public class WorldServer extends World implements IThreadListener
             this.mapStorage = new MapStorage(saveHandlerIn);
             perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler(this, saveHandler));
         }
-        // CatServer end
+        // CumServer end
         this.worldCapture = new WorldCapture(this);
         net.minecraftforge.common.DimensionManager.setWorld(dimensionId, this, mcServer);
     }
@@ -166,7 +166,7 @@ public class WorldServer extends World implements IThreadListener
         this.calculateInitialSkylight();
         this.calculateInitialWeather();
         this.getWorldBorder().setSize(server.getMaxWorldSize());
-        // CatServer start - if overworld has loaded, use its mapstorage
+        // CumServer start - if overworld has loaded, use its mapstorage
         WorldServer overworld = DimensionManager.getWorld(0);
         if (overworld != null)
         {
@@ -178,7 +178,7 @@ public class WorldServer extends World implements IThreadListener
             this.mapStorage = new MapStorage(saveHandlerIn);
             perWorldStorage = new MapStorage(new net.minecraftforge.common.WorldSpecificSaveHandler(this, saveHandler));
         }
-        // CatServer end
+        // CumServer end
         this.worldCapture = new WorldCapture(this);
         net.minecraftforge.common.DimensionManager.setWorld(dimensionId, this, mcServer);
     }
@@ -247,14 +247,14 @@ public class WorldServer extends World implements IThreadListener
 
     private void initHopperThread(LinkedBlockingQueue<HopperTask> queue)
     {
-        if (CatServer.hopperAsync) {
+        if (CumServer.hopperAsync) {
             new Thread(new HopperThread(this, queue), this.getWorld().getName() + " - HopperThread").start();
         }
     }
 
     @Override
     public TileEntity getTileEntity(BlockPos pos) {
-        return super.getTileEntity(pos); // CatServer - not fix te
+        return super.getTileEntity(pos); // CumServer - not fix te
     }
 
     private boolean canSpawn(int x, int z) {
@@ -513,7 +513,7 @@ public class WorldServer extends World implements IThreadListener
             {
                 this.profiler.startSection("getChunk");
                 Chunk chunk = iterator.next();
-                try { // CatServer
+                try { // CumServer
                     int j = chunk.x * 16;
                     int k = chunk.z * 16;
                     this.profiler.endStartSection("checkNextLight");
@@ -731,7 +731,7 @@ public class WorldServer extends World implements IThreadListener
 
     public void updateEntities()
     {
-        if (this.playerEntities.isEmpty() && getPersistentChunks().isEmpty()) // CatServer - Use Forge logic here
+        if (this.playerEntities.isEmpty() && getPersistentChunks().isEmpty()) // CumServer - Use Forge logic here
         {
             if (this.updateEntityTick++ >= 300)
             {
@@ -994,7 +994,7 @@ public class WorldServer extends World implements IThreadListener
     protected IChunkProvider createChunkProvider()
     {
         IChunkLoader ichunkloader = this.saveHandler.getChunkLoader(this.provider);
-        // CatServer - if provider is vanilla, proceed to create a bukkit compatible chunk generator
+        // CumServer - if provider is vanilla, proceed to create a bukkit compatible chunk generator
         if (this.provider.getClass().toString().length() <= 3 || this.provider.getClass().toString().contains("net.minecraft")) {
             // CraftBukkit start
             org.bukkit.craftbukkit.generator.InternalChunkGenerator gen;

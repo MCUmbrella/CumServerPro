@@ -153,7 +153,7 @@ public class DimensionManager
         {
             usedIds.add(id);
         }
-        // CatServer - register Environment to Bukkit
+        // CumServer - register Environment to Bukkit
         if (id != -1 && id != 0 && id != 1) // ignore vanilla
         {
             registerBukkitDimension(id, type.getName());
@@ -238,7 +238,7 @@ public class DimensionManager
         }
         else
         {
-            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerList.remove(getWorld(id)); // CatServer - remove world from our new world arraylist
+            FMLCommonHandler.instance().getMinecraftServerInstance().worldServerList.remove(getWorld(id)); // CumServer - remove world from our new world arraylist
             worlds.remove(id);
             server.worldTickTimes.remove(id);
             FMLLog.log.info("Unloading dimension {}", id);
@@ -278,7 +278,7 @@ public class DimensionManager
         }
         catch (Exception e)
         {
-            FMLLog.log.error("Cannot Hotload Dim: {}", dim); // CatServer - no output exception
+            FMLLog.log.error("Cannot Hotload Dim: {}", dim); // CumServer - no output exception
             return; // If a provider hasn't been registered then we can't hotload the dim
         }
         MinecraftServer mcServer = overworld.getMinecraftServer();
@@ -443,7 +443,7 @@ public class DimensionManager
                 FMLLog.log.debug("Aborting unload for dimension {} as status changed", id);
                 continue;
             }
-            FMLCommonHandler.instance().getMinecraftServerInstance().server.unloadWorld(w.getWorld(), true); // CatServer
+            FMLCommonHandler.instance().getMinecraftServerInstance().server.unloadWorld(w.getWorld(), true); // CumServer
         }
     }
 
@@ -540,7 +540,7 @@ public class DimensionManager
         }
     }
 
-    // CatServer start - new method for handling creation of Bukkit dimensions. Currently supports MultiVerse
+    // CumServer start - new method for handling creation of Bukkit dimensions. Currently supports MultiVerse
     public static WorldServer initDimension(WorldCreator creator, WorldSettings worldSettings) {
         WorldServer overworld = getWorld(0);
         if (overworld == null) {
@@ -641,5 +641,5 @@ public class DimensionManager
     {
         return bukkitDims.contains(dim);
     }
-    // CatServer end
+    // CumServer end
 }

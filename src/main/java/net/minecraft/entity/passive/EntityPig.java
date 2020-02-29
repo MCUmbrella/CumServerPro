@@ -228,7 +228,7 @@ public class EntityPig extends EntityAnimal
     {
         if (!this.world.isRemote && !this.isDead)
         {
-            if (lightningBolt == null) lightningBolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true); // CatServer - if null, create EntityLightningBolt for Bukkit
+            if (lightningBolt == null) lightningBolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true); // CumServer - if null, create EntityLightningBolt for Bukkit
             EntityPigZombie entitypigzombie = new EntityPigZombie(this.world);
             if (CraftEventFactory.callPigZapEvent(this, lightningBolt, entitypigzombie).isCancelled()) {
                 return;

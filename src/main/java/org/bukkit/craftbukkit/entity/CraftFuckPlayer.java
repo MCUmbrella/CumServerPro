@@ -1,13 +1,13 @@
 package org.bukkit.craftbukkit.entity;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import net.minecraftforge.common.util.FakePlayer;
 import org.bukkit.craftbukkit.CraftServer;
 import org.bukkit.entity.Player;
 import org.bukkit.permissions.Permission;
 import org.bukkit.plugin.Plugin;
 
-// FIXME: THIS CLASS IS BY CatServer
+// FIXME: THIS CLASS IS BY CumServer
 public class CraftFuckPlayer extends CraftPlayer {
     private Player realPlayer = null;
 
@@ -18,7 +18,7 @@ public class CraftFuckPlayer extends CraftPlayer {
 
     @Override
     public boolean hasPermission(String name) {
-        if (CatServer.fakePlayerPermissions.contains(name))
+        if (CumServer.fakePlayerPermissions.contains(name))
             return true;
         final Player realPlayer = getRealPlayer();
         if (realPlayer == null)
@@ -28,7 +28,7 @@ public class CraftFuckPlayer extends CraftPlayer {
 
     @Override
     public boolean isPermissionSet(String name) {
-        if (CatServer.fakePlayerPermissions.contains(name))
+        if (CumServer.fakePlayerPermissions.contains(name))
             return true;
         final Player realPlayer = getRealPlayer();
         if (realPlayer == null)
@@ -38,7 +38,7 @@ public class CraftFuckPlayer extends CraftPlayer {
 
     @Override
     public boolean isPermissionSet(Permission perm) {
-        if (CatServer.fakePlayerPermissions.contains(perm.getName()))
+        if (CumServer.fakePlayerPermissions.contains(perm.getName()))
             return true;
         final Player realPlayer = getRealPlayer();
         if (realPlayer == null)
@@ -48,7 +48,7 @@ public class CraftFuckPlayer extends CraftPlayer {
 
     @Override
     public boolean hasPermission(Permission perm) {
-        if (CatServer.fakePlayerPermissions.contains(perm.getName()))
+        if (CumServer.fakePlayerPermissions.contains(perm.getName()))
             return true;
         final Player realPlayer = getRealPlayer();
         if (realPlayer == null)

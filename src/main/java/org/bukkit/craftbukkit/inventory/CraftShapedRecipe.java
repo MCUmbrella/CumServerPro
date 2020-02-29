@@ -24,7 +24,7 @@ public class CraftShapedRecipe extends ShapedRecipe implements CraftRecipe {
     }
 
     public CraftShapedRecipe(ItemStack result, ShapedRecipes recipe) {
-        this(recipe.key != null ? CraftNamespacedKey.fromMinecraft(recipe.key) : NamespacedKey.randomKey(), result); // CatServer - if key is null, use random key
+        this(recipe.key != null ? CraftNamespacedKey.fromMinecraft(recipe.key) : NamespacedKey.randomKey(), result); // CumServer - if key is null, use random key
         this.recipe = recipe;
     }
 
@@ -58,7 +58,7 @@ public class CraftShapedRecipe extends ShapedRecipe implements CraftRecipe {
             }
         }
         // TODO: Check if it's correct way to register recipes
-        // CatServer - register to Forge
+        // CumServer - register to Forge
         ShapedRecipes recipe = new ShapedRecipes("", width, shape.length, data, CraftItemStack.asNMSCopy(this.getResult()));
         recipe.setKey(CraftNamespacedKey.toMinecraft(this.getKey()));
         recipe.setRegistryName(recipe.key);

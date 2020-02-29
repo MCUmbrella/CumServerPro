@@ -28,7 +28,7 @@ public class CraftBlockState implements BlockState {
     private final int x;
     private final int y;
     private final int z;
-    private final NBTTagCompound nbt; // CatServer
+    private final NBTTagCompound nbt; // CumServer
     protected int type;
     protected MaterialData data;
     protected int flag;
@@ -43,7 +43,7 @@ public class CraftBlockState implements BlockState {
         this.flag = 3;
 
         createData(block.getData());
-        // CatServer start - save TE data
+        // CumServer start - save TE data
         TileEntity te = world.getHandle().getTileEntity(new BlockPos(this.x, this.y, this.z));
         if (te != null)
         {
@@ -51,7 +51,7 @@ public class CraftBlockState implements BlockState {
             te.writeToNBT(nbt);
         }
         else nbt = null;
-        // CatServer end
+        // CumServer end
     }
 
     public CraftBlockState(final Block block, int flag) {
@@ -64,7 +64,7 @@ public class CraftBlockState implements BlockState {
         type = material.getId();
         chunk = null;
         x = y = z = 0;
-        this.nbt = null; //CatServer
+        this.nbt = null; //CumServer
     }
 
     public CraftBlockState(BlockSnapshot blocksnapshot)
@@ -76,7 +76,7 @@ public class CraftBlockState implements BlockState {
         this.type = net.minecraft.block.Block.getIdFromBlock(blocksnapshot.getReplacedBlock().getBlock());
         this.chunk = (CraftChunk) this.world.getBlockAt(this.x, this.y, this.z).getChunk();
         this.flag = 3;
-        this.nbt = blocksnapshot.getNbt(); // CatServer - save TE data
+        this.nbt = blocksnapshot.getNbt(); // CumServer - save TE data
 
         this.createData((byte) blocksnapshot.getMeta());
     }
@@ -202,7 +202,7 @@ public class CraftBlockState implements BlockState {
         if (applyPhysics && getData() instanceof Attachable) {
             world.getHandle().notifyNeighborsOfStateChange(pos.offset(CraftBlock.blockFaceToNotch(((Attachable) getData()).getAttachedFace())), newBlock.getBlock(), false);
         }
-        // CatServer start - restore TE data from snapshot
+        // CumServer start - restore TE data from snapshot
         if (nbt != null)
         {
             TileEntity te = world.getHandle().getTileEntity(new BlockPos(this.x, this.y, this.z));
@@ -214,7 +214,7 @@ public class CraftBlockState implements BlockState {
                     te.readFromNBT(nbt);
             }
         }
-        // CatServer end
+        // CumServer end
         return true;
     }
 

@@ -5,7 +5,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import catserver.server.inventory.CraftCustomContainer;
+import CumServer.server.inventory.CraftCustomContainer;
 import net.minecraft.block.BlockCocoa;
 import net.minecraft.block.BlockContainer;
 import net.minecraft.block.BlockRedstoneWire;
@@ -281,7 +281,7 @@ public class CraftBlock implements Block {
 
     public BlockState getState() {
         Material material = getType();
-        // CatServer start - handle if null
+        // CumServer start - handle if null
         if (material == null) {
             TileEntity tileEntity = chunk.getCraftWorld().getTileEntityAt(x, y, z);
             if (tileEntity != null) {
@@ -296,7 +296,7 @@ public class CraftBlock implements Block {
                 return new CraftBlockState(this);
             }
         }
-        // CatServer end
+        // CumServer end
         switch (material) {
         case SIGN:
         case SIGN_POST:

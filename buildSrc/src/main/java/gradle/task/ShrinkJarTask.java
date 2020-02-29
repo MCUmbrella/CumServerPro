@@ -48,7 +48,7 @@ public class ShrinkJarTask extends DefaultTask {
         ClassReader classReader = new ClassReader(input);
         classReader.accept(classNode, 0);
 
-        if (classNode.name.startsWith("catserver/server/CatServer")) {
+        if (classNode.name.startsWith("CumServer/server/CumServer")) {
             for (FieldNode field : classNode.fields) {
                 if (field.name.equals("buildTime")) {
                     int time = (int) (System.currentTimeMillis() / 1000);

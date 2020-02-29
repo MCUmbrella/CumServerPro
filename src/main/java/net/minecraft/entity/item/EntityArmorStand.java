@@ -79,7 +79,7 @@ public class EntityArmorStand extends EntityLivingBase
     public Rotations leftLegRotation;
     public Rotations rightLegRotation;
 
-    private java.util.ArrayList<org.bukkit.inventory.ItemStack> drops = new java.util.ArrayList<>(); // CatServer
+    private java.util.ArrayList<org.bukkit.inventory.ItemStack> drops = new java.util.ArrayList<>(); // CumServer
 
     public EntityArmorStand(World worldIn)
     {
@@ -826,12 +826,12 @@ public class EntityArmorStand extends EntityLivingBase
     {
         org.bukkit.craftbukkit.event.CraftEventFactory.callEntityDeathEvent(this, drops); // CraftBukkit - call event
         this.setDead();
-        // CatServer start
+        // CumServer start
         for (EntityItem item : capturedDrops)
         {
             world.spawnEntity(item);
         }
-        // CatServer end
+        // CumServer end
     }
 
     public boolean isImmuneToExplosions()

@@ -43,7 +43,7 @@ import org.bukkit.plugin.UnknownDependencyException;
 import org.spigotmc.CustomTimingsHandler; // Spigot
 import org.yaml.snakeyaml.error.YAMLException;
 
-import catserver.server.executor.ReflectionExecutor;
+import CumServer.server.executor.ReflectionExecutor;
 
 /**
  * Represents a Java plugin loader, allowing plugins in the form of .jar
@@ -292,14 +292,14 @@ public final class JavaPluginLoader implements PluginLoader {
             }
 
             final CustomTimingsHandler timings = new CustomTimingsHandler("Plugin: " + plugin.getDescription().getFullName() + " Event: " + listener.getClass().getName() + "::" + method.getName()+"("+eventClass.getSimpleName()+")", pluginParentTimer); // Spigot
-            // CatServer start
+            // CumServer start
             EventExecutor executor;
             try {
                 executor = EventExecutor.create(method, eventClass);
             } catch (Exception e) {
                 executor = new ReflectionExecutor(method, eventClass, timings);
             }
-            // CatServer end
+            // CumServer end
             if (false) { // Spigot - RL handles useTimings check now
                 eventSet.add(new TimedRegisteredListener(listener, executor, eh.priority(), plugin, eh.ignoreCancelled()));
             } else {

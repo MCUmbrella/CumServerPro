@@ -200,11 +200,11 @@ public class ForgeHooks
 
     public static boolean canContinueUsing(@Nonnull ItemStack from, @Nonnull ItemStack to)
     {
-        // CatServer - start
+        // CumServer - start
         if (from == null || to == null) {
             return false;
         }
-        // CatServer - end
+        // CumServer - end
         if (!from.isEmpty() && !to.isEmpty())
         {
             return from.getItem().canContinueUsing(from, to);
@@ -918,7 +918,7 @@ public class ForgeHooks
 
         if (!(itemstack.getItem() instanceof ItemBucket)) // if not bucket
         {
-            world.worldCapture.startCapture(player, itemstack, hand); // CatServer - start capture
+            world.worldCapture.startCapture(player, itemstack, hand); // CumServer - start capture
             world.captureBlockSnapshots = true;
             // CraftBukkit start
             if(itemstack.getItem() instanceof ItemDye && itemstack.getMetadata() == 15){
@@ -932,7 +932,7 @@ public class ForgeHooks
 
         EnumActionResult ret = itemstack.getItem().onItemUse(player, world, pos, hand, side, hitX, hitY, hitZ);
         world.captureBlockSnapshots = false;
-        world.worldCapture.stopCapture(); // CatServer - stop capture
+        world.worldCapture.stopCapture(); // CumServer - stop capture
 
         List<BlockState> blocks = new ArrayList();
         for (net.minecraftforge.common.util.BlockSnapshot snapshot : (List<net.minecraftforge.common.util.BlockSnapshot>) world.capturedBlockSnapshots.clone()) {
@@ -1001,8 +1001,8 @@ public class ForgeHooks
                     world.restoringBlockSnapshots = false;
                 }
 
-                world.worldCapture.restore(); // CatServer
-                ((org.bukkit.craftbukkit.entity.CraftPlayer) player.getBukkitEntity()).updateInventory(); // CatServer - update inventory
+                world.worldCapture.restore(); // CumServer
+                ((org.bukkit.craftbukkit.entity.CraftPlayer) player.getBukkitEntity()).updateInventory(); // CumServer - update inventory
             } else {
                 // Change the stack to its new content
                 itemstack.setItemDamage(newMeta);
@@ -1050,10 +1050,10 @@ public class ForgeHooks
                     }
                 }
 
-                world.worldCapture.apply(); // CatServer
+                world.worldCapture.apply(); // CumServer
             }
         } else { // not call BlockPlaceEvent (PASS,FAIL)
-            world.worldCapture.apply(); // CatServer
+            world.worldCapture.apply(); // CumServer
         }
         world.capturedBlockSnapshots.clear();
 

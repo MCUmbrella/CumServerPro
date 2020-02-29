@@ -3,7 +3,7 @@ package net.minecraft.inventory;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 
-import catserver.server.inventory.CatCustomInventory;
+import CumServer.server.inventory.CumCustomInventory;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.entity.player.InventoryPlayer;
@@ -87,7 +87,7 @@ public abstract class Container
                 it.remove();
                 break;
             } else if (inv instanceof PlayerInvWrapper) {
-                playerInv = CatCustomInventory.getPlayerInv((PlayerInvWrapper) inv);
+                playerInv = CumCustomInventory.getPlayerInv((PlayerInvWrapper) inv);
                 it.remove();
                 break;
             }
@@ -494,7 +494,7 @@ public abstract class Container
                     if (player instanceof EntityPlayerMP && slot6.getSlotStackLimit() != 64) {
                         ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetSlot(this.windowId, slot6.slotNumber, slot6.getStack()));
                         // Updating a crafting inventory makes the client reset the result slot, have to send it again
-                        if (getBukkitView() != null && (this.getBukkitView().getType() == InventoryType.WORKBENCH || this.getBukkitView().getType() == InventoryType.CRAFTING)) {  // CatServer - mods bypass
+                        if (getBukkitView() != null && (this.getBukkitView().getType() == InventoryType.WORKBENCH || this.getBukkitView().getType() == InventoryType.CRAFTING)) {  // CumServer - mods bypass
                             ((EntityPlayerMP) player).connection.sendPacket(new SPacketSetSlot(this.windowId, 0, this.getSlot(0).getStack()));
                         }
                     }
@@ -949,7 +949,7 @@ public abstract class Container
                 itemstack = irecipe.getCraftingResult(p_192389_3_);
             }
 
-            if (p_192389_3_.resultInventory != null && getBukkitView() != null) // CatServer - mods bypass
+            if (p_192389_3_.resultInventory != null && getBukkitView() != null) // CumServer - mods bypass
                 itemstack = org.bukkit.craftbukkit.event.CraftEventFactory.callPreCraftEvent(p_192389_3_, itemstack, getBukkitView(), false); // CraftBukkit
 
             p_192389_4_.setInventorySlotContents(0, itemstack);

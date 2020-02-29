@@ -46,7 +46,7 @@ public class CraftShapelessRecipe extends ShapelessRecipe implements CraftRecipe
             data.set(i, Ingredient.fromStacks(new net.minecraft.item.ItemStack[]{CraftItemStack.asNMSCopy(ingred.get(i))}));
         }
         // TODO: Check if it's correct way to register recipes
-        // CatServer - register to Forge
+        // CumServer - register to Forge
         ShapelessRecipes recipe = new ShapelessRecipes("", CraftItemStack.asNMSCopy(this.getResult()), data);
         recipe.setKey(CraftNamespacedKey.toMinecraft(this.getKey()));
         recipe.setRegistryName(recipe.key);

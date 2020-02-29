@@ -22,7 +22,7 @@ public class ServerEula
     public ServerEula(File eulaFile)
     {
         this.eulaFile = eulaFile;
-        this.acceptedEULA = true || this.loadEULAFile(eulaFile); // CatServer - auto accept EULA
+        this.acceptedEULA = true || this.loadEULAFile(eulaFile); // CumServer - auto accept EULA
     }
 
     private boolean loadEULAFile(File inFile)

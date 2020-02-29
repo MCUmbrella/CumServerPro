@@ -147,7 +147,7 @@ public class ContainerHorseInventory extends Container
             return bukkitEntity;
         }
 
-        return bukkitEntity = (horseInventory.getOwner() != null ? new CraftInventoryView(player.player.getBukkitEntity(), horseInventory.getOwner().getInventory(), this) : null); // CatServer
+        return bukkitEntity = (horseInventory.getOwner() != null ? new CraftInventoryView(player.player.getBukkitEntity(), horseInventory.getOwner().getInventory(), this) : null); // CumServer
     }
 
 }

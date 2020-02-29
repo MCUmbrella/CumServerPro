@@ -1,6 +1,6 @@
 package org.bukkit.craftbukkit;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import com.google.common.base.Preconditions;
 import java.io.File;
 import java.util.ArrayList;
@@ -1382,7 +1382,7 @@ public class CraftWorld implements World {
     }
 
     public boolean getKeepSpawnInMemory() {
-        return (world.dimension == 0 || CatServer.keepSpawnInMemory) && world.keepSpawnInMemory; // CatServer
+        return (world.dimension == 0 || CumServer.keepSpawnInMemory) && world.keepSpawnInMemory; // CumServer
     }
 
     public void setKeepSpawnInMemory(boolean keepLoaded) {

@@ -34,7 +34,7 @@ repositories {
     }
 }
 
-group = 'luohuayu.CatServer'
+group = 'MCUmbrella.CumServer'
 version = versioning {
     full { it.tag ?: it.branch + '-' + it.abbreviated }
     branchEnv = ['CI_BUILD_REF_NAME', 'GIT_LOCAL_BRANCH']
@@ -139,8 +139,8 @@ task jar_server(type: Jar) {
     manifest {
         attributes(
                 "Implementation-Title": rootProject.name,
-                "Implementation-Version": "git-CatServer-" + version,
-                "Main-Class": "catserver.server.CatServerLaunch",
+                "Implementation-Version": "git-CumServer-" + version,
+                "Main-Class": "CumServer.server.CumServerLaunch",
                 "TweakClass": "net.minecraftforge.fml.common.launcher.FMLTweaker",
                 "Class-Path": configurations.compile.collect { 'libraries/' + it.getName() }.join(' '),
         )

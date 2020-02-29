@@ -38,7 +38,7 @@ import org.bukkit.craftbukkit.inventory.CraftItemStack;
 import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.inventory.Inventory;
 
-import catserver.server.inventory.CatCustomInventory;
+import CumServer.server.inventory.CumCustomInventory;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -56,7 +56,7 @@ public class VanillaInventoryCodeHooks
         if (itemHandlerResult == null)
             return null;
 
-        if (itemHandlerResult.getValue() instanceof IInventory) return null; // CatServer - handle in vanilla
+        if (itemHandlerResult.getValue() instanceof IInventory) return null; // CumServer - handle in vanilla
 
         IItemHandler handler = itemHandlerResult.getKey();
 
@@ -104,11 +104,11 @@ public class VanillaInventoryCodeHooks
         {
             IItemHandler itemHandler = destinationResult.getKey();
             Object destination = destinationResult.getValue();
-            // CatServer start
+            // CumServer start
             CraftItemStack oitemstack = CraftItemStack.asCraftMirror(stack.copy().splitStack(1));
 
             TileEntity te = (TileEntity) destination;
-            Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : CatCustomInventory.getInventoryFromForge(itemHandler);
+            Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : CumCustomInventory.getInventoryFromForge(itemHandler);
             
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(dropper.getOwner().getInventory(), oitemstack.clone(), destinationInventory, true);
             if (destinationInventory != null) world.getServer().getPluginManager().callEvent(event);
@@ -127,7 +127,7 @@ public class VanillaInventoryCodeHooks
             {
                 remainder = stack.copy();
             }
-            // CatServer end
+            // CumServer end
             dropper.setInventorySlotContents(slot, remainder);
             return false;
         }
@@ -159,14 +159,14 @@ public class VanillaInventoryCodeHooks
                     if (!hopper.getStackInSlot(i).isEmpty())
                     {
                         ItemStack originalSlotContents = hopper.getStackInSlot(i).copy();
-                        // CatServer start - Call event when pushing items into other inventories
+                        // CumServer start - Call event when pushing items into other inventories
                         CraftItemStack remainder = CraftItemStack.asCraftMirror(hopper.decrStackSize(i, hopper.world.spigotConfig.hopperAmount)); // Spigot
 
                         TileEntity te = (TileEntity) destination;
-                        Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : CatCustomInventory.getInventoryFromForge(itemHandler);
+                        Inventory destinationInventory = te.getOwner() != null ? te.getOwner().getInventory() : CumCustomInventory.getInventoryFromForge(itemHandler);
 
                         InventoryMoveItemEvent event = new InventoryMoveItemEvent(hopper.getOwner().getInventory(), remainder.clone(), destinationInventory, true);
-                        if (destinationInventory != null) hopper.getWorld().getServer().getPluginManager().callEvent(event); //CatServer
+                        if (destinationInventory != null) hopper.getWorld().getServer().getPluginManager().callEvent(event); //CumServer
 
                         if (event.isCancelled()) {
                             hopper.setInventorySlotContents(i, originalSlotContents);
@@ -183,7 +183,7 @@ public class VanillaInventoryCodeHooks
                             } else {
                                 hopper.setInventorySlotContents(i, originalSlotContents);
                             }
-                            // CatServer end
+                            // CumServer end
                             return true;
                         }
                         originalSlotContents.shrink(origCount - itemstack1.getCount()); // Spigot

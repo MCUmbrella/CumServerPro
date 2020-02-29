@@ -1,9 +1,9 @@
 package net.minecraft.server;
 
-import catserver.api.bukkit.I18nManager;
-import catserver.server.command.CommandManager;
-import catserver.server.threads.WatchCatThread;
-import catserver.server.mcauth.CatProxyAuthenticationService;
+import CumServer.api.bukkit.I18nManager;
+import CumServer.server.command.CommandManager;
+import CumServer.server.threads.CumWatchdogThread;
+import CumServer.server.mcauth.CumProxyAuthenticationService;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.util.concurrent.Futures;
@@ -14,8 +14,7 @@ import com.mojang.authlib.GameProfileRepository;
 import com.mojang.authlib.minecraft.MinecraftSessionService;
 import com.mojang.authlib.yggdrasil.YggdrasilAuthenticationService;
 
-import catserver.server.BukkitInjector;
-import catserver.server.Metrics;
+import CumServer.server.BukkitInjector;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
@@ -165,7 +164,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
     private final GameProfileRepository profileRepo;
     private final PlayerProfileCache profileCache;
     private long nanoTimeSinceStatusRefresh;
-    public final Queue < FutureTask<? >> futureTaskQueue = new catserver.server.utils.CachedSizeConcurrentLinkedQueue<>(); // Paper - Make size() constant-time
+    public final Queue < FutureTask<? >> futureTaskQueue = new CumServer.server.utils.CachedSizeConcurrentLinkedQueue<>(); // Paper - Make size() constant-time
     private Thread serverThread;
     private long currentTime = getCurrentTimeMillis();
     @SideOnly(Side.CLIENT)
@@ -337,8 +336,8 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             if (dim == 0) {
                 ISaveHandler idatamanager = new AnvilSaveHandler(server.getWorldContainer(), worldNameIn, true, this.dataFixer);
                 WorldInfo worlddata = idatamanager.loadWorldInfo();
-                // CatServer start
-                if (!BukkitInjector.initializedBukkit) { // CatServer - inject bukkit materials before plugins load
+                // CumServer start
+                if (!BukkitInjector.initializedBukkit) { // CumServer - inject bukkit materials before plugins load
                     BukkitInjector.injectBlockBukkitMaterials();
                     BukkitInjector.injectItemBukkitMaterials();
                     BukkitInjector.injectBiomes();
@@ -350,7 +349,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
                 }
                 server.loadPlugins();
                 server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.STARTUP);
-                // CatServer end
+                // CumServer end
                 if (worlddata == null) {
                     worlddata = new WorldInfo(worldsettings, worldNameIn);
                 }
@@ -391,7 +390,6 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.initialWorldChunkLoad();
 
         this.server.enablePlugins(org.bukkit.plugin.PluginLoadOrder.POSTWORLD);
-        new Metrics();
     }
 
     public void initialWorldChunkLoad()
@@ -517,7 +515,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         }
         // CraftBukkit end
         LOGGER.info("Stopping server");
-        //WatchCatThread.stopThread(); // CatServer
+        //WatchCatThread.stopThread(); // CumServer
         if (this.server != null) {
             this.server.disablePlugins();
         }
@@ -605,9 +603,9 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             if (this.init())
             {
                 net.minecraftforge.fml.common.FMLCommonHandler.instance().handleServerStarted();
-                // CatServer start
+                // CumServer start
                 CommandManager.logToFile();
-                // CatServer end
+                // CumServer end
                 this.currentTime = getCurrentTimeMillis();
                 long i = 0L;
                 this.statusResponse.setServerDescription(new TextComponentString(this.motd));
@@ -832,7 +830,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         this.profiler.endSection();
         this.profiler.endSection();
         net.minecraftforge.fml.common.FMLCommonHandler.instance().onPostServerTick();
-        WatchCatThread.update(); // CatServer
+        CumWatchdogThread.update(); // CumServer
         org.spigotmc.WatchdogThread.tick(); // Spigot
         SpigotTimings.serverTickTimer.stopTiming(); // Spigot
         org.spigotmc.CustomTimingsHandler.tick(); // Spigot
@@ -936,7 +934,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
             this.profiler.endSection();
             worldserver.explosionDensityCache.clear(); // Paper - Optimize explosions
 
-            if (worldTickTimes.get(id) != null) // CatServer - check world in tickTime list
+            if (worldTickTimes.get(id) != null) // CumServer - check world in tickTime list
             worldTickTimes.get(id)[this.tickCounter % 100] = System.nanoTime() - i;
         }
 
@@ -1650,7 +1648,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         try
         {
             String s1 = ".";
-            YggdrasilAuthenticationService yggdrasilauthenticationservice = new CatProxyAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
+            YggdrasilAuthenticationService yggdrasilauthenticationservice = new CumProxyAuthenticationService(Proxy.NO_PROXY, UUID.randomUUID().toString());
             MinecraftSessionService minecraftsessionservice = yggdrasilauthenticationservice.createMinecraftSessionService();
             GameProfileRepository gameprofilerepository = yggdrasilauthenticationservice.createProfileRepository();
             PlayerProfileCache playerprofilecache = new PlayerProfileCache(gameprofilerepository, new File(s1, USER_CACHE_FILE.getName()));

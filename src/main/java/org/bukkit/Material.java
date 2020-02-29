@@ -1460,7 +1460,7 @@ public enum Material {
         }
     }
 
-    // CatServer start
+    // CumServer start
 	@Nullable
     public static Material addMaterial(Material material) {
         if (byId[material.id] == null) {
@@ -1488,5 +1488,5 @@ public enum Material {
             return null;
         }
     }
-    // CatServer end
+    // CumServer end
 }

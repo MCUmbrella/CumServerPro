@@ -5,7 +5,7 @@ import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 import javax.annotation.Nullable;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockChest;
 import net.minecraft.block.BlockHopper;
@@ -41,7 +41,7 @@ import org.bukkit.event.inventory.InventoryMoveItemEvent;
 import org.bukkit.event.inventory.InventoryPickupItemEvent;
 import org.bukkit.inventory.Inventory;
 
-import catserver.server.inventory.CatCustomInventory;
+import CumServer.server.inventory.CumCustomInventory;
 
 public class TileEntityHopper extends TileEntityLockableLoot implements IHopper, ITickable
 {
@@ -154,7 +154,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
 
     public void update()
     {
-        if (CatServer.hopperAsync) {
+        if (CumServer.hopperAsync) {
             this.world.addHopperQueue(this);
         } else {
             if (!this.world.isRemote)
@@ -403,7 +403,7 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
         return false;
     }
 
-    // CatServer - TODO: move into Forge, support handle Forge container
+    // CumServer - TODO: move into Forge, support handle Forge container
     private static boolean pullItemFromSlot(IHopper hopper, IInventory inventoryIn, int index, EnumFacing direction)
     {
         ItemStack itemstack = inventoryIn.getStackInSlot(index);
@@ -420,12 +420,12 @@ public class TileEntityHopper extends TileEntityLockableLoot implements IHopper,
             if (inventoryIn instanceof InventoryLargeChest) {
                 sourceInventory = new org.bukkit.craftbukkit.inventory.CraftInventoryDoubleChest((InventoryLargeChest) inventoryIn);
             } else {
-                sourceInventory = inventoryIn.getOwner() != null ? inventoryIn.getOwner().getInventory() : new CatCustomInventory(inventoryIn).getInventory(); // CatServer
+                sourceInventory = inventoryIn.getOwner() != null ? inventoryIn.getOwner().getInventory() : new CumCustomInventory(inventoryIn).getInventory(); // CumServer
             }
 
             InventoryMoveItemEvent event = new InventoryMoveItemEvent(sourceInventory, oitemstack.clone(), hopper.getOwner().getInventory(), false);
 
-            if (sourceInventory != null) hopper.getWorld().getServer().getPluginManager().callEvent(event); // CatServer
+            if (sourceInventory != null) hopper.getWorld().getServer().getPluginManager().callEvent(event); // CumServer
             if (event.isCancelled()) {
                 inventoryIn.setInventorySlotContents(index, itemstack1);
 

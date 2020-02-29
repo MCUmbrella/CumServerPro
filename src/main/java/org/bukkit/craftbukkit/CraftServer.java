@@ -23,7 +23,7 @@ import java.util.regex.Pattern;
 
 import javax.imageio.ImageIO;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import net.md_5.bungee.api.chat.BaseComponent;
 import net.minecraft.advancements.Advancement;
 import net.minecraft.advancements.AdvancementRewards;
@@ -171,8 +171,8 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.MapMaker;
 import com.mojang.authlib.GameProfile;
 
-import catserver.server.command.CraftSimpleCommandMap;
-import catserver.server.remapper.ReflectionTransformer;
+import CumServer.server.command.CraftSimpleCommandMap;
+import CumServer.server.remapper.ReflectionTransformer;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.buffer.Unpooled;
@@ -184,7 +184,7 @@ import org.bukkit.craftbukkit.util.CraftNamespacedKey;
 import org.bukkit.event.server.TabCompleteEvent;
 
 public final class CraftServer implements Server {
-    private final String serverName = "CatServer";
+    private final String serverName = "CumServer";
     private final String serverVersion;
     private final String bukkitVersion = Versioning.getBukkitVersion();
     private final Logger logger = Logger.getLogger("Minecraft");
@@ -252,11 +252,11 @@ public final class CraftServer implements Server {
 
         // Register all the Enchantments and PotionTypes now so we can stop new registration immediately after
         Enchantments.SHARPNESS.getClass();
-        // org.bukkit.enchantments.Enchantment.stopAcceptingRegistrations(); // CatServer - move to BukkitInjector
+        // org.bukkit.enchantments.Enchantment.stopAcceptingRegistrations(); // CumServer - move to BukkitInjector
 
         Potion.setPotionBrewer(new CraftPotionBrewer());
         MobEffects.BLINDNESS.getClass();
-        //PotionEffectType.stopAcceptingRegistrations(); // CatServer - move to BukkitInjector
+        //PotionEffectType.stopAcceptingRegistrations(); // CumServer - move to BukkitInjector
         // Ugly hack :(
 
         if (!Main.useConsole) {
@@ -311,7 +311,7 @@ public final class CraftServer implements Server {
         chunkGCPeriod = configuration.getInt("chunk-gc.period-in-ticks");
         chunkGCLoadThresh = configuration.getInt("chunk-gc.load-threshold");
         loadIcon();
-        CatServer.loadConfig(); // CatServer
+        CumServer.loadConfig(); // CumServer
     }
 
     public boolean getPermissionOverride(ICommandSender listener) {
@@ -727,7 +727,7 @@ public final class CraftServer implements Server {
 
     @Override
     public void reload() {
-        if (true) return; // CatServer - disable reload
+        if (true) return; // CumServer - disable reload
         reloadCount++;
         configuration = YamlConfiguration.loadConfiguration(getConfigFile());
         commandsConfiguration = YamlConfiguration.loadConfiguration(getCommandsConfigFile());
@@ -1015,7 +1015,7 @@ public final class CraftServer implements Server {
     @Override
     public World getWorld(String name) {
         Validate.notNull(name, "Name cannot be null");
-        // CatServer start - if the world does not exist, try load it from Forge
+        // CumServer start - if the world does not exist, try load it from Forge
         World world = worlds.get(name.toLowerCase(java.util.Locale.ENGLISH));
         if (world == null && name.toUpperCase().startsWith("DIM")) {
             int dimension;
@@ -1027,7 +1027,7 @@ public final class CraftServer implements Server {
         }
 
         return world;
-        // CatServer end
+        // CumServer end
     }
 
     @Override
@@ -1441,11 +1441,11 @@ public final class CraftServer implements Server {
 
     @Override
     public File getWorldContainer() {
-        // CatServer start - return the proper container
+        // CumServer start - return the proper container
         if (DimensionManager.getWorld(0) != null) {
             return ((SaveHandler)DimensionManager.getWorld(0).getSaveHandler()).getWorldDirectory();
         }
-        // CatServer end
+        // CumServer end
 
         if (this.getServer().anvilFile != null) {
             return this.getServer().anvilFile;

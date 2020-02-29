@@ -1,8 +1,8 @@
 package net.minecraft.world.chunk;
 
-import catserver.server.CatServer;
-import catserver.server.utils.Int2ObjCached;
-import catserver.server.utils.NMSUtils;
+import CumServer.server.CumServer;
+import CumServer.server.utils.Int2ObjCached;
+import CumServer.server.utils.NMSUtils;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Queues;
 import java.util.Arrays;
@@ -65,12 +65,12 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     private final int[] precipitationHeightMap;
     private final boolean[] updateSkylightColumns;
     private boolean loaded;
-    public final World world; // CatServer - private -> public
-    public final int[] heightMap; // CatServer - private -> public
+    public final World world; // CumServer - private -> public
+    public final int[] heightMap; // CumServer - private -> public
     public final int x;
     public final int z;
     private boolean isGapLightingUpdated;
-    public final Map<BlockPos, TileEntity> tileEntities; // CatServer - private -> public
+    public final Map<BlockPos, TileEntity> tileEntities; // CumServer - private -> public
     public final ClassInheritanceMultiMap<Entity>[] entityLists;  // Spigot
     private boolean isTerrainPopulated;
     private boolean isLightPopulated;
@@ -812,7 +812,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
     public void addEntity(Entity entityIn)
     {
         this.hasEntities = true;
-        /* CatServer - AsyncComp
+        /* CumServer - AsyncComp
         int i = MathHelper.floor(entityIn.posX / 16.0D);
         int j = MathHelper.floor(entityIn.posZ / 16.0D);
 
@@ -821,7 +821,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             LOGGER.warn("Wrong location! ({}, {}) should be ({}, {}), {}", Integer.valueOf(i), Integer.valueOf(j), Integer.valueOf(this.x), Integer.valueOf(this.z), entityIn);
             entityIn.setDead();
         }
-        */ // CatServer end - AsyncComp
+        */ // CumServer end - AsyncComp
 
         int k = MathHelper.floor(entityIn.posY / 16.0D);
 
@@ -1274,7 +1274,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
             }
             BlockSand.fallInstantly = false;
             this.world.getServer().getPluginManager().callEvent(new org.bukkit.event.world.ChunkPopulateEvent(bukkitChunk));
-            if (! CatServer.disableForgeGenWorld.contains(world.getName()))
+            if (! CumServer.disableForgeGenWorld.contains(world.getName()))
                 net.minecraftforge.fml.common.registry.GameRegistry.generateWorld(this.x, this.z, this.world, generator, this.world.getChunkProvider());
             this.markDirty();
         }
@@ -1344,7 +1344,7 @@ public class Chunk implements net.minecraftforge.common.capabilities.ICapability
 
     public boolean isPopulated()
     {
-        return this.ticked && this.isTerrainPopulated;  // CatServer - remove light populated check
+        return this.ticked && this.isTerrainPopulated;  // CumServer - remove light populated check
     }
 
     public boolean wasTicked()

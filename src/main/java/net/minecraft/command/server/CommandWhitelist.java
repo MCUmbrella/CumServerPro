@@ -61,14 +61,14 @@ public class CommandWhitelist extends CommandBase
                 {
                     throw new WrongUsageException("commands.whitelist.add.usage", new Object[0]);
                 }
-                // CatServer - start - offlineMode Support
+                // CumServer - start - offlineMode Support
                 GameProfile gameprofile;
                 if (server.isServerInOnlineMode()) {
                     gameprofile = server.getPlayerProfileCache().getGameProfileForUsername(args[1]);
                 }else {
                     gameprofile = new GameProfile(EntityPlayer.getOfflineUUID(args[1]), args[1]);
                 }
-                // CatServer - end
+                // CumServer - end
                 if (gameprofile == null)
                 {
                     throw new CommandException("commands.whitelist.add.failed", new Object[] {args[1]});

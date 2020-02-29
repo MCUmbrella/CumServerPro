@@ -45,7 +45,7 @@ public class FoodStats
 
     public void addStats(ItemFood foodItem, ItemStack stack)
     {
-        if (entityhuman == null) // CatServer - allow mods use FoodStats
+        if (entityhuman == null) // CumServer - allow mods use FoodStats
         {
             this.addStats(foodItem.getHealAmount(stack), foodItem.getSaturationModifier(stack));
         } else {
@@ -76,7 +76,7 @@ public class FoodStats
             }
             else if (enumdifficulty != EnumDifficulty.PEACEFUL)
             {
-                if (entityhuman == null) // CatServer - allow mods use FoodStats
+                if (entityhuman == null) // CumServer - allow mods use FoodStats
                 {
                     this.foodLevel = Math.max(this.foodLevel - 1, 0);
                 } else {

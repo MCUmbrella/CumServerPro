@@ -10,7 +10,7 @@ import javax.annotation.Nullable;
 import com.google.common.base.Function;
 import com.google.common.base.Functions;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import net.minecraft.block.state.IBlockState;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.entity.Entity;
@@ -434,7 +434,7 @@ public class CraftEventFactory {
         Bukkit.getServer().getPluginManager().callEvent(event);
 
         victim.expToDrop = event.getDroppedExp();
-        // CatServer start - handle any drop changes from plugins
+        // CumServer start - handle any drop changes from plugins
         victim.capturedDrops.clear();
         for (org.bukkit.inventory.ItemStack stack : event.getDrops())
         {
@@ -444,7 +444,7 @@ public class CraftEventFactory {
                 victim.capturedDrops.add((EntityItem)entityitem);
             }
         }
-        // CatServer end
+        // CumServer end
         return event;
     }
 
@@ -464,13 +464,13 @@ public class CraftEventFactory {
         if (event.getKeepInventory()) {
             return event;
         }
-        victim.capturedDrops.clear(); // CatServer - we must clear pre-capture to avoid duplicates
+        victim.capturedDrops.clear(); // CumServer - we must clear pre-capture to avoid duplicates
         for (final org.bukkit.inventory.ItemStack stack : event.getDrops()) {
             if (stack != null) {
                 if (stack.getType() == Material.AIR) {
                     continue;
                 }
-                // CatServer start - add support for Forge's PlayerDropsEvent
+                // CumServer start - add support for Forge's PlayerDropsEvent
                 //world.dropItemNaturally(entity.getLocation(), stack); // handle world drop in EntityPlayerMP
                 if (victim.captureDrops)
                 {
@@ -480,7 +480,7 @@ public class CraftEventFactory {
                         victim.capturedDrops.add((EntityItem)entityitem);
                     }
                 }
-                // CatServer end
+                // CumServer end
             }
         }
         return event;
@@ -526,7 +526,7 @@ public class CraftEventFactory {
 
             if (source instanceof EntityDamageSourceIndirect) {
                 damager = ((EntityDamageSourceIndirect) source).getProximateDamageSource();
-                if (damager != null) { // CatServer - check null
+                if (damager != null) { // CumServer - check null
                     if (damager.getBukkitEntity() instanceof ThrownPotion) {
                         cause = DamageCause.MAGIC;
                     } else if (damager.getBukkitEntity() instanceof Projectile) {
@@ -842,7 +842,7 @@ public class CraftEventFactory {
     }
 
     public static Container callInventoryOpenEvent(EntityPlayerMP player, Container container, boolean cancelled) {
-        if (CatServer.asyncCatch("call InventoryOpenEvent")) return container;
+        if (CumServer.asyncCatch("call InventoryOpenEvent")) return container;
         if (player.openContainer != player.inventoryContainer) { // fire INVENTORY_CLOSE if one already open
             player.connection.processCloseWindow(new CPacketCloseWindow(player.openContainer.windowId));
         }
@@ -856,7 +856,7 @@ public class CraftEventFactory {
         }
         InventoryOpenEvent event = new InventoryOpenEvent(container.getBukkitView());
         event.setCancelled(cancelled);
-        if (container.getBukkitView() != null) server.getPluginManager().callEvent(event); // CatServer - mods bypass
+        if (container.getBukkitView() != null) server.getPluginManager().callEvent(event); // CumServer - mods bypass
 
         if (event.isCancelled()) {
             container.transferTo(player.openContainer, craftPlayer);
@@ -984,9 +984,9 @@ public class CraftEventFactory {
     }
 
     public static void handleInventoryCloseEvent(EntityPlayer human) {
-        if (CatServer.asyncCatch("call InventoryCloseEvent")) return;
+        if (CumServer.asyncCatch("call InventoryCloseEvent")) return;
         InventoryCloseEvent event = new InventoryCloseEvent(human.openContainer.getBukkitView());
-        if(human.openContainer.getBukkitView() != null) human.world.getServer().getPluginManager().callEvent(event); // CatServer - mods bypass
+        if(human.openContainer.getBukkitView() != null) human.world.getServer().getPluginManager().callEvent(event); // CumServer - mods bypass
         human.openContainer.transferTo(human.inventoryContainer, human.getBukkitEntity());
     }
 
@@ -1175,7 +1175,7 @@ public class CraftEventFactory {
         return !event.isCancelled();
     }
 
-    // CatServer start
+    // CumServer start
     public static BlockBreakEvent callBlockBreakEvent(net.minecraft.world.World world, BlockPos pos, IBlockState iBlockState, net.minecraft.entity.player.EntityPlayerMP player)
     {
         org.bukkit.block.Block bukkitBlock = world.getWorld().getBlockAt(pos.getX(),pos.getY(),pos.getZ());
@@ -1203,5 +1203,5 @@ public class CraftEventFactory {
         world.getServer().getPluginManager().callEvent(blockBreakEvent);
         return blockBreakEvent;
     }
-    // CatServer end
+    // CumServer end
 }

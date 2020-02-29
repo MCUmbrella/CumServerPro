@@ -43,7 +43,7 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 
-import catserver.server.inventory.CustomModRecipe;
+import CumServer.server.inventory.CustomModRecipe;
 
 import org.bukkit.inventory.Recipe;
 
@@ -54,7 +54,7 @@ public class ShapelessOreRecipe extends IForgeRegistryEntry.Impl<IRecipe> implem
     protected NonNullList<Ingredient> input = NonNullList.create();
     protected ResourceLocation group;
     protected boolean isSimple = true;
-    private Recipe bukkitRecip; // CatServer - bukkit compatibility
+    private Recipe bukkitRecip; // CumServer - bukkit compatibility
 
     public ShapelessOreRecipe(ResourceLocation group, Block result, Object... recipe){ this(group, new ItemStack(result), recipe); }
     public ShapelessOreRecipe(ResourceLocation group, Item  result, Object... recipe){ this(group, new ItemStack(result), recipe); }

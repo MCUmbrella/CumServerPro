@@ -1,6 +1,6 @@
 package net.minecraft.tileentity;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import com.google.common.base.Predicate;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
@@ -73,7 +73,7 @@ public class TileEntitySkull extends TileEntity implements ITickable
                         }
                     };
 
-                    if (! CatServer.disableUpdateGameProfile)
+                    if (! CumServer.disableUpdateGameProfile)
                         MinecraftServer.getServerInst().getGameProfileRepository().findProfilesByNames(new String[] { key }, Agent.MINECRAFT, gameProfileLookup);
 
                     GameProfile profile = profiles[ 0 ];
@@ -285,7 +285,7 @@ public class TileEntitySkull extends TileEntity implements ITickable
 
     public static GameProfile updateGameprofile(GameProfile input)
     {
-        return com.google.common.util.concurrent.Futures.getUnchecked(updateGameprofile(input, com.google.common.base.Predicates.alwaysTrue(), true)); // CatServer
+        return com.google.common.util.concurrent.Futures.getUnchecked(updateGameprofile(input, com.google.common.base.Predicates.alwaysTrue(), true)); // CumServer
     }
 
     public int getSkullType()

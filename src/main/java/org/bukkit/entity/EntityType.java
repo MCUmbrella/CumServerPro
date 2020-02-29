@@ -15,7 +15,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.potion.PotionEffectType;
 
-import catserver.server.entity.CraftCustomEntity;
+import CumServer.server.entity.CraftCustomEntity;
 
 public enum EntityType {
 

@@ -174,7 +174,7 @@ public class ContainerFurnace extends Container
             return bukkitEntity;
         }
 
-        CraftInventoryFurnace inventory = new CraftInventoryFurnace(this.tileFurnace); // CatServer
+        CraftInventoryFurnace inventory = new CraftInventoryFurnace(this.tileFurnace); // CumServer
         bukkitEntity = new CraftInventoryView(this.player.player.getBukkitEntity(), inventory, this);
         return bukkitEntity;
     }

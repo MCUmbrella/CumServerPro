@@ -4,9 +4,9 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Sets;
 
-import catserver.server.command.BukkitCommandWrapper;
-import catserver.server.command.CraftSimpleCommandMap;
-import catserver.server.command.ModCustomCommand;
+import CumServer.server.command.BukkitCommandWrapper;
+import CumServer.server.command.CraftSimpleCommandMap;
+import CumServer.server.command.ModCustomCommand;
 
 import java.util.Collections;
 import java.util.List;
@@ -32,7 +32,7 @@ public abstract class CommandHandler implements ICommandManager
     {
         rawCommand = rawCommand.trim();
 
-        // CatServer -  WorldEdit commands compatible
+        // CumServer -  WorldEdit commands compatible
         /*if (rawCommand.startsWith("/"))
         {
             rawCommand = rawCommand.substring(1);
@@ -42,7 +42,7 @@ public abstract class CommandHandler implements ICommandManager
         String s = astring[0];
         astring = dropFirstString(astring);
         ICommand icommand = this.commandMap.get(s);
-        if (icommand == null) icommand = BukkitCommandWrapper.toNMSCommand(sender, s); // CatServer - allow mods execute plugin command
+        if (icommand == null) icommand = BukkitCommandWrapper.toNMSCommand(sender, s); // CumServer - allow mods execute plugin command
 
         int i = 0;
 

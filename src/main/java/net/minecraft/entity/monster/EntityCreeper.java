@@ -240,7 +240,7 @@ public class EntityCreeper extends EntityMob
 
     public void onStruckByLightning(EntityLightningBolt lightningBolt)
     {
-        if (lightningBolt == null) lightningBolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true); // CatServer - if null, create EntityLightningBolt for Bukkit
+        if (lightningBolt == null) lightningBolt = new EntityLightningBolt(this.world, this.posX, this.posY, this.posZ, true); // CumServer - if null, create EntityLightningBolt for Bukkit
         super.onStruckByLightning(lightningBolt);
 
         if (CraftEventFactory.callCreeperPowerEvent(this, lightningBolt, org.bukkit.event.entity.CreeperPowerEvent.PowerCause.LIGHTNING).isCancelled()) {

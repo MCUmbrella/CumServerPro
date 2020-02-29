@@ -40,7 +40,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
     private List<PotionEffect> customEffects;
     private Color color;
 
-    private String rawType = null; // CatServer
+    private String rawType = null; // CumServer
 
     CraftMetaPotion(CraftMetaItem meta) {
         super(meta);
@@ -115,7 +115,7 @@ class CraftMetaPotion extends CraftMetaItem implements PotionMeta {
     void applyToItem(NBTTagCompound tag) {
         super.applyToItem(tag);
 
-        tag.setString(DEFAULT_POTION.NBT, type.getType() == PotionType.UNCRAFTABLE && rawType != null ? rawType : CraftPotionUtil.fromBukkit(type)); // CatServer
+        tag.setString(DEFAULT_POTION.NBT, type.getType() == PotionType.UNCRAFTABLE && rawType != null ? rawType : CraftPotionUtil.fromBukkit(type)); // CumServer
 
         if (hasColor()) {
             tag.setInteger(POTION_COLOR.NBT, color.asRGB());

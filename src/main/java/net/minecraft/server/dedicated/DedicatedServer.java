@@ -370,7 +370,7 @@ public class DedicatedServer extends MinecraftServer implements IServer
                     }
                 }
 
-                if (this.getMaxTickTime() > 0L && false) // CatServer - disable WatchDog
+                if (this.getMaxTickTime() > 0L && false) // CumServer - disable WatchDog
                 {
                     Thread thread1 = new Thread(new ServerHangWatchdog(this));
                     thread1.setName("Server Watchdog");

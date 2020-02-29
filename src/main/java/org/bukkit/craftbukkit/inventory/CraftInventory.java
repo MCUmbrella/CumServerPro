@@ -42,7 +42,7 @@ public class CraftInventory implements Inventory {
         return getInventory().getSizeInventory();
     }
 
-    public String getName() { // CatServer - not return null
+    public String getName() { // CumServer - not return null
         String name = inventory.getName();
         return name != null ? name : "MODInv_" + inventory.getClass().getSimpleName();
     }
@@ -75,7 +75,7 @@ public class CraftInventory implements Inventory {
     }
 
     public ItemStack[] getContents() {
-        // CatServer start - fix AbstractMethodError
+        // CumServer start - fix AbstractMethodError
         List<net.minecraft.item.ItemStack> mcItems = null;
         try {
             mcItems = getInventory().getContents();
@@ -449,7 +449,7 @@ public class CraftInventory implements Inventory {
         }
     }
 
-    public String getTitle() { // CatServer - not return null
+    public String getTitle() { // CumServer - not return null
         String name = inventory.getName();
         return name != null ? name : "MODInv_" + inventory.getClass().getSimpleName();
     }
@@ -490,7 +490,7 @@ public class CraftInventory implements Inventory {
     }
 
     public InventoryHolder getHolder() {
-        // CatServer start - fix AbstractMethodError
+        // CumServer start - fix AbstractMethodError
         try {
             return inventory.getOwner();
         } catch (AbstractMethodError e) {
@@ -502,7 +502,7 @@ public class CraftInventory implements Inventory {
                 return null;
             }
         }
-        // CatServer end
+        // CumServer end
     }
 
     public int getMaxStackSize() {

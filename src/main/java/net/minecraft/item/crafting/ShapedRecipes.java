@@ -9,7 +9,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParseException;
 import com.google.gson.JsonSyntaxException;
 
-import catserver.server.inventory.CustomModRecipe;
+import CumServer.server.inventory.CustomModRecipe;
 
 import java.util.Map;
 import java.util.Set;
@@ -383,11 +383,11 @@ public class ShapedRecipes extends net.minecraftforge.registries.IForgeRegistryE
 
     @Override
     public Recipe toBukkitRecipe() {
-        // CatServer start - handle special custom recipe
+        // CumServer start - handle special custom recipe
         if (this.recipeHeight < 1 || this.recipeHeight > 3 || this.recipeWidth < 1 || this.recipeWidth > 3) {
             return new CustomModRecipe((IRecipe) this, this.getRegistryName());
         }
-        // CatServer end
+        // CumServer end
         CraftItemStack result = CraftItemStack.asCraftMirror(this.recipeOutput);
         CraftShapedRecipe recipe = new CraftShapedRecipe(result, this);
         switch (this.recipeHeight) {
@@ -433,7 +433,7 @@ public class ShapedRecipes extends net.minecraftforge.registries.IForgeRegistryE
         }
         char c = 'a';
         for (Ingredient list : this.recipeItems) {
-            if (list != null) { // CatServer - get recipe from OreDictionary
+            if (list != null) { // CumServer - get recipe from OreDictionary
                 ItemStack[] matchingStacks = list.getMatchingStacks();
                 if (matchingStacks.length > 0) {
                     net.minecraft.item.ItemStack stack = matchingStacks[0];

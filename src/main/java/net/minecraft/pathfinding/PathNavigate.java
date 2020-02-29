@@ -25,8 +25,8 @@ public abstract class PathNavigate
     public final IAttributeInstance pathSearchRange;
     protected int totalTicks;
     private int ticksAtLastPos;
-    public Vec3d lastPosCheck = Vec3d.ZERO; // CatServer - private -> public
-    public Vec3d timeoutCachedNode = Vec3d.ZERO; // CatServer - private -> public
+    public Vec3d lastPosCheck = Vec3d.ZERO; // CumServer - private -> public
+    public Vec3d timeoutCachedNode = Vec3d.ZERO; // CumServer - private -> public
     private long timeoutTimer;
     private long lastTimeoutCheck;
     private double timeoutLimit;

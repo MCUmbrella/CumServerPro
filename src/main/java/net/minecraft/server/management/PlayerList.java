@@ -1,6 +1,6 @@
 package net.minecraft.server.management;
 
-import catserver.server.PlayerDataFixer;
+import CumServer.server.PlayerDataFixer;
 import com.google.common.base.Predicate;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
@@ -163,7 +163,7 @@ public abstract class PlayerList
 
     public void initializeConnectionToPlayer(NetworkManager netManager, EntityPlayerMP playerIn, NetHandlerPlayServer nethandlerplayserver)
     {
-        // CatServer start
+        // CumServer start
         if (!this.mcServer.isServerInOnlineMode()) {
             String playerLowerName = playerIn.getName().toLowerCase();
             for (EntityPlayerMP onlinePlayer : this.playerEntityList) {
@@ -173,7 +173,7 @@ public abstract class PlayerList
                 }
             }
         }
-        // CatServer end
+        // CumServer end
         GameProfile gameprofile = playerIn.getGameProfile();
         PlayerProfileCache playerprofilecache = this.mcServer.getPlayerProfileCache();
         GameProfile gameprofile1 = playerprofilecache.getProfileByUUID(gameprofile.getId());
@@ -207,7 +207,7 @@ public abstract class PlayerList
             s1 = netManager.getRemoteAddress().toString();
         }
 
-        PlayerDataFixer.checkLocation(playerIn); // CatServer - fix invalid location
+        PlayerDataFixer.checkLocation(playerIn); // CumServer - fix invalid location
 
         // Spigot start - spawn location event
         Player bukkitPlayer = playerIn.getBukkitEntity();
@@ -229,7 +229,7 @@ public abstract class PlayerList
         WorldInfo worldinfo = worldserver.getWorldInfo();
         this.setPlayerGameTypeBasedOnOther(playerIn, (EntityPlayerMP)null, worldserver);
         playerIn.connection = nethandlerplayserver;
-        // CatServer start - send DimensionRegisterMessage to client before attempting to login to a Bukkit dimension
+        // CumServer start - send DimensionRegisterMessage to client before attempting to login to a Bukkit dimension
         if (DimensionManager.isBukkitDimension(playerIn.dimension))
         {
             FMLEmbeddedChannel serverChannel = ForgeNetworkHandler.getServerChannel();
@@ -237,7 +237,7 @@ public abstract class PlayerList
             serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(playerIn);
             serverChannel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(playerIn.dimension, DimensionManager.getProviderType(playerIn.dimension).name()));
         }
-        // CatServer end
+        // CumServer end
         net.minecraftforge.fml.common.FMLCommonHandler.instance().fireServerConnectionEvent(netManager);
         nethandlerplayserver.sendPacket(new SPacketJoinGame(playerIn.getEntityId(), playerIn.interactionManager.getGameType(), worldinfo.isHardcoreModeEnabled(), worldserver.provider.getDimension(), worldserver.getDifficulty(), this.getMaxPlayers(), worldinfo.getTerrainType(), worldserver.getGameRules().getBoolean("reducedDebugInfo")));
         playerIn.getBukkitEntity().sendSupportedChannels(); // CraftBukkit
@@ -551,7 +551,7 @@ public abstract class PlayerList
 
         // CraftBukkit start - Quitting must be before we do final save of data, in case plugins need to modify it
         org.bukkit.craftbukkit.event.CraftEventFactory.handleInventoryCloseEvent(playerIn);
-        if(playerIn.connection != null) { // CatServer - fix crash when player is Forge Handshake
+        if(playerIn.connection != null) { // CumServer - fix crash when player is Forge Handshake
             PlayerQuitEvent playerQuitEvent = new PlayerQuitEvent(cserver.getPlayer(playerIn), "\u00A7e" + playerIn.getName() + " left the game");
             cserver.getPluginManager().callEvent(playerQuitEvent);
             playerIn.getBukkitEntity().disconnect(playerQuitEvent.getQuitMessage());
@@ -924,7 +924,7 @@ public abstract class PlayerList
         }
 
         int actualDimension = worldserver.provider.getDimension();
-        // CatServer - change dim for bukkit added dimensions
+        // CumServer - change dim for bukkit added dimensions
         if (DimensionManager.isBukkitDimension(actualDimension))
         {
             FMLEmbeddedChannel serverChannel = ForgeNetworkHandler.getServerChannel();
@@ -932,7 +932,7 @@ public abstract class PlayerList
             serverChannel.attr(FMLOutboundHandler.FML_MESSAGETARGETARGS).set(entityplayermp);
             serverChannel.writeOutbound(new ForgeMessage.DimensionRegisterMessage(actualDimension, DimensionManager.getProviderType(actualDimension).name()));
         }
-        // CatServer end
+        // CumServer end
         // entityplayermp.connection.sendPacket(new SPacketRespawn(entityplayermp.dimension, entityplayermp.world.getDifficulty(), entityplayermp.world.getWorldInfo().getTerrainType(), entityplayermp.interactionManager.getGameType()));
         entityplayermp.connection.sendPacket(new SPacketRespawn(actualDimension, worldserver.getDifficulty(), worldserver.getWorldInfo().getTerrainType(), entityplayermp.interactionManager.getGameType()));
         entityplayermp.setWorld(worldserver);
@@ -1217,14 +1217,14 @@ public abstract class PlayerList
                 blockposition = worldserver1.getSpawnCoordinate();
             }
 
-            // CatServer start - check null
+            // CumServer start - check null
             if (blockposition != null)
             {
                 d0 = (double) blockposition.getX();
                 y = (double) blockposition.getY();
                 d1 = (double) blockposition.getZ();
             }
-            // CatServer end
+            // CumServer end
         }
 
         worldserver.profiler.endSection();

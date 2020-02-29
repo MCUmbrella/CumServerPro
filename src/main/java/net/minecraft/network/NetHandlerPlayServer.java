@@ -352,7 +352,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         return this.netManager;
     }
 
-    // CatServer start
+    // CumServer start
     private boolean asyncProcessingDisconnect;
     public void asyncDisconnect(ITextComponent ichatbasecomponent) {
         if (this.asyncProcessingDisconnect)
@@ -363,7 +363,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             disconnect(text);
         });
     }
-    // CatServer end
+    // CumServer end
 
     @Deprecated
     public void disconnect(ITextComponent ichatbasecomponent) {
@@ -1921,13 +1921,13 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
                 InventoryView inventory = this.player.openContainer.getBukkitView();
 
-                // CatServer start - some containers such as NEI's Creative Container does not have a view at this point so we need to create one
+                // CumServer start - some containers such as NEI's Creative Container does not have a view at this point so we need to create one
                 if (inventory == null)
                 {
                     inventory = new CraftInventoryView(this.player.getBukkitEntity(), MinecraftServer.getServerInst().server.createInventory(this.player.getBukkitEntity(), InventoryType.CHEST), this.player.openContainer);
                     this.player.openContainer.setBukkitView(inventory);
                 }
-                // CatServer end
+                // CumServer end
 
                 InventoryType.SlotType type = CraftInventoryView.getSlotType(inventory, packetIn.getSlotId());
 
@@ -2409,7 +2409,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
 
     public void processKeepAlive(CPacketKeepAlive packetIn)
     {
-        // CatServer start - asynchronous handle
+        // CumServer start - asynchronous handle
         // PacketThreadUtil.checkThreadAndEnqueue(packetIn, this, this.player.getServerWorld())
         if (this.field_194403_g && packetIn.getKey() == this.field_194404_h)
         {
@@ -2421,7 +2421,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         {
             this.asyncDisconnect(new TextComponentTranslation("disconnect.timeout"));
         }
-        // CatServer end
+        // CumServer end
     }
 
     private long currentTimeMillis()
@@ -2451,9 +2451,9 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             this.disconnect(new TextComponentTranslation("disconnect.spam"));
             return;
         }
-        //CatServer - start 删除不必要的实例
+        //CumServer - start 删除不必要的实例
         List<String> list = this.serverController.getTabCompletions(this.player, packetIn.getMessage(), packetIn.getTargetBlock(), packetIn.hasTargetBlock());
-        //CatServer - end
+        //CumServer - end
         this.player.connection.sendPacket(new SPacketTabComplete(list.toArray(new String[0])));
     }
 
@@ -2920,7 +2920,7 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
         return !this.player.joining && !this.netManager.isChannelOpen();
     }
 
-    // CatServer start
+    // CumServer start
     public void asyncKeepalive() {
         if (netManager == null || asyncProcessingDisconnect) return;
 
@@ -2941,5 +2941,5 @@ public class NetHandlerPlayServer implements INetHandlerPlayServer, ITickable
             }
         }
     }
-    // CatServer end
+    // CumServer end
 }

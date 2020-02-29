@@ -78,7 +78,7 @@ import org.bukkit.util.Vector;
 
 public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     private CraftEntityEquipment equipment;
-    public String entityName; // CatServer
+    public String entityName; // CumServer
 
     public CraftLivingEntity(final CraftServer server, final EntityLivingBase entity) {
         super(server, entity);
@@ -86,11 +86,11 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
         if (entity instanceof EntityLiving || entity instanceof EntityArmorStand) {
             equipment = new CraftEntityEquipment(this);
         }
-        // CatServer start
+        // CumServer start
         this.entityName = EntityRegistry.entityTypeMap.get(entity.getClass());
         if (entityName == null)
             entityName = entity.getName();
-        // CatServer end
+        // CumServer end
     }
 
     public double getHealth() {
@@ -248,7 +248,7 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
 
     @Override
     public String toString() {
-        return "CraftLivingEntity{" + "id=" + getEntityId() + ", name=" + this.entityName + "}"; // CatServer
+        return "CraftLivingEntity{" + "id=" + getEntityId() + ", name=" + this.entityName + "}"; // CumServer
     }
 
     public Player getKiller() {
@@ -383,13 +383,13 @@ public class CraftLivingEntity extends CraftEntity implements LivingEntity {
     }
 
     public EntityType getType() {
-        // CatServer start
+        // CumServer start
         EntityType type = EntityType.fromName(this.entityName);
         if (type != null) {
             return type;
         }
         return EntityType.MOD_CUSTOM;
-        // CatServer end
+        // CumServer end
     }
 
     public boolean hasLineOfSight(Entity other) {

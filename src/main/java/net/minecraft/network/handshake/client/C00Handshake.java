@@ -44,7 +44,7 @@ public class C00Handshake implements Packet<INetHandlerHandshakeServer>
         this.hasFMLMarker = this.ip.contains("\0FML\0");
         if (this.hasFMLMarker) {
             this.ip = this.ip.replace("\0FML\0", "");
-        }else if (this.ip.split("\0").length>2) this.hasFMLMarker = true; //CatServer - Bungee support
+        }else if (this.ip.split("\0").length>2) this.hasFMLMarker = true; //CumServer - Bungee support
     }
 
     public void writePacketData(PacketBuffer buf) throws IOException

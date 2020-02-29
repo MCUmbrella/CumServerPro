@@ -73,7 +73,7 @@ public class SlotFurnaceOutput extends Slot
                 i = j;
             }
 
-            if (this.inventory instanceof TileEntityFurnace) { // CatServer - mods bypass
+            if (this.inventory instanceof TileEntityFurnace) { // CumServer - mods bypass
                 // CraftBukkit - fire FurnaceExtractEvent
                 Player player = (Player) this.player.getBukkitEntity();
                 TileEntityFurnace furnace = ((TileEntityFurnace) this.inventory);

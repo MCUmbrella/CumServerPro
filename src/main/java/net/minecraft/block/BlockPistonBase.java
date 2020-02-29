@@ -387,7 +387,7 @@ public class BlockPistonBase extends BlockDirectional
                 }
             };
 
-            // CatServer start - prohibit move or brok TE and Rails !
+            // CumServer start - prohibit move or brok TE and Rails !
             boolean cancell = false;
             for (BlockPos blockPos : moved) {
                 if (worldIn.getTileEntity(blockPos) != null || worldIn.getBlockState(blockPos).getBlock() instanceof BlockRailBase) {
@@ -412,7 +412,7 @@ public class BlockPistonBase extends BlockDirectional
                 }
                 return false;
             }
-            // CatServer end
+            // CumServer end
 
             org.bukkit.event.block.BlockPistonEvent event;
             if (extending) {

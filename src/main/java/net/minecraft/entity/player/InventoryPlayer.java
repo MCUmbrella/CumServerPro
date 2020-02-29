@@ -451,7 +451,7 @@ public class InventoryPlayer implements IInventory
         {
             try
             {
-                // CatServer start
+                // CumServer start
                 if (player.world.worldCapture.isCapture()) {
                     player.world.worldCapture.addItemSnap(player, p_191971_2_);
                     return true;
@@ -459,7 +459,7 @@ public class InventoryPlayer implements IInventory
                     p_191971_2_.setCount(0);
                     return true;
                 }
-                // CatServer end
+                // CumServer end
                 if (p_191971_2_.isItemDamaged())
                 {
                     if (p_191971_1_ == -1)

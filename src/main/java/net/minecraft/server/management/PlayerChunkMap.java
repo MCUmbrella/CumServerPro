@@ -1,7 +1,7 @@
 package net.minecraft.server.management;
 
-import catserver.server.CatServer;
-import catserver.server.utils.ThreadSafeList;
+import CumServer.server.CumServer;
+import CumServer.server.utils.ThreadSafeList;
 import com.google.common.base.Predicate;
 import com.google.common.collect.AbstractIterator;
 import com.google.common.collect.ComparisonChain;
@@ -42,10 +42,10 @@ public class PlayerChunkMap
     private final WorldServer world;
     private final List<EntityPlayerMP> players = Lists.<EntityPlayerMP>newArrayList();
     private final Long2ObjectMap<PlayerChunkMapEntry> entryMap = new Long2ObjectOpenHashMap<PlayerChunkMapEntry>(4096);
-    private final Set<PlayerChunkMapEntry> dirtyEntries = new ConcurrentSet<>(); // CatServer - Async comp
-    private final List<PlayerChunkMapEntry> pendingSendToPlayers = new ThreadSafeList<>(true); // CatServer - Async comp
-    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new ThreadSafeList<>(true); // CatServer - Async comp
-    private final List<PlayerChunkMapEntry> entries = new ThreadSafeList<>(true); // CatServer - Async comp
+    private final Set<PlayerChunkMapEntry> dirtyEntries = new ConcurrentSet<>(); // CumServer - Async comp
+    private final List<PlayerChunkMapEntry> pendingSendToPlayers = new ThreadSafeList<>(true); // CumServer - Async comp
+    private final List<PlayerChunkMapEntry> entriesWithoutChunks = new ThreadSafeList<>(true); // CumServer - Async comp
+    private final List<PlayerChunkMapEntry> entries = new ThreadSafeList<>(true); // CumServer - Async comp
     public int playerViewRadius;
     private long previousTotalWorldTime;
     private boolean sortMissingChunks = true;
@@ -157,7 +157,7 @@ public class PlayerChunkMap
 
         if (!this.entriesWithoutChunks.isEmpty())
         {
-            long l = System.nanoTime() + CatServer.worldGenMaxTickTime;
+            long l = System.nanoTime() + CumServer.worldGenMaxTickTime;
             int k = 49;
             Iterator<PlayerChunkMapEntry> iterator = this.entriesWithoutChunks.iterator();
 
@@ -488,7 +488,7 @@ public class PlayerChunkMap
         this.entriesWithoutChunks.remove(entry);
         Chunk chunk = entry.getChunk();
 
-        if (false && chunk != null) // CatServer - use craftbukkit timing unload chunk
+        if (false && chunk != null) // CumServer - use craftbukkit timing unload chunk
         {
             this.getWorldServer().getChunkProvider().queueUnload(chunk);
         }

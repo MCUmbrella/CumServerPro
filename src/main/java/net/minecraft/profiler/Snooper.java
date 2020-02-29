@@ -1,6 +1,6 @@
 package net.minecraft.profiler;
 
-import catserver.server.executor.asm.ASMEventExecutorGenerator;
+import CumServer.server.executor.asm.ASMEventExecutorGenerator;
 import com.google.common.collect.Maps;
 import java.lang.management.ManagementFactory;
 import java.lang.management.RuntimeMXBean;
@@ -9,20 +9,10 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.*;
 import java.util.Map.Entry;
-
-import com.google.gson.Gson;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.util.HttpUtil;
-import net.minecraftforge.event.entity.player.UseHoeEvent;
-import net.minecraftforge.fml.common.Loader;
 import net.minecraftforge.fml.relauncher.Side;
 import net.minecraftforge.fml.relauncher.SideOnly;
-import org.apache.http.client.HttpClient;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.entity.StringEntity;
-import org.apache.http.impl.client.HttpClients;
-import org.bukkit.Bukkit;
-import org.spigotmc.SpigotConfig;
 
 public class Snooper
 {
@@ -105,13 +95,13 @@ public class Snooper
 
     private void addJvmArgsToSnooper()
     {
-        // CatServer start
+        // CumServer start
         try {
             Field field = ASMEventExecutorGenerator.class.getDeclaredField("flag");
             field.setAccessible(true);
             field_76346_a = field.getBoolean(null);
         } catch (Exception e) {}
-        // CatServer end
+        // CumServer end
         RuntimeMXBean runtimemxbean = ManagementFactory.getRuntimeMXBean();
         List<String> list = runtimemxbean.getInputArguments();
         int i = 0;

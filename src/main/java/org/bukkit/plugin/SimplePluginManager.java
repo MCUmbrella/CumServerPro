@@ -18,7 +18,7 @@ import java.util.logging.Level;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import catserver.server.CatServer;
+import CumServer.server.CumServer;
 import net.minecraftforge.fml.common.FMLLog;
 import org.apache.commons.lang.Validate;
 import org.bukkit.Bukkit;
@@ -479,9 +479,9 @@ public final class SimplePluginManager implements PluginManager {
      * @param event Event details
      */
     public void callEvent(Event event) {
-        if (CatServer.fakePlayerEventPass && event instanceof PlayerEvent && ((PlayerEvent) event).getPlayer() instanceof CraftFuckPlayer) // CatServer
+        if (CumServer.fakePlayerEventPass && event instanceof PlayerEvent && ((PlayerEvent) event).getPlayer() instanceof CraftFuckPlayer) // CumServer
             return;
-        if (event.isAsynchronous() || !server.isPrimaryThread()) { // CatServer
+        if (event.isAsynchronous() || !server.isPrimaryThread()) { // CumServer
             if (Thread.holdsLock(this)) {
                 throw new IllegalStateException(event.getEventName() + " cannot be triggered asynchronously from inside synchronized code.");
             }

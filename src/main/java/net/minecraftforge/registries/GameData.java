@@ -25,7 +25,7 @@ import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
 import com.google.common.collect.Multimap;
 
-import catserver.server.inventory.CustomModRecipe;
+import CumServer.server.inventory.CustomModRecipe;
 import net.minecraft.block.Block;
 import net.minecraft.block.BlockAir;
 import net.minecraft.block.BlockObserver;
@@ -469,7 +469,7 @@ public class GameData
         {
             private static ItemStack result = new ItemStack(Items.DIAMOND, 64);
             private ResourceLocation name;
-            private Recipe bukkitRecip; // CatServer - bukkit compatibility
+            private Recipe bukkitRecip; // CumServer - bukkit compatibility
 
             @Override
             public IRecipe setRegistryName(ResourceLocation name) {

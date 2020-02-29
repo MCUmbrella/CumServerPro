@@ -162,7 +162,7 @@ public class ContainerRepair extends Container
         if (itemstack.isEmpty())
         {
             // this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
-            if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CatServer - mods bypass
+            if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CumServer - mods bypass
             this.maximumCost = 0;
         }
         else
@@ -176,12 +176,12 @@ public class ContainerRepair extends Container
 
             if (!itemstack2.isEmpty())
             {
-                // CatServer start - call bukkit event when forge event cancel
+                // CumServer start - call bukkit event when forge event cancel
                 if (!net.minecraftforge.common.ForgeHooks.onAnvilChange(this, itemstack, itemstack2, outputSlot, repairedItemName, j)) {
                     if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), outputSlot.getStackInSlot(0));
                     return;
                 }
-                // CatServer end
+                // CumServer end
                 flag = itemstack2.getItem() == Items.ENCHANTED_BOOK && !ItemEnchantedBook.getEnchantments(itemstack2).hasNoTags();
 
                 if (itemstack1.isItemStackDamageable() && itemstack1.getItem().getIsRepairable(itemstack, itemstack2))
@@ -191,7 +191,7 @@ public class ContainerRepair extends Container
                     if (l2 <= 0)
                     {
 //                        this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
-                        if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CatServer - mods bypass
+                        if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CumServer - mods bypass
                         this.maximumCost = 0;
                         return;
                     }
@@ -213,7 +213,7 @@ public class ContainerRepair extends Container
                     if (!flag && (itemstack1.getItem() != itemstack2.getItem() || !itemstack1.isItemStackDamageable()))
                     {
                         // this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
-                        if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CatServer - mods bypass
+                        if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CumServer - mods bypass
                         this.maximumCost = 0;
                         return;
                     }
@@ -314,7 +314,7 @@ public class ContainerRepair extends Container
                     if (flag3 && !flag2)
                     {
 //                        this.outputSlot.setInventorySlotContents(0, ItemStack.EMPTY);
-                        if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CatServer - mods bypass
+                        if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), ItemStack.EMPTY); // CumServer - mods bypass
                         this.maximumCost = 0;
                         return;
                     }
@@ -374,7 +374,7 @@ public class ContainerRepair extends Container
             }
 
 //            this.outputSlot.setInventorySlotContents(0, itemstack1);
-            if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), itemstack1); // CatServer - mods bypass
+            if (getBukkitView() != null) org.bukkit.craftbukkit.event.CraftEventFactory.callPrepareAnvilEvent(getBukkitView(), itemstack1); // CumServer - mods bypass
             this.detectAndSendChanges();
         }
     }

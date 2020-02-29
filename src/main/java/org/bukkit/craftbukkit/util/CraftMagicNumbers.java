@@ -93,7 +93,7 @@ public final class CraftMagicNumbers implements UnsafeValues {
     }
 
     public static Block getBlock(Material material) {
-        material = material == null ? Material.AIR : material; // CatServer - this should not happen but just in case it does
+        material = material == null ? Material.AIR : material; // CumServer - this should not happen but just in case it does
         // TODO: Don't use ID
         Block block = Block.getBlockById(material.getId());
 

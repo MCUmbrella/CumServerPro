@@ -30,13 +30,13 @@ public class SPacketChat implements Packet<INetHandlerPlayClient>
         this.type = type;
     }
 
-    // CatServer start
+    // CumServer start
     public SPacketChat(ITextComponent message, byte type)
     {
         this.chatComponent = message;
         this.type = ChatType.byId(type);
     }
-    // CatServer end
+    // CumServer end
 
     public void readPacketData(PacketBuffer buf) throws IOException
     {

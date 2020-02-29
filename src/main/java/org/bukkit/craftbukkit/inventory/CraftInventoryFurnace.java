@@ -11,11 +11,11 @@ public class CraftInventoryFurnace extends CraftInventory implements FurnaceInve
     public CraftInventoryFurnace(TileEntityFurnace inventory) {
         super(inventory);
     }
-    // CatServer start
+    // CumServer start
     public CraftInventoryFurnace(IInventory inventory) {
         super(inventory);
     }
-    // CatServer end
+    // CumServer end
     public ItemStack getResult() {
         return getItem(2);
     }

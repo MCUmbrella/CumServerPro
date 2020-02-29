@@ -1,6 +1,6 @@
 package net.minecraft.entity;
 
-import catserver.server.utils.EntityNearTask;
+import CumServer.server.utils.EntityNearTask;
 import com.google.common.base.Function;
 import com.google.common.base.Objects;
 import com.google.common.collect.Lists;
@@ -1349,7 +1349,7 @@ public abstract class EntityLivingBase extends Entity
 
                 if (!net.minecraftforge.common.ForgeHooks.onLivingDrops(this, cause, capturedDrops, i, recentlyHit > 0))
                 {
-                    // CatServer start - capture drops for plugins then fire event
+                    // CumServer start - capture drops for plugins then fire event
                     if (this.capturedDrops.size() > 0)
                     {
                         java.util.List<org.bukkit.inventory.ItemStack> loot = new java.util.ArrayList<org.bukkit.inventory.ItemStack>();
@@ -1363,7 +1363,7 @@ public abstract class EntityLivingBase extends Entity
                     {
                         CraftEventFactory.callEntityDeathEvent(this);
                     }
-                    // CatServer end
+                    // CumServer end
 
                     for (EntityItem item : capturedDrops)
                     {
@@ -1672,12 +1672,12 @@ public abstract class EntityLivingBase extends Entity
                 return false;
             }
 
-            // CatServer start - move from EntityPlayer to apply player armor
+            // CumServer start - move from EntityPlayer to apply player armor
             if (human && event.getDamage() > 0) {
                 float damage = net.minecraftforge.common.ISpecialArmor.ArmorProperties.applyArmor(EntityLivingBase.this, ((EntityPlayer) EntityLivingBase.this).inventory.armorInventory, damagesource, event.getDamage());
                 event.setDamage(damage);
             }
-            // CatServer end
+            // CumServer end
 
             // Apply damage to helmet
             if ((damagesource == DamageSource.ANVIL || damagesource == DamageSource.FALLING_BLOCK) && this.getItemStackFromSlot(EntityEquipmentSlot.HEAD) != null) {
@@ -1685,7 +1685,7 @@ public abstract class EntityLivingBase extends Entity
             }
 
             // Apply damage to armor
-            if (!human && !damagesource.isUnblockable()) { // CatServer - Forge handled player armor
+            if (!human && !damagesource.isUnblockable()) { // CumServer - Forge handled player armor
                 float armorDamage = (float) (event.getDamage() + event.getDamage(EntityDamageEvent.DamageModifier.BLOCKING) + event.getDamage(EntityDamageEvent.DamageModifier.HARD_HAT));
                 this.damageArmor(armorDamage);
             }
@@ -1703,7 +1703,7 @@ public abstract class EntityLivingBase extends Entity
             absorptionModifier = (float) -event.getDamage(EntityDamageEvent.DamageModifier.ABSORPTION);
             this.setAbsorptionAmount(Math.max(this.getAbsorptionAmount() - absorptionModifier, 0.0F));
 
-            f = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, damagesource, (float) event.getFinalDamage()); // CatServer
+            f = net.minecraftforge.common.ForgeHooks.onLivingDamage(this, damagesource, (float) event.getFinalDamage()); // CumServer
 
             if (f > 0 || !human) {
                 if (human) {

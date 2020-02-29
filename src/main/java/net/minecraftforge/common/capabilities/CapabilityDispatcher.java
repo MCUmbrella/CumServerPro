@@ -81,11 +81,11 @@ public final class CapabilityDispatcher implements INBTSerializable<NBTTagCompou
             }
         }
 
-        // CatServer - start 删除无用获取size
+        // CumServer - start 删除无用获取size
         caps = lstCaps.toArray(new ICapabilityProvider[0]);
         writers = lstWriters.toArray(new INBTSerializable[0]);
         names = lstNames.toArray(new String[0]);
-        // CatServer - end 删除无用获取size
+        // CumServer - end 删除无用获取size
     }
 
     @Override

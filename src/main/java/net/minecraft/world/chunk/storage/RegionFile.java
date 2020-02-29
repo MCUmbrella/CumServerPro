@@ -344,13 +344,13 @@ public class RegionFile
         }
     }
 
-    // CatServer - start
+    // CumServer - start
 
     public File getFileName() {
         return this.fileName;
     }
 
-    // CatServer - end
+    // CumServer - end
 
     class ChunkBuffer extends ByteArrayOutputStream
     {

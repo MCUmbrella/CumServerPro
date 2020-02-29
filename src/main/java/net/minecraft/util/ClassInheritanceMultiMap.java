@@ -1,6 +1,6 @@
 package net.minecraft.util;
 
-import catserver.server.utils.ThreadSafeList;
+import CumServer.server.utils.ThreadSafeList;
 import com.google.common.collect.Iterators;
 import io.netty.util.internal.ConcurrentSet;
 

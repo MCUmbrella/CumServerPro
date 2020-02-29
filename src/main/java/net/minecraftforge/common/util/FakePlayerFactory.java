@@ -57,7 +57,7 @@ public class FakePlayerFactory
      */
     public static FakePlayer get(WorldServer world, GameProfile username)
     {
-        // CatServer - Refactored below to avoid a hashCode check with a null GameProfile ID
+        // CumServer - Refactored below to avoid a hashCode check with a null GameProfile ID
         if (username == null || username.getName() == null) return null;
 
         for (Map.Entry<GameProfile, FakePlayer> mapEntry : fakePlayers.entrySet())

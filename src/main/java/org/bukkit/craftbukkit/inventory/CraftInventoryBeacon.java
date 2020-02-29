@@ -9,11 +9,11 @@ public class CraftInventoryBeacon extends CraftInventory implements BeaconInvent
     public CraftInventoryBeacon(TileEntityBeacon beacon) {
         super(beacon);
     }
-    // CatServer start
+    // CumServer start
     public CraftInventoryBeacon(IInventory beacon) {
         super(beacon);
     }
-    // CatServer end
+    // CumServer end
     public void setItem(ItemStack item) {
         setItem(0, item);
     }

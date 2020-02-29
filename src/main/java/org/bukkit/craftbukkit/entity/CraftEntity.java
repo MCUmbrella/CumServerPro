@@ -1,12 +1,12 @@
 package org.bukkit.craftbukkit.entity;
 
-import catserver.server.PlayerDataFixer;
+import CumServer.server.PlayerDataFixer;
 import com.google.common.base.Function;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
 
-import catserver.server.entity.CraftCustomEntity;
-import catserver.server.entity.CraftCustomProjectile;
+import CumServer.server.entity.CraftCustomEntity;
+import CumServer.server.entity.CraftCustomProjectile;
 
 import java.util.List;
 import java.util.Set;
@@ -135,15 +135,15 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
             // Players
             if (entity instanceof EntityPlayer) {
                 if (entity instanceof EntityPlayerMP) {
-                    // CatServer start - support fake player
+                    // CumServer start - support fake player
                     if (entity instanceof FakePlayer)
                         return new CraftFuckPlayer(server, (FakePlayer) entity);
                     return new CraftPlayer(server, (EntityPlayerMP) entity);
                 }
-                else { // CatServer -  support fake player classes from mods
+                else { // CumServer -  support fake player classes from mods
                     return new CraftFuckPlayer(server, FakePlayerFactory.get(DimensionManager.getWorld(entity.world.provider.getDimension()), ((EntityPlayer) entity).getGameProfile()));
                 }
-                // CatServer end - support fake player
+                // CumServer end - support fake player
             }
             // Water Animals
             else if (entity instanceof EntityWaterMob) {
@@ -337,7 +337,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
     }
 
     public Vector getVelocity() {
-        PlayerDataFixer.checkVector(entity); // CatServer - fix invalid vector
+        PlayerDataFixer.checkVector(entity); // CumServer - fix invalid vector
         return new Vector(entity.motionX, entity.motionY, entity.motionZ);
     }
 
@@ -629,7 +629,7 @@ public abstract class CraftEntity implements org.bukkit.entity.Entity {
         String name = getHandle().getCustomNameTag();
 
         if (name == null || name.length() == 0) {
-            if (getType().getEntityClass() == CraftCustomEntity.class && this instanceof CraftLivingEntity) return ((CraftLivingEntity) this).entity.getName(); // CatServer
+            if (getType().getEntityClass() == CraftCustomEntity.class && this instanceof CraftLivingEntity) return ((CraftLivingEntity) this).entity.getName(); // CumServer
             return null;
         }
 

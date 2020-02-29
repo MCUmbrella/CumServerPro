@@ -1646,12 +1646,12 @@ public abstract class EntityPlayer extends EntityLivingBase
         return this.gameProfile;
     }
 
-    // CatServer start - add method to support Citizens plugin
+    // CumServer start - add method to support Citizens plugin
     public GameProfile getProfile()
     {
         return getGameProfile();
     }
-    // CatServer end
+    // CumServer end
 
     public SleepResult trySleep(BlockPos bedLocation)
     {
