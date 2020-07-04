@@ -20,7 +20,5 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Clone
-      run: git clone "https://github.com/MCUmbrella/CumServerPro.git" && cd ./CumServerPro
     - name: Build
-      run: chmod +x ./gradlew && ./gradlew build
+      run: git submodule update --init --recursive && chmod +x ./gradlew && ./gradlew build
