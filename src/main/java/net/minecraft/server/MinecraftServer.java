@@ -1640,7 +1640,7 @@ public abstract class MinecraftServer implements ICommandSender, Runnable, IThre
         ServerEula eula = new ServerEula(new File("eula.txt"));
         if (!eula.hasAcceptedEULA())
         {
-            LOGGER.info("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.\n您只能在同意EULA后启动服务器，在“eula.txt”文件中获取详情。");
+            LOGGER.info("You need to agree to the EULA in order to run the server. Go to eula.txt for more info.\n\u60a8\u53ea\u80fd\u5728\u540c\u610fEULA\u540e\u542f\u52a8\u670d\u52a1\u5668\uff0c\u5728\u201ceula.txt\u201d\u6587\u4ef6\u4e2d\u83b7\u53d6\u8be6\u60c5\u3002");
             eula.createEULAFile();
             return;
         }
