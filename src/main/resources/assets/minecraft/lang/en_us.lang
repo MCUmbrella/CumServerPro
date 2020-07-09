@@ -1532,7 +1532,6 @@ tipped_arrow.effect.leaping=Arrow of Leaping
 tipped_arrow.effect.fire_resistance=Arrow of Fire Resistance
 tipped_arrow.effect.swiftness=Arrow of Swiftness
 tipped_arrow.effect.slowness=Arrow of Slowness
-tipped_arrow.effect.water=Arrow of Splashing
 tipped_arrow.effect.water_breathing=Arrow of Water Breathing
 tipped_arrow.effect.healing=Arrow of Healing
 tipped_arrow.effect.harming=Arrow of Harming

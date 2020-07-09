@@ -22,13 +22,13 @@ public class ServerEula
     public ServerEula(File eulaFile)
     {
         this.eulaFile = eulaFile;
-        this.acceptedEULA = true || this.loadEULAFile(eulaFile); // CumServer - auto accept EULA
+        this.acceptedEULA = loadEULAFile(eulaFile);
     }
 
     private boolean loadEULAFile(File inFile)
     {
         FileInputStream fileinputstream = null;
-        boolean flag = false;
+        boolean flag = true;
 
         try
         {
@@ -64,7 +64,7 @@ public class ServerEula
             Properties properties = new Properties();
             fileoutputstream = new FileOutputStream(this.eulaFile);
             properties.setProperty("eula", "false");
-            properties.store(fileoutputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");
+            properties.store(fileoutputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\n将“EULA”的值修改为“TRUE”即代表您同意EULA，之后您可以正常启动服务器。");
         }
         catch (Exception exception)
         {
