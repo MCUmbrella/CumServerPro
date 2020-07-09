@@ -64,7 +64,7 @@ public class ServerEula
             Properties properties = new Properties();
             fileoutputstream = new FileOutputStream(this.eulaFile);
             properties.setProperty("eula", "false");
-            properties.store(fileoutputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).\n\u5c06\u201cEULA\u201d\u7684\u503c\u4fee\u6539\u4e3a\u201cTRUE\u201d\u5373\u4ee3\u8868\u60a8\u540c\u610fEULA\uff0c\u4e4b\u540e\u60a8\u53ef\u4ee5\u6b63\u5e38\u542f\u52a8\u670d\u52a1\u5668\u3002");
+            properties.store(fileoutputstream, "By changing the setting below to TRUE you are indicating your agreement to our EULA (https://account.mojang.com/documents/minecraft_eula).");
         }
         catch (Exception exception)
         {
