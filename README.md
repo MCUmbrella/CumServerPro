@@ -12,5 +12,5 @@ QQ群: [QQ是什么东西，能吃吗](https://www.pixiv.net/en/tags/%E3%81%93%E
 Telegram: [https://t.me/CumServerPro](https://t.me/CumServerPro)
 ### 合作伙♂伴
 Mohist社区：[动人以言者，其感不深；动人以行者，其应必速](https://github.com/Mohist-Community)<br>
-HomoCraftServer：[这么臭的服务端？化粪池，请](https://github.com/8MiYile/HomoCraftServer)<br>
+MemeCraftServer：[这么臭的服务端？化粪池，请](https://github.com/8Mi-Tech/8Mi-MemeCraftServer)<br>
 格兰蒂协会：[中文综合游戏论坛 | 自由的游戏玩家社区](https://www.relatev.com/)
