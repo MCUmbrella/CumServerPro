@@ -11,6 +11,6 @@ CumServer项目爱谁所有谁所有,任何第三方都™有权开发维护<br>
 QQ群: [QQ是什么东西，能吃吗](https://www.pixiv.net/en/tags/%E3%81%93%E3%81%84%E3%81%AC%E3%81%A1%E3%82%83%E3%82%93/artworks?s_mode=s_tag)<br>
 Telegram: [https://t.me/CumServerPro](https://t.me/CumServerPro)
 ### 合作伙♂伴
-Mohist社区：[动人以言者，其感不深；动人以行者，其应必速](https://github.com/Mohist-Community)<br>
+Mohist社区：[动人以言者，其感不深；动人以行者，其应必速](https://github.com/MohistMC/Mohist)<br>
 MemeCraftServer：[这么臭的服务端？化粪池，请](https://github.com/8Mi-Tech/8Mi-MemeCraftServer)<br>
 格兰蒂协会：[中文综合游戏论坛 | 自由的游戏玩家社区](https://www.relatev.com/)
